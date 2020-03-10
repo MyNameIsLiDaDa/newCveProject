@@ -244,57 +244,57 @@ export default {
   methods: {
     getVendorsData () {
 
-      // vendorsData().then(res => {
-      //   if (res.status === 200) {
-      //     const temp = {}
-      //     const arr = []
-      //     const VendorsObject = {} // a o h 专用;
-      //     res.data.Data.forEach((v, index) => {
-      //       if (VendorsObject[v.pattern]) {
-      //         VendorsObject[v.pattern].push(v)
-      //       } else {
-      //         VendorsObject[v.pattern] = []
-      //         VendorsObject[v.pattern].push(v)
-      //       }
-      //       if (!temp[v.vendor]) {
-      //         temp[v.vendor] = true
-      //         arr.push(v)
-      //       }
-      //     })
-      //     this.VendorsData = arr // 一次性渲染数据;
-      //     this.VendorsDataClone = arr // 克隆数据.
-      //     this.VendorsObject = VendorsObject
-      //   }
-      // })
-      // ---------------------------------------------------------------
-      const res = require('./Json/vendors.json')
-      const temp = {}
-      const arr = []
-      const VendorsObject = {} // a o h 专用;
-      res.Data.forEach((v, index) => {
-        if (VendorsObject[v.pattern]) {
-          VendorsObject[v.pattern].push(v)
-        } else {
-          VendorsObject[v.pattern] = []
-          VendorsObject[v.pattern].push(v)
-        }
-        if (!temp[v.vendor]) {
-          temp[v.vendor] = true
-          arr.push(v)
+      vendorsData().then(res => {
+        if (res.status === 200) {
+          const temp = {}
+          const arr = []
+          const VendorsObject = {} // a o h 专用;
+          res.data.Data.forEach((v, index) => {
+            if (VendorsObject[v.pattern]) {
+              VendorsObject[v.pattern].push(v)
+            } else {
+              VendorsObject[v.pattern] = []
+              VendorsObject[v.pattern].push(v)
+            }
+            if (!temp[v.vendor]) {
+              temp[v.vendor] = true
+              arr.push(v)
+            }
+          })
+          this.VendorsData = arr // 一次性渲染数据;
+          this.VendorsDataClone = arr // 克隆数据.
+          this.VendorsObject = VendorsObject
         }
       })
-      this.VendorsData = arr // 一次性渲染数据;
-      this.VendorsDataClone = arr // 克隆数据.
-      this.VendorsObject = VendorsObject
+      // ---------------------------------------------------------------
+      // const res = require('./Json/vendors.json')
+      // const temp = {}
+      // const arr = []
+      // const VendorsObject = {} // a o h 专用;
+      // res.Data.forEach((v, index) => {
+      //   if (VendorsObject[v.pattern]) {
+      //     VendorsObject[v.pattern].push(v)
+      //   } else {
+      //     VendorsObject[v.pattern] = []
+      //     VendorsObject[v.pattern].push(v)
+      //   }
+      //   if (!temp[v.vendor]) {
+      //     temp[v.vendor] = true
+      //     arr.push(v)
+      //   }
+      // })
+      // this.VendorsData = arr // 一次性渲染数据;
+      // this.VendorsDataClone = arr // 克隆数据.
+      // this.VendorsObject = VendorsObject
 
     },
     getList () {
-      // this.$http.get('/list/article').then(res => {
-      //   console.log('res', res)
-      //   this.data = res.result
-      // })
-      const res = require('./Json/cve_info.json')
-      this.data = res.Data
+      this.$http.get('/list/article').then(res => {
+        console.log('res', res)
+        this.data = res.result
+      })
+      // const res = require('./Json/cve_info.json')
+      // this.data = res.Data
     },
     loadMore () {
       this.loadingMore = true
@@ -327,7 +327,7 @@ export default {
     //   // });
     // },
     radioButtonEvent (num, item) {
-      console.log(num, item)
+      // console.log(num, item)
       this.isTrue1 = false
       this.isTrue2 = false
       // this.isTrue3 = false
@@ -337,41 +337,41 @@ export default {
       // this.$http ...
       if (num === 1) {
         this.tags = ['已选择:', item.vendor]
-        // productsData(item.vendor).then(res => {
-        //   this.productsData = res.data.Data || []
-        //   this.isTrue1 = true
-        // })
-        if (item.vendor === 'google') {
-          const res = require('./Json/products.json')
-          this.productsData = res.Data
+        productsData(item.vendor).then(res => {
+          this.productsData = res.data.Data || []
           this.isTrue1 = true
-        }
-      } else if (num === 2) {
-        // versionsData(this.vendorsObj.vendor, item).then(res => {
-        //   this.versionsData = res.data.Data
+        })
+        // if (item.vendor === 'google') {
+        //   const res = require('./Json/products.json')
+        //   this.productsData = res.Data
         //   this.isTrue1 = true
-        //   this.isTrue2 = true
-        //   this.tags[2] = item         
-        // })
-        const res = require('./Json/versions.json')
-        this.versionsData = res.Data
-        this.isTrue1 = true
-        this.isTrue2 = true
-        this.tags[2] = item
+        // }
+      } else if (num === 2) {
+        versionsData(this.vendorsObj.vendor, item).then(res => {
+          this.versionsData = res.data.Data
+          this.isTrue1 = true
+          this.isTrue2 = true
+          this.tags[2] = item         
+        })
+        // const res = require('./Json/versions.json')
+        // this.versionsData = res.Data
+        // this.isTrue1 = true
+        // this.isTrue2 = true
+        // this.tags[2] = item
       } else if (num === 3) {
         
         // return
-        // CveData(item.cpe_id).then(res => {
-        //   this.isTrue1 = true
-        //   this.isTrue2 = true
-        //   this.tags[3] = item.version
-        //   this.cveInfoData = res.data.Data
-        // })
-        const res = require('./Json/cve_info.json')
-        this.isTrue1 = true
-        this.isTrue2 = true
-        this.tags[3] = item.version
-        this.cveInfoData = res.Data
+        CveData(item.cpe_id).then(res => {
+          this.isTrue1 = true
+          this.isTrue2 = true
+          this.tags[3] = item.version
+          this.cveInfoData = res.data.Data
+        })
+        // const res = require('./Json/cve_info.json')
+        // this.isTrue1 = true
+        // this.isTrue2 = true
+        // this.tags[3] = item.version
+        // this.cveInfoData = res.Data
       }
       // else if (num === 4) {
       //   this.isTrue1 = true
