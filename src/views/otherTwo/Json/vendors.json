@@ -1,0 +1,205 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "vendor": "google",
+            "pattern": "o"
+        },
+        {
+            "vendor": "google",
+            "pattern": "h"
+        },
+        {
+            "vendor": "google-closure-tools-latest_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_adsense_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_authenticator_login_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_calendar_events_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_doc_embedder",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_doc_embedder_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_forms_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_site_search_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_sitemap_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "google_xml_sitemaps_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "googlesearch_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "googmonify_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "goomeo",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gopivotal",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gopostmatic",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gopro",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gorm",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gorul",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gosa_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "goscript_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "goserv_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gotobestofprice",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gots",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gource",
+            "pattern": "a"
+        },
+        {
+            "vendor": "govhk",
+            "pattern": "a"
+        },
+        {
+            "vendor": "govicture",
+            "pattern": "h"
+        },
+        {
+            "vendor": "govicture",
+            "pattern": "o"
+        },
+        {
+            "vendor": "gowebsolutions",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gowkster",
+            "pattern": "a"
+        },
+        {
+            "vendor": "goywp",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gpac",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gparted",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gpeasy",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gpg4win",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gpgtools",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gps-server",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gpsd_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gpw_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "grabapp",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gracemedia_media_player_project",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gracenote",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gradkell",
+            "pattern": "a"
+        },
+        {
+            "vendor": "gradle",
+            "pattern": "a"
+        },
+        {
+            "vendor": "grafana",
+            "pattern": "a"
+        },
+        {
+            "vendor": "grails",
+            "pattern": "a"
+        },
+        {
+            "vendor": "grandnode",
+            "pattern": "a"
+        },
+        {
+            "vendor": "grandstream",
+            "pattern": "h"
+        },
+        {
+            "vendor": "grandstream",
+            "pattern": "o"
+        }
+    ]
+}

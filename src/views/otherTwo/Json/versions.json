@@ -1,0 +1,25 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "version": "-",
+            "cpe_id": 147074
+        },
+        {
+            "version": "1.0",
+            "cpe_id": 147075
+        },
+        {
+            "version": "1.1",
+            "cpe_id": 147076
+        },
+        {
+            "version": "1.5",
+            "cpe_id": 147077
+        },
+        {
+            "version": "1.6",
+            "cpe_id": 147078
+        }
+    ]
+}
