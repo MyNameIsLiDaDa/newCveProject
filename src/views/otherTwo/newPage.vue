@@ -162,7 +162,7 @@
 <script>
 import 'ant-design-vue/lib/date-picker/style/css';
 import { Card, Tag, Radio, Button, List, Modal, Icon, Tooltip } from "ant-design-vue";
-import { vendorsData, productsData, versionsData, CveData } from "@/api"
+import { vendorsData, productsData, versionsData, CveData, CweData, capecData, cceData } from "@/api"
 // import * as d3 from 'd3'
 // const main = document.getElementById('main')
 const echarts = require('echarts')
@@ -288,25 +288,25 @@ export default {
       // this.VendorsObject = VendorsObject
 
     },
-    getList () {
-      this.$http.get('/list/article').then(res => {
-        console.log('res', res)
-        this.data = res.result
-      })
-      // const res = require('./Json/cve_info.json')
-      // this.data = res.Data
-    },
-    loadMore () {
-      this.loadingMore = true
-      this.$http
-        .get('/list/article')
-        .then(res => {
-          this.data = this.data.concat(res.result)
-        })
-        .finally(() => {
-          this.loadingMore = false
-        })
-    },
+    // getList () {
+    //   this.$http.get('/list/article').then(res => {
+    //     console.log('res', res)
+    //     this.data = res.result
+    //   })
+    //   // const res = require('./Json/cve_info.json')
+    //   // this.data = res.Data
+    // },
+    // loadMore () {
+    //   this.loadingMore = true
+    //   this.$http
+    //     .get('/list/article')
+    //     .then(res => {
+    //       this.data = this.data.concat(res.result)
+    //     })
+    //     .finally(() => {
+    //       this.loadingMore = false
+    //     })
+    // },
     // radioChanged (num, e) {
     //   // console.log(num)
     //   // console.log(e)
@@ -337,10 +337,14 @@ export default {
       // this.$http ...
       if (num === 1) {
         this.tags = ['已选择:', item.vendor]
+        this.cweInfoData = []
+        this.versionsData = []
+        this.cveInfoData = []
         productsData(item.vendor).then(res => {
           this.productsData = res.data.Data || []
           this.isTrue1 = true
         })
+        // ------------------------------------------------------------
         // if (item.vendor === 'google') {
         //   const res = require('./Json/products.json')
         //   this.productsData = res.Data
@@ -353,20 +357,21 @@ export default {
           this.isTrue2 = true
           this.tags[2] = item         
         })
+        // ---------------------------------------------------------------
         // const res = require('./Json/versions.json')
         // this.versionsData = res.Data
         // this.isTrue1 = true
         // this.isTrue2 = true
         // this.tags[2] = item
       } else if (num === 3) {
-        
-        // return
+
         CveData(item.cpe_id).then(res => {
           this.isTrue1 = true
           this.isTrue2 = true
           this.tags[3] = item.version
           this.cveInfoData = res.data.Data
         })
+        // ------------------------------------------------------------------
         // const res = require('./Json/cve_info.json')
         // this.isTrue1 = true
         // this.isTrue2 = true
@@ -384,14 +389,27 @@ export default {
     },
     cveClick (num, item) {
       if (num === 1) {
-        const res = require('./Json/cwe_info.json')
+        // const res = require('./Json/cwe_info.json')
         // console.log(res, 'res')
-        this.cweInfoData = res.Data
+        // this.cweInfoData = res.Data
         this.cweVisible = true
+        // ----------------------------------
+        CweData(item.CVE_ID).then(res => {
+          if (res.data.Code === 0) {
+            this.cweInfoData = res.data.Data
+            this.cweVisible = true
+          }
+        })
+
       } else if (num === 2) {
         this.attackVisible = true
-        const res = require('./Json/capec_info.json')
-        this.data = res.Data
+
+        // const res = require('./Json/capec_info.json')
+        // this.data = res.Data
+        // --------------------------------
+        capecData(item.CWE_ID).then(res => {
+          this.data = res.data.Data
+        })
       }
     },
     initECharts () {
@@ -406,19 +424,6 @@ export default {
         const eData = []
         eData.push({ name: this.tags[2], Vendors: this.tags[1], versions: this.tags[3], itemStyle: { normal: { color: '#e33a59' } } })
 
-        // if (this.cveInfoData.length === 1) {
-        //   eData.push({
-        //     parentID: eData[0].name,
-        //     name: this.cveInfoData[0].CVE_ID,
-        //     itemStyle: {
-        //       normal: {
-        //         color: '#44aeae'
-        //       }
-        //     },
-        //     Description: this.cveInfoData[0].Description,
-        //     CVE_ID: this.cveInfoData[0].CVE_ID
-        //   }) // cve
-        // } else {
         this.cveInfoData.forEach(v => {
           eData.push({
             parentID: eData[0].name,
@@ -431,56 +436,87 @@ export default {
             Description: v.Description,
             CVE_ID: v.CVE_ID
           }) // cve
-        })
-        // }
-
-        const cwe = require('./Json/cwe_info.json').Data
-        cwe.forEach((v, index) => {
-          // cwe
-          eData.push({
-            parentID: eData[1].name,
-            name: v.Name,
-            itemStyle: {
-              normal: {
-                color: '#fdc72a'
-              }
-            },
-            Description: v.Description,
-            CWE_ID: v.CWE_ID
+          CweData(v.CVE_ID).then(res => {
+            if (res.data.Code === 0) {
+              res.data.Data.forEach(item => {
+                eData.push({
+                  parentID: v.CVE_ID,
+                  name: item.Name,
+                  itemStyle: {
+                    normal: {
+                      color: '#fdc72a'
+                    }
+                  },
+                  Description: item.Description,
+                  CWE_ID: item.CWE_ID
+                })
+                capecData(item.CWE_ID).then(res => {
+                  res.data.Data.forEach(val => {
+                    // capec
+                    eData.push({
+                      parentID: item.Name,
+                      name: val.Name,
+                      itemStyle: {
+                        normal: {
+                          color: '#3e7b91'
+                        }
+                      },
+                      CAPEC_ID: val.CAPEC_ID,
+                      Description: val.Description
+                    })
+                  })
+                })
+              })
+            }
+          })
+          cceData(v.CPE_ID).then(res => {
+            res.data.Data.forEach(ev => {
+              eData.push({
+                parentID: eData[0].name,
+                name: ev.CCE_ID,
+                itemStyle: {
+                  normal: {
+                    color: '#874c9c'
+                  }
+                },
+                Description: ev.CCE_Description
+              })
+            })          
           })
         })
 
-        const capec = require('./Json/capec_info.json').Data
-        capec.forEach(v => {
-          // capec
-          eData.push({
-            parentID: 'J2EE Misconfiguration: Data Transmission Without Encryption',
-            name: v.Name,
-            itemStyle: {
-              normal: {
-                color: '#3e7b91'
-              }
-            },
-            CAPEC_ID: v.CAPEC_ID,
-            Description: v.Description
-          })
-        })
 
-        const cce = require('./Json/cce_info.json').Data
-        cce.forEach(v => {
-          console.log(v, 'vvv')
-          // capec
-          eData.push({
-            parentID: eData[0].name,
-            name: v.CCE_ID,
-            itemStyle: {
-              normal: {
-                color: '#874c9c'
-              }
-            },
-            Description: v.CCE_Description
-          })
-        })
+        // const cwe = require('./Json/cwe_info.json').Data
+        // cwe.forEach((v, index) => {
+        //   // cwe
+        //   eData.push({
+        //     parentID: eData[1].name,
+        //     name: v.Name,
+        //     itemStyle: {
+        //       normal: {
+        //         color: '#fdc72a'
+        //       }
+        //     },
+        //     Description: v.Description,
+        //     CWE_ID: v.CWE_ID
+        //   })
+        // })
+
+        // const capec = require('./Json/capec_info.json').Data
+        // capec.forEach(v => {
+        //   // capec
+        //   eData.push({
+        //     parentID: 'J2EE Misconfiguration: Data Transmission Without Encryption',
+        //     name: v.Name,
+        //     itemStyle: {
+        //       normal: {
+        //         color: '#3e7b91'
+        //       }
+        //     },
+        //     CAPEC_ID: v.CAPEC_ID,
+        //     Description: v.Description
+        //   })
+        // })
 
         const eLinks = []
         eData.forEach(v => {
@@ -498,6 +534,7 @@ export default {
             }
           }
         })
+
         // console.log(eData)
         // console.log(eLinks)
         var option = {
@@ -527,7 +564,6 @@ export default {
               label: {
                 show: true,
                 formatter: function (params) {
-                  console.log(params.data)
                   if (params.data.parentID) {
                     if (params.data.CVE_ID) {
                       return `CVE_ID: ${params.data.CVE_ID}`
@@ -550,61 +586,7 @@ export default {
                 fontSize: 0
               },
               data: eData,
-              // data: [
-              //   {
-              //     name: '节点1',
-              //     color: 'red'
-              //   }, {
-              //     name: '节点2',
-              //     color: 'pink'
-              //   }, {
-              //     name: '节点3'
-              //   }, {
-              //     name: '节点4'
-              //   }
-              // ],
-              // links: [],
               links: eLinks,
-              // [
-              //   {
-              //     source: 0,
-              //     target: 1,
-              //     symbolSize: [5, 20]
-              //     // label: {
-              //     //   show: true
-              //     // },
-              //     // lineStyle: {
-              //     //   width: 5,
-              //     //   curveness: 0.2
-              //     // }
-              //   },
-              //   {
-              //     source: '节点2',
-              //     target: '节点1'
-              //     // label: {
-              //     //   show: true
-              //     // },
-              //     // lineStyle: {
-              //     //   curveness: 0.2
-              //     // }
-              //   },
-              //   {
-              //     source: '节点1',
-              //     target: '节点3'
-              //   },
-              //   {
-              //     source: '节点2',
-              //     target: '节点3'
-              //   },
-              //   {
-              //     source: '节点2',
-              //     target: '节点4'
-              //   },
-              //   {
-              //     source: '节点1',
-              //     target: '节点4'
-              //   }
-              // ],
               lineStyle: {
                 opacity: 0.9,
                 width: 2,
@@ -616,15 +598,26 @@ export default {
 
         myChart.setOption(option)
         myChart.on('click', function (param) {
-          console.log(param.data)
 
-          const h = than.$createElement
-          than.$info({
-            name: '',
-            content: h('div', {}, [
+          // const h = than.$createElement
+          // than.$info({
+          //   name: '',
+          //   content: h('div', {}, [
+          //     h('h2', `${param.data.name}`),
+          //     h('p', `${param.data.Description}`)
+          //   ])
+          // })
+
+          const h = this.$createElement;
+          this.$msgbox({
+            title: '信息',
+            message: h('div', null, [
               h('h2', `${param.data.name}`),
               h('p', `${param.data.Description}`)
-            ])
+            ]),
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
           })
         })
       }, 500)

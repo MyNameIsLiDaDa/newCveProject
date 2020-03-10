@@ -35,3 +35,27 @@ export function CveData (id) {
         method: 'get'
     })
 }
+
+// cwe 数据;
+export function CweData (id) {
+    return request({
+        url: `/cyber/cwe_info?cve_id=${ id }&page=1&size=10000`,
+        method: 'get'
+    })
+}
+
+// capec 数据;
+export function capecData (id) {
+    return request({
+        url: `/cyber/capec_info?cwe_id=${ id }&page=1&size=10000`,
+        method: 'get'
+    })
+}
+
+// cce 数据;
+export function cceData (id) {
+    return request({
+        url: `/cyber/cce_info?cpe_id=${ id }&page=1&size=10000`,
+        method: 'get'
+    })
+}
