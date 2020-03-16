@@ -7,23 +7,23 @@ import request from '@/utils/request'
 //       data
 //     })
 // 产商请求接口
-export function vendorsData () {
+export function vendorsData (page) {
     return request({
-        url: '/cyber/vendors?page=1&size=10000',
+        url: `/cyber/vendors?page=${ page }&size=50`,
         method: 'get'
     })
 }
 // 产品请求接口
-export function productsData (str) {
+export function productsData (item) {
     return request({
-        url: `/cyber/products?vendor=${ str }&page=1&size=10000`,
+        url: `/cyber/products?vendor=${ item.vendor }&pattern=${ item.pattern }&page=1&size=50`,
         method: 'get'
     })
 }
 // 版本请求接口
 export function versionsData (vendor, product) {
     return request({
-        url: `/cyber/versions?vendor=${ vendor }&product=${ product }&page=1&size=10000`,
+        url: `/cyber/versions?vendor=${ vendor }&product=${ product }&page=1&size=50`,
         method: 'get'
     })
 }
@@ -31,7 +31,7 @@ export function versionsData (vendor, product) {
 // cve 数据;
 export function CveData (id) {
     return request({
-        url: `/cyber/cve_info?cpe_id=${ id }&page=1&size=10000`,
+        url: `/cyber/cve_info?cpe_id=${ id }&page=1&size=50`,
         method: 'get'
     })
 }
@@ -39,7 +39,7 @@ export function CveData (id) {
 // cwe 数据;
 export function CweData (id) {
     return request({
-        url: `/cyber/cwe_info?cve_id=${ id }&page=1&size=10000`,
+        url: `/cyber/cwe_info?cve_id=${ id }&page=1&size=50`,
         method: 'get'
     })
 }
@@ -47,7 +47,7 @@ export function CweData (id) {
 // capec 数据;
 export function capecData (id) {
     return request({
-        url: `/cyber/capec_info?cwe_id=${ id }&page=1&size=10000`,
+        url: `/cyber/capec_info?cwe_id=${ id }&page=1&size=50`,
         method: 'get'
     })
 }
@@ -55,7 +55,7 @@ export function capecData (id) {
 // cce 数据;
 export function cceData (id) {
     return request({
-        url: `/cyber/cce_info?cpe_id=${ id }&page=1&size=10000`,
+        url: `/cyber/cce_info?cpe_id=${ id }&page=1&size=50`,
         method: 'get'
     })
 }

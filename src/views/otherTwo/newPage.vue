@@ -24,19 +24,27 @@
       <!-- 选中表格end -->
 
       <!-- 厂商盒子start -->
-      <div style="width: 100%; height: 200px; border-top: 1px solid #eee;overflow: hidden">
+      <div style="width: 100%; height: 230px; border-top: 1px solid #eee;overflow: hidden">
         <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
           <!-- <label class="line-label-1">供应商:</label> -->
           供应商:
         </div>
         <!-- <a href="javascript:;" style="float: right;"> more > </a> -->
-        <div style="height: 30px; width: 100%;">
+        <div style="height: 60px; width: 100%; box-sizing: border-box">
+          <div class="vendor-search">
+            <i class="el-icon-search" style="height: 30px;line-height: 30px;text-align: center;padding: 0 10px;"></i>
+            <el-input size="mini" v-model="searchData" placeholder="请输入内容..." style="width: 45%"></el-input>
+             <el-button size="mini" @click="vendorSearch">查 询</el-button>
+          </div>
           <ul class="letter-style">
+            <li style="height: 30px; widht: 3%">
+              <i class="el-icon-menu"></i>
+            </li>
             <li v-for="item in letter" :class="[letterIndex === item.id ? 'letter-line' : '']" :key="item.id" @mouseenter="letterMouseenter(item)">{{ item.name }}</li>
           </ul>
         </div>
-        <div class="line-style" style="width: 90%; float: right;">
-          <el-radio-group size="small" v-model="vendorsObj" @change="radioButtonEvent(1, $event)">
+        <div class="line-style" style="width: 90%; float: right; height: 170px;">
+          <el-radio-group size="small" v-model="vendorsObj" @change="radioButtonEvent(1, $event)" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
               <!-- @click="radioButtonEvent(1, item)" -->
             <el-radio-button
               class="line-radio"
@@ -47,6 +55,8 @@
               :label="item"
             >{{ item.vendor }}</el-radio-button>
           </el-radio-group>
+          <p class="loadP" v-if="vendorsNoMore">没有更多了</p>
+          <p class="loadP" v-if="vendorsLoading">加载中...</p>
         </div>
       </div>
       <!-- 厂商盒子end -->
@@ -150,7 +160,7 @@
     <div class="box" v-if="echartsVisible">
       <header>
         <div class="title">网络空间知识图谱</div>
-        <div class="close" @click="closeBox">
+        <div class="close" @click="echartsVisible = false">
           <a-icon type="close" />
         </div>
       </header>
@@ -162,7 +172,7 @@
 <script>
 import 'ant-design-vue/lib/date-picker/style/css';
 import { Card, Tag, Radio, Button, List, Modal, Icon, Tooltip } from "ant-design-vue";
-import { vendorsData, productsData, versionsData, CveData, CweData, capecData, cceData } from "@/api"
+import { vendorsData, productsData, versionsData, CveData, CweData, capecData, cceData, vendorSearch } from "@/api"
 // import * as d3 from 'd3'
 // const main = document.getElementById('main')
 const echarts = require('echarts')
@@ -211,11 +221,16 @@ export default {
   },
   data () {
     return {
+      searchData: '', // 搜索框数据
       VendorsData: [], // 厂商数据
-      vendorsObj: null,
+      vendorsObj: null, // v-model
+      vendorsLoading: false, // 刷新元素
+      vendorPage: 1, // 厂商页码
+      vendorSearchPage: 1,
       VendorsObject: {}, // 厂商 o h s 查询数组;
       productsObj: null,
       VendorsDataClone: [], // 厂商数据克隆;
+      vendors: [], // 源数据;--- 刷新用 未处理格式之前的数据;
       versionsObj: null,
       productsData: [], // 供应商产品详细数据;
       versionsData: [], // 产品型号数据
@@ -238,18 +253,63 @@ export default {
     }
   },
   created () {
-    this.getVendorsData()
+    this.getVendorsData(this.vendorPage)
 
   },
   methods: {
-    getVendorsData () {
+    getVendorsData (page) {
+      // vendorsData(page).then(res => {
+      //   if (res.status === 200) {
+      //     const temp = {}
+      //     const arr = []
+      //     const VendorsObject = {} // a o h 专用;
 
-      vendorsData().then(res => {
-        if (res.status === 200) {
-          const temp = {}
-          const arr = []
-          const VendorsObject = {} // a o h 专用;
-          res.data.Data.forEach((v, index) => {
+      //     if (page === 1) {
+      //       this.vendors = res.data.Data
+      //       res.data.Data.forEach((v, index) => {
+      //         if (VendorsObject[v.pattern]) {
+      //           VendorsObject[v.pattern].push(v)
+      //         } else {
+      //           VendorsObject[v.pattern] = []
+      //           VendorsObject[v.pattern].push(v)
+      //         }
+      //         if (!temp[v.vendor]) {
+      //           temp[v.vendor] = true
+      //           arr.push(v)
+      //         }
+      //       })
+      //     } else {
+
+      //       this.vendors.push(...res.data.Data)
+
+      //       this.vendors.forEach((v, index) => {
+      //         if (VendorsObject[v.pattern]) {
+      //           VendorsObject[v.pattern].push(v)
+      //         } else {
+      //           VendorsObject[v.pattern] = []
+      //           VendorsObject[v.pattern].push(v)
+      //         }
+      //         if (!temp[v.vendor]) {
+      //           temp[v.vendor] = true
+      //           arr.push(v)
+      //         }
+      //       })
+      //     }
+      //     this.VendorsData = arr // 一次性渲染数据;
+      //     this.VendorsDataClone = arr // 克隆数据.
+      //     this.VendorsObject = VendorsObject
+
+      //   }
+      // })
+      // ---------------------------------------------------------------
+        const res = require('./Json/vendors.json')
+        const temp = {}
+        const arr = []
+        const VendorsObject = {} // a o h 专用;
+
+        if (page === 1) {
+          this.vendors = res.Data
+          res.Data.forEach((v, index) => {
             if (VendorsObject[v.pattern]) {
               VendorsObject[v.pattern].push(v)
             } else {
@@ -261,32 +321,61 @@ export default {
               arr.push(v)
             }
           })
-          this.VendorsData = arr // 一次性渲染数据;
-          this.VendorsDataClone = arr // 克隆数据.
-          this.VendorsObject = VendorsObject
-        }
-      })
-      // ---------------------------------------------------------------
-      // const res = require('./Json/vendors.json')
-      // const temp = {}
-      // const arr = []
-      // const VendorsObject = {} // a o h 专用;
-      // res.Data.forEach((v, index) => {
-      //   if (VendorsObject[v.pattern]) {
-      //     VendorsObject[v.pattern].push(v)
-      //   } else {
-      //     VendorsObject[v.pattern] = []
-      //     VendorsObject[v.pattern].push(v)
-      //   }
-      //   if (!temp[v.vendor]) {
-      //     temp[v.vendor] = true
-      //     arr.push(v)
-      //   }
-      // })
-      // this.VendorsData = arr // 一次性渲染数据;
-      // this.VendorsDataClone = arr // 克隆数据.
-      // this.VendorsObject = VendorsObject
+        } else {
+          let qqq = { data: { Data: [
+            {
+              "vendor": "苹果",
+              "pattern": "o"
+            },
+            {
+                "vendor": "华为",
+                "pattern": "h"
+            },
+            {
+                "vendor": "oppo",
+                "pattern": "a"
+            },
+            {
+                "vendor": "vivo",
+                "pattern": "a"
+            },
+            {
+                "vendor": "小米",
+                "pattern": "a"
+            },
+            {
+                "vendor": "黑莓",
+                "pattern": "a"
+            },
+            {
+                "vendor": "魅族",
+                "pattern": "a"
+            },
+            {
+                "vendor": "三星",
+                "pattern": "a"
+            },
+          ]}}
 
+          this.vendors.push(...qqq.data.Data)
+          console.log(this.vendors, 'ldkfjals')
+          
+          this.vendors.forEach((v, index) => {
+            if (VendorsObject[v.pattern]) {
+              VendorsObject[v.pattern].push(v)
+            } else {
+              VendorsObject[v.pattern] = []
+              VendorsObject[v.pattern].push(v)
+            }
+            if (!temp[v.vendor]) {
+              temp[v.vendor] = true
+              arr.push(v)
+            }
+          })
+        }
+        this.VendorsData = arr // 一次性渲染数据;
+        this.VendorsDataClone = arr // 克隆数据.
+        this.VendorsObject = VendorsObject
     },
     // getList () {
     //   this.$http.get('/list/article').then(res => {
@@ -327,7 +416,7 @@ export default {
     //   // });
     // },
     radioButtonEvent (num, item) {
-      // console.log(num, item)
+      console.log(num, item)
       this.isTrue1 = false
       this.isTrue2 = false
       // this.isTrue3 = false
@@ -340,7 +429,7 @@ export default {
         this.cweInfoData = []
         this.versionsData = []
         this.cveInfoData = []
-        productsData(item.vendor).then(res => {
+        productsData(item).then(res => {
           this.productsData = res.data.Data || []
           this.isTrue1 = true
         })
@@ -638,16 +727,89 @@ export default {
         this.VendorsData = arr
       }
     },
-    closeBox () {
-      this.echartsVisible = false
+    load () {
+      if (this.searchData == '') {
+        // console.log('我进来了')
+        this.vendorPage += 1
+        this.getVendorsData(this.vendorPage)
+      } else {
+        this.vendorSearchPage += 1
+        this.vendorSearch()
+      }
+
+      this.vendorsLoading = true
+      setTimeout(() => {
+        this.vendorsLoading = false
+      }, 2000)
+    },
+    vendorSearch () {
+      if(this.searchData == '') return;
+      // searchData
+      vendorSearch(this.searchData, this.vendorSearchPage).then(res => {
+        if (res.status === 200) {
+          const temp = {}
+          const arr = []
+          const VendorsObject = {} // a o h 专用;
+
+          if (page === 1) {
+            this.vendors = res.data.Data
+            res.data.Data.forEach((v, index) => {
+              if (VendorsObject[v.pattern]) {
+                VendorsObject[v.pattern].push(v)
+              } else {
+                VendorsObject[v.pattern] = []
+                VendorsObject[v.pattern].push(v)
+              }
+              if (!temp[v.vendor]) {
+                temp[v.vendor] = true
+                arr.push(v)
+              }
+            })
+          } else {
+
+            this.vendors.push(...res.data.Data)
+
+            this.vendors.forEach((v, index) => {
+              if (VendorsObject[v.pattern]) {
+                VendorsObject[v.pattern].push(v)
+              } else {
+                VendorsObject[v.pattern] = []
+                VendorsObject[v.pattern].push(v)
+              }
+              if (!temp[v.vendor]) {
+                temp[v.vendor] = true
+                arr.push(v)
+              }
+            })
+          }
+          this.VendorsData = arr // 一次性渲染数据;
+          this.VendorsDataClone = arr // 克隆数据.
+          this.VendorsObject = VendorsObject
+        }
+      })
     }
   },
+  computed: {
+    vendorsNoMore () {
+      return this.count >=10000
+    },
+    disabled () {
+      return this.vendorsLoading || this.vendorsNoMore
+    }
+  },
+  watch: {
+    searchData(value) {
+      this.vendorSearchPage = 1
+    }
+  }
 }
 </script>
 
 <style lang="less">
   ul {
     list-style: none;
+    padding: 0;
+    margin: 0;
   }
 .line-style { // 厂商
   padding: 5px 0;
@@ -659,18 +821,28 @@ export default {
     overflow: hidden;
   }
 }
+.letter-style {
+  position: relative;
+  height: 30px;
+  width: 90%;
+}
 .letter-style > li{
   float: left;
-  height: 35px;
+  height: 30px;
   padding: 0 10px;
   text-align: center;
-  line-height: 35px;
+  line-height: 30px;
   cursor: pointer;
 }
 .letter-line {
   border: 1px solid #ccc;
   color: #1890ff;
 }
+.vendor-search {
+  height: 30px;
+  width: 40%;
+}
+
 .box-style-productsData {
   height: 50px;
   padding: 3px 0;
@@ -712,4 +884,14 @@ header {
   cursor: pointer;
 }
 }
+.loadP {
+    text-align: center;
+    color: #000;
+    font-weight: 700;
+}
+</style>
+<style lang="less">
+  body {
+    min-width: 1324px;
+  }
 </style>
