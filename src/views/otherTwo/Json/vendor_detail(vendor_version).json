@@ -1,0 +1,38 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "id": 426,
+            "version": "S5500-52C-PWR-SI",
+            "整机交换容量": "256Gbps",
+            "交换容量（全双工）": "240Gbps",
+            "包转发率（整机）": "132Mpps",
+            "外形尺寸（长×宽×高）（单位：mm）": "440×360 ×43.6",
+            "重量": "6.5kg",
+            "管理端口": "1个Console口",
+            "业务端口描述": "48个10/100 /1000M Base-T以太网端口 4个复用的1000Base-X千兆SFP端口",
+            "扩展插槽": "不支持",
+            "可选接口模块": "不支持",
+            "以太网供电PoE+": "不支持",
+            "端口聚合": "支持LACP  支持手工聚合 支持最多12/24个聚合组，每组支持最多8个GE或2个10GE端口（10GE机型）",
+            "端口特性": "支持IEEE802.3x 流量控制（全双工） 支持基于端口速率百分比的风暴抑制 支持基于PPS的风暴抑制",
+            "MAC地址": "支持黑洞MAC 支持设置端口MAC地址学习最大个数",
+            "堆叠": "支持IRF2智能弹性架构（S5500C-SI） 支持通过标准万兆以太网接口等方式进行堆叠 支持本地堆叠和远程堆叠 支持IRF LITE堆叠技术",
+            "VLAN": "支持基于端口的VLAN（4K个） 支持基于MAC的VLAN 基于协议的VLAN 支持QinQ，灵活QinQ 支持VLAN Mapping 支持Voice VLAN 支持GVRP",
+            "DHCP": "支持DHCP Client 支持DHCP Snooping 支持 DHCP Relay 支持DHCP Snooping option82/DHCP Snooping option82",
+            "IP路由": "支持静态路由 支持RIP/RIPng",
+            "组播": "支持IGMP Snooping /MLD Snooping 支持组播VLAN 支持未知组播丢弃",
+            "二层环网协议": "支持STP/RSTP/MSTP 支持Smart Link 支持RRPP",
+            "镜像": "支持N:4端口镜像 支持流镜像",
+            "ACL": "支持L2（Layer 2）~L4（Layer 4）包过滤功能，提供基于源MAC地址、目的MAC地址、源IP地址、目的IP地址、TCP/UDP端口、协议类型、VLAN的流分类 支持时间段（Time Range）ACL 支持基于VLAN下发ACL",
+            "QoS": "支持对端口接收报文的速率和发送报文的速率进行限制 支持报文重定向 支持CAR（Committed Access Rate）功能 每个端口支持8个输出队列 支持端口队列调度（SP、WRR、SP+WRR） 支持报文的802.1p和DSCP优先级重新标记",
+            "安全特性": "支持用户分级管理和口令保护 支持802.1X认证/集中式MAC地址认证/web认证 支持Triple认证 支持Guest VLAN 支持RADIUS认证 支持SSH 2.0 支持端口隔离 支持端口安全 支持EAD",
+            "管理与维护": "支持XModem/FTP/TFTP加载升级 支持命令行接口（CLI），Telnet，Console口进行配置 支持SNMPv1/v2/v3，WEB网管 支持RMON （Remote Monitoring）告警、事件、历史记录 支持iMC智能管理中心 支持系统日志，分级告警，调试信息输出 支持HGMPv2 支持NTP 支持电源的告警功能，风扇、温度告警 支持Ping、Tracert 支持VCT（Virtual Cable Test）电缆检测功能 支持DLDP（Device Link Detection Protocol）单向链路检测协议 支持Loopback-detection 端口环回检测",
+            "输入电压": "额定电压范围：100V～240V AC，50/60Hz 最大电压范围：90V～264V AC，47/63Hz",
+            "直流": "不支持",
+            "功耗（满负荷时）": "不接RPS时，满负荷功耗为500W，其中系统功耗130W，POE对外供电功率370W； 连接RPS时，满负荷功能为870W，其中系统功耗130W，POE对外供电功率740W",
+            "工作环境温度": "0℃～45℃",
+            "工作环境相对湿度（非凝露）": "10%～90% None"
+        }
+    ]
+}

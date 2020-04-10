@@ -1,0 +1,17 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "id": 3957,
+            "vendor": "Exiv2",
+            "product": "Exiv2",
+            "version": "0.26",
+            "pattern": "a",
+            "platform": "*",
+            "link1": "http://exiv2.org/index.html",
+            "link2": "http://exiv2.org/changelog.html",
+            "CVE_ID": "CVE-2017-17725",
+            "CPE_ID": "111646"
+        }
+    ]
+}

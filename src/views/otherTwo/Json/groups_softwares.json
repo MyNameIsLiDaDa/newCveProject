@@ -1,0 +1,1981 @@
+{
+    "Code": 0,
+    "Data": {
+        "group": [
+            {
+                "aliases": [
+                    "Threat Group-3390",
+                    "TG-3390",
+                    "Emissary Panda",
+                    "BRONZE UNION",
+                    "APT27",
+                    "Iron Tiger",
+                    "LuckyMouse"
+                ],
+                "type": "intrusion-set",
+                "name": "Threat Group-3390",
+                "description": "[Threat Group-3390](https://attack.mitre.org/groups/G0027) is a Chinese threat group that has extensively used strategic Web compromises to target victims. (Citation: Dell TG-3390) The group has been active since at least 2010 and has targeted organizations in the aerospace, government, defense, technology, energy, and manufacturing sectors. (Citation: SecureWorks BRONZE UNION June 2017) (Citation: Securelist LuckyMouse June 2018)",
+                "external_references": [
+                    {
+                        "external_id": "G0027",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0027"
+                    },
+                    {
+                        "description": "(Citation: Dell TG-3390) (Citation: Hacker News LuckyMouse June 2018)",
+                        "source_name": "Threat Group-3390"
+                    },
+                    {
+                        "description": "(Citation: Dell TG-3390) (Citation: Nccgroup Emissary Panda May 2018) (Citation: Hacker News LuckyMouse June 2018)",
+                        "source_name": "TG-3390"
+                    },
+                    {
+                        "description": "(Citation: Gallagher 2015) (Citation: Nccgroup Emissary Panda May 2018) (Citation: Securelist LuckyMouse June 2018) (Citation: Hacker News LuckyMouse June 2018)(Citation: Unit42 Emissary Panda May 2019)",
+                        "source_name": "Emissary Panda"
+                    },
+                    {
+                        "description": "(Citation: SecureWorks BRONZE UNION June 2017) (Citation: Nccgroup Emissary Panda May 2018)",
+                        "source_name": "BRONZE UNION"
+                    },
+                    {
+                        "description": "(Citation: Nccgroup Emissary Panda May 2018) (Citation: Securelist LuckyMouse June 2018) (Citation: Hacker News LuckyMouse June 2018)",
+                        "source_name": "APT27"
+                    },
+                    {
+                        "description": "(Citation: Hacker News LuckyMouse June 2018)",
+                        "source_name": "Iron Tiger"
+                    },
+                    {
+                        "description": "(Citation: Securelist LuckyMouse June 2018) (Citation: Hacker News LuckyMouse June 2018)",
+                        "source_name": "LuckyMouse"
+                    },
+                    {
+                        "description": "Dell SecureWorks Counter Threat Unit Threat Intelligence. (2015, August 5). Threat Group-3390 Targets Organizations for Cyberespionage. Retrieved August 18, 2018.",
+                        "source_name": "Dell TG-3390",
+                        "url": "https://www.secureworks.com/research/threat-group-3390-targets-organizations-for-cyberespionage"
+                    },
+                    {
+                        "source_name": "SecureWorks BRONZE UNION June 2017",
+                        "description": "Counter Threat Unit Research Team. (2017, June 27). BRONZE UNION Cyberespionage Persists Despite Disclosures. Retrieved July 13, 2017.",
+                        "url": "https://www.secureworks.com/research/bronze-union"
+                    },
+                    {
+                        "source_name": "Securelist LuckyMouse June 2018",
+                        "description": "Legezo, D. (2018, June 13). LuckyMouse hits national data center to organize country-level waterholing campaign. Retrieved August 18, 2018.",
+                        "url": "https://securelist.com/luckymouse-hits-national-data-center/86083/"
+                    },
+                    {
+                        "source_name": "Hacker News LuckyMouse June 2018",
+                        "description": "Khandelwal, S. (2018, June 14). Chinese Hackers Carried Out Country-Level Watering Hole Attack. Retrieved August 18, 2018.",
+                        "url": "https://thehackernews.com/2018/06/chinese-watering-hole-attack.html"
+                    },
+                    {
+                        "source_name": "Nccgroup Emissary Panda May 2018",
+                        "description": "Pantazopoulos, N., Henry T. (2018, May 18). Emissary Panda – A potential new malicious tool. Retrieved June 25, 2018.",
+                        "url": "https://www.nccgroup.trust/uk/about-us/newsroom-and-events/blogs/2018/may/emissary-panda-a-potential-new-malicious-tool/"
+                    },
+                    {
+                        "source_name": "Gallagher 2015",
+                        "description": "Gallagher, S.. (2015, August 5). Newly discovered Chinese hacking group hacked 100+ websites to use as “watering holes”. Retrieved January 25, 2016.",
+                        "url": "http://arstechnica.com/security/2015/08/newly-discovered-chinese-hacking-group-hacked-100-websites-to-use-as-watering-holes/"
+                    },
+                    {
+                        "source_name": "Unit42 Emissary Panda May 2019",
+                        "description": "Falcone, R. and Lancaster, T.. (2019, May 28). Emissary Panda Attacks Middle East Government Sharepoint Servers. Retrieved July 9, 2019.",
+                        "url": "https://unit42.paloaltonetworks.com/emissary-panda-attacks-middle-east-government-sharepoint-servers/"
+                    }
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "created": "2017-05-31T21:31:58.518000",
+                "id": "intrusion-set--fb366179-766c-4a4a-afa1-52bff1fd601c",
+                "modified": "2019-10-15T20:16:11.552000",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.2",
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Dragonfly 2.0",
+                    "Berserk Bear"
+                ],
+                "type": "intrusion-set",
+                "name": "Dragonfly 2.0",
+                "description": "[Dragonfly 2.0](https://attack.mitre.org/groups/G0074) is a suspected Russian group that has targeted government entities and multiple U.S. critical infrastructure sectors since at least March 2016. (Citation: US-CERT TA18-074A) (Citation: Symantec Dragonfly Sept 2017) There is debate over the extent of overlap between [Dragonfly 2.0](https://attack.mitre.org/groups/G0074) and [Dragonfly](https://attack.mitre.org/groups/G0035), but there is sufficient evidence to lead to these being tracked as two separate groups. (Citation: Fortune Dragonfly 2.0 Sept 2017)",
+                "external_references": [
+                    {
+                        "external_id": "G0074",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0074"
+                    },
+                    {
+                        "description": "(Citation: US-CERT TA18-074A) (Citation: Symantec Dragonfly Sept 2017) (Citation: Fortune Dragonfly 2.0 Sept 2017)",
+                        "source_name": "Dragonfly 2.0"
+                    },
+                    {
+                        "description": "(Citation: Fortune Dragonfly 2.0 Sept 2017)",
+                        "source_name": "Berserk Bear"
+                    },
+                    {
+                        "description": "US-CERT. (2018, March 16). Alert (TA18-074A): Russian Government Cyber Activity Targeting Energy and Other Critical Infrastructure Sectors. Retrieved June 6, 2018.",
+                        "source_name": "US-CERT TA18-074A",
+                        "url": "https://www.us-cert.gov/ncas/alerts/TA18-074A"
+                    },
+                    {
+                        "description": "Symantec Security Response. (2017, September 6). Dragonfly: Western energy sector targeted by sophisticated attack group. Retrieved September 9, 2017.",
+                        "source_name": "Symantec Dragonfly Sept 2017",
+                        "url": "https://www.symantec.com/connect/blogs/dragonfly-western-energy-sector-targeted-sophisticated-attack-group"
+                    },
+                    {
+                        "description": "Hackett, R. (2017, September 6). Hackers Have Penetrated Energy Grid, Symantec Warns. Retrieved June 6, 2018.",
+                        "source_name": "Fortune Dragonfly 2.0 Sept 2017",
+                        "url": "http://fortune.com/2017/09/06/hack-energy-grid-symantec/"
+                    }
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "created": "2018-10-17T00:14:20.652000",
+                "id": "intrusion-set--76d59913-1d24-4992-a8ac-05a3eb093f71",
+                "modified": "2019-03-22T20:13:49.069000",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.1",
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Night Dragon"
+                ],
+                "type": "intrusion-set",
+                "name": "Night Dragon",
+                "description": "[Night Dragon](https://attack.mitre.org/groups/G0014) is a campaign name for activity involving a threat group that has conducted activity originating primarily in China. (Citation: McAfee Night Dragon)",
+                "external_references": [
+                    {
+                        "external_id": "G0014",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0014"
+                    },
+                    {
+                        "description": "(Citation: McAfee Night Dragon)",
+                        "source_name": "Night Dragon"
+                    },
+                    {
+                        "description": "McAfee® Foundstone® Professional Services and McAfee Labs™. (2011, February 10). Global Energy Cyberattacks: “Night Dragon”. Retrieved February 19, 2018.",
+                        "source_name": "McAfee Night Dragon",
+                        "url": "https://securingtomorrow.mcafee.com/wp-content/uploads/2011/02/McAfee_NightDragon_wp_draft_to_customersv1-1.pdf"
+                    }
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "created": "2017-05-31T21:31:51.643000",
+                "id": "intrusion-set--23b6a0f5-fa95-46f9-a6f3-4549c5e45ec8",
+                "modified": "2019-03-25T14:36:29.638000",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.1",
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Gorgon Group"
+                ],
+                "type": "intrusion-set",
+                "name": "Gorgon Group",
+                "description": "[Gorgon Group](https://attack.mitre.org/groups/G0078) is a threat group consisting of members who are suspected to be Pakistan-based or have other connections to Pakistan. The group has performed a mix of criminal and targeted attacks, including campaigns against government organizations in the United Kingdom, Spain, Russia, and the United States. (Citation: Unit 42 Gorgon Group Aug 2018)",
+                "external_references": [
+                    {
+                        "external_id": "G0078",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0078"
+                    },
+                    {
+                        "description": "(Citation: Unit 42 Gorgon Group Aug 2018)",
+                        "source_name": "Gorgon Group"
+                    },
+                    {
+                        "source_name": "Unit 42 Gorgon Group Aug 2018",
+                        "description": "Falcone, R., et al. (2018, August 02). The Gorgon Group: Slithering Between Nation State and Cybercrime. Retrieved August 7, 2018.",
+                        "url": "https://researchcenter.paloaltonetworks.com/2018/08/unit42-gorgon-group-slithering-nation-state-cybercrime/"
+                    }
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "created": "2018-10-17T00:14:20.652000",
+                "id": "intrusion-set--1f21da59-6a13-455b-afd0-d58d0a5a7d27",
+                "modified": "2019-10-11T19:39:42.405000",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.3",
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Turla",
+                    "Waterbug",
+                    "WhiteBear",
+                    "VENOMOUS BEAR",
+                    "Snake",
+                    "Krypton"
+                ],
+                "name": "Turla",
+                "description": "[Turla](https://attack.mitre.org/groups/G0010) is a Russian-based threat group that has infected victims in over 45 countries, spanning a range of industries including government, embassies, military, education, research and pharmaceutical companies since 2004. Heightened activity was seen in mid-2015. [Turla](https://attack.mitre.org/groups/G0010) is known for conducting watering hole and spearphishing campaigns and leveraging in-house tools and malware. [Turla](https://attack.mitre.org/groups/G0010)’s espionage platform is mainly used against Windows machines, but has also been seen used against macOS and Linux machines. (Citation: Kaspersky Turla) (Citation: ESET Gazer Aug 2017) (Citation: CrowdStrike VENOMOUS BEAR) (Citation: ESET Turla Mosquito Jan 2018)",
+                "id": "intrusion-set--7a19ecb1-3c65-4de3-a230-993516aed6a6",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.2",
+                "type": "intrusion-set",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "x_mitre_contributors": [
+                    "Edward Millington"
+                ],
+                "created": "2017-05-31T21:31:49.816000",
+                "modified": "2019-07-14T21:04:44.442000",
+                "external_references": [
+                    {
+                        "external_id": "G0010",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0010"
+                    },
+                    {
+                        "description": "(Citation: Kaspersky Turla)",
+                        "source_name": "Turla"
+                    },
+                    {
+                        "description": "Based similarity in TTPs and malware used, Turla and Waterbug appear to be the same group.(Citation: Symantec Waterbug)",
+                        "source_name": "Waterbug"
+                    },
+                    {
+                        "description": "WhiteBear is a designation used by Securelist to describe a cluster of activity that has overlaps with activity described by others as Turla, but appears to have a separate focus.(Citation: Securelist WhiteBear Aug 2017)",
+                        "source_name": "WhiteBear"
+                    },
+                    {
+                        "description": "(Citation: CrowdStrike VENOMOUS BEAR)",
+                        "source_name": "VENOMOUS BEAR"
+                    },
+                    {
+                        "description": "(Citation: CrowdStrike VENOMOUS BEAR)(Citation: ESET Turla PowerShell May 2019)",
+                        "source_name": "Snake"
+                    },
+                    {
+                        "description": "(Citation: CrowdStrike VENOMOUS BEAR)",
+                        "source_name": "Krypton"
+                    },
+                    {
+                        "source_name": "Kaspersky Turla",
+                        "description": "Kaspersky Lab's Global Research and Analysis Team. (2014, August 7). The Epic Turla Operation: Solving some of the mysteries of Snake/Uroburos. Retrieved December 11, 2014.",
+                        "url": "https://securelist.com/the-epic-turla-operation/65545/"
+                    },
+                    {
+                        "description": "ESET. (2017, August). Gazing at Gazer: Turla’s new second stage backdoor. Retrieved September 14, 2017.",
+                        "source_name": "ESET Gazer Aug 2017",
+                        "url": "https://www.welivesecurity.com/wp-content/uploads/2017/08/eset-gazer.pdf"
+                    },
+                    {
+                        "description": "Meyers, A. (2018, March 12). Meet CrowdStrike’s Adversary of the Month for March: VENOMOUS BEAR. Retrieved May 16, 2018.",
+                        "source_name": "CrowdStrike VENOMOUS BEAR",
+                        "url": "https://www.crowdstrike.com/blog/meet-crowdstrikes-adversary-of-the-month-for-march-venomous-bear/"
+                    },
+                    {
+                        "source_name": "ESET Turla Mosquito Jan 2018",
+                        "description": "ESET, et al. (2018, January). Diplomats in Eastern Europe bitten by a Turla mosquito. Retrieved July 3, 2018.",
+                        "url": "https://www.welivesecurity.com/wp-content/uploads/2018/01/ESET_Turla_Mosquito.pdf"
+                    },
+                    {
+                        "source_name": "Symantec Waterbug",
+                        "description": "Symantec. (2015, January 26). The Waterbug attack group. Retrieved April 10, 2015.",
+                        "url": "http://www.symantec.com/content/en/us/enterprise/media/security_response/whitepapers/waterbug-attack-group.pdf"
+                    },
+                    {
+                        "source_name": "Securelist WhiteBear Aug 2017",
+                        "description": "Kaspersky Lab's Global Research & Analysis Team. (2017, August 30). Introducing WhiteBear. Retrieved September 21, 2017.",
+                        "url": "https://securelist.com/introducing-whitebear/81638/"
+                    },
+                    {
+                        "source_name": "ESET Turla PowerShell May 2019",
+                        "description": "Faou, M. and Dumont R.. (2019, May 29). A dive into Turla PowerShell usage. Retrieved June 14, 2019.",
+                        "url": "https://www.welivesecurity.com/2019/05/29/turla-powershell-usage/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Lazarus Group",
+                    "HIDDEN COBRA",
+                    "Guardians of Peace",
+                    "ZINC",
+                    "NICKEL ACADEMY"
+                ],
+                "type": "intrusion-set",
+                "name": "Lazarus Group",
+                "description": "[Lazarus Group](https://attack.mitre.org/groups/G0032) is a threat group that has been attributed to the North Korean government.(Citation: US-CERT HIDDEN COBRA June 2017) The group has been active since at least 2009 and was reportedly responsible for the November 2014 destructive wiper attack against Sony Pictures Entertainment as part of a campaign named Operation Blockbuster by Novetta. Malware used by [Lazarus Group](https://attack.mitre.org/groups/G0032) correlates to other reported campaigns, including Operation Flame, Operation 1Mission, Operation Troy, DarkSeoul, and Ten Days of Rain. (Citation: Novetta Blockbuster) In late 2017, [Lazarus Group](https://attack.mitre.org/groups/G0032) used KillDisk, a disk-wiping tool, in an attack against an online casino based in Central America. (Citation: Lazarus KillDisk)\n\nNorth Korean group definitions are known to have significant overlap, and the name [Lazarus Group](https://attack.mitre.org/groups/G0032) is known to encompass a broad range of activity. Some organizations use the name Lazarus Group to refer to any activity attributed to North Korea.(Citation: US-CERT HIDDEN COBRA June 2017) Some organizations track North Korean clusters or groups such as Bluenoroff,(Citation: Kaspersky Lazarus Under The Hood Blog 2017) [APT37](https://attack.mitre.org/groups/G0067), and [APT38](https://attack.mitre.org/groups/G0082) separately, while other organizations may track some activity associated with those group names by the name Lazarus Group.",
+                "external_references": [
+                    {
+                        "external_id": "G0032",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0032"
+                    },
+                    {
+                        "description": "(Citation: Novetta Blockbuster)",
+                        "source_name": "Lazarus Group"
+                    },
+                    {
+                        "description": "The U.S. Government refers to malicious cyber activity by the North Korean government as HIDDEN COBRA.(Citation: US-CERT HIDDEN COBRA June 2017)(Citation: US-CERT HOPLIGHT Apr 2019)",
+                        "source_name": "HIDDEN COBRA"
+                    },
+                    {
+                        "description": "(Citation: US-CERT HIDDEN COBRA June 2017)",
+                        "source_name": "Guardians of Peace"
+                    },
+                    {
+                        "description": "(Citation: Microsoft ZINC disruption Dec 2017)",
+                        "source_name": "ZINC"
+                    },
+                    {
+                        "description": "(Citation: Secureworks NICKEL ACADEMY Dec 2017)",
+                        "source_name": "NICKEL ACADEMY"
+                    },
+                    {
+                        "source_name": "US-CERT HIDDEN COBRA June 2017",
+                        "description": "US-CERT. (2017, June 13). Alert (TA17-164A) HIDDEN COBRA – North Korea’s DDoS Botnet Infrastructure. Retrieved July 13, 2017.",
+                        "url": "https://www.us-cert.gov/ncas/alerts/TA17-164A"
+                    },
+                    {
+                        "description": "Novetta Threat Research Group. (2016, February 24). Operation Blockbuster: Unraveling the Long Thread of the Sony Attack. Retrieved February 25, 2016.",
+                        "source_name": "Novetta Blockbuster",
+                        "url": "https://www.operationblockbuster.com/wp-content/uploads/2016/02/Operation-Blockbuster-Report.pdf"
+                    },
+                    {
+                        "description": "Kálnai, P., Cherepanov A. (2018, April 03). Lazarus KillDisks Central American casino. Retrieved May 17, 2018.",
+                        "source_name": "Lazarus KillDisk",
+                        "url": "https://www.welivesecurity.com/2018/04/03/lazarus-killdisk-central-american-casino/"
+                    },
+                    {
+                        "source_name": "Kaspersky Lazarus Under The Hood Blog 2017",
+                        "description": "GReAT. (2017, April 3). Lazarus Under the Hood. Retrieved April 17, 2019.",
+                        "url": "https://securelist.com/lazarus-under-the-hood/77908/"
+                    },
+                    {
+                        "source_name": "US-CERT HOPLIGHT Apr 2019",
+                        "description": "US-CERT. (2019, April 10). MAR-10135536-8 – North Korean Trojan: HOPLIGHT. Retrieved April 19, 2019.",
+                        "url": "https://www.us-cert.gov/ncas/analysis-reports/AR19-100A"
+                    },
+                    {
+                        "description": "Smith, B. (2017, December 19). Microsoft and Facebook disrupt ZINC malware attack to protect customers and the internet from ongoing cyberthreats. Retrieved December 20, 2017.",
+                        "source_name": "Microsoft ZINC disruption Dec 2017",
+                        "url": "https://blogs.microsoft.com/on-the-issues/2017/12/19/microsoft-facebook-disrupt-zinc-malware-attack-protect-customers-internet-ongoing-cyberthreats/"
+                    },
+                    {
+                        "description": "Secureworks. (2017, December 15). Media Alert - Secureworks Discovers North Korean Cyber Threat Group, Lazarus, Spearphishing Financial Executives of Cryptocurrency Companies. Retrieved December 27, 2017.",
+                        "source_name": "Secureworks NICKEL ACADEMY Dec 2017",
+                        "url": "https://www.secureworks.com/about/press/media-alert-secureworks-discovers-north-korean-cyber-threat-group-lazarus-spearphishing"
+                    }
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "created": "2017-05-31T21:32:03.807000",
+                "id": "intrusion-set--c93fccb1-e8e8-42cf-ae33-2ad1d183913a",
+                "modified": "2019-10-04T22:20:20.708000",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.2",
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Carbanak",
+                    "Anunak",
+                    "Carbon Spider"
+                ],
+                "name": "Carbanak",
+                "description": "[Carbanak](https://attack.mitre.org/groups/G0008) is a threat group that mainly targets banks. It also refers to malware of the same name ([Carbanak](https://attack.mitre.org/software/S0030)). It is sometimes referred to as [FIN7](https://attack.mitre.org/groups/G0046), but these appear to be two groups using the same [Carbanak](https://attack.mitre.org/software/S0030) malware and are therefore tracked separately. (Citation: Kaspersky Carbanak) (Citation: FireEye FIN7 April 2017)",
+                "id": "intrusion-set--55033a4d-3ffe-46b2-99b4-2c1541e9ce1c",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "type": "intrusion-set",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "x_mitre_contributors": [
+                    "Anastasios Pingios"
+                ],
+                "created": "2017-05-31T21:31:49.021000",
+                "modified": "2019-03-22T19:59:26.767000",
+                "external_references": [
+                    {
+                        "external_id": "G0008",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0008"
+                    },
+                    {
+                        "description": "(Citation: Kaspersky Carbanak) (Citation: Fox-It Anunak Feb 2015)",
+                        "source_name": "Carbanak"
+                    },
+                    {
+                        "description": "(Citation: Fox-It Anunak Feb 2015)",
+                        "source_name": "Anunak"
+                    },
+                    {
+                        "description": "(Citation: Crowdstrike State of Criminal May 2016)",
+                        "source_name": "Carbon Spider"
+                    },
+                    {
+                        "source_name": "Kaspersky Carbanak",
+                        "description": "Kaspersky Lab's Global Research and Analysis Team. (2015, February). CARBANAK APT THE GREAT BANK ROBBERY. Retrieved August 23, 2018.",
+                        "url": "https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/08064518/Carbanak_APT_eng.pdf"
+                    },
+                    {
+                        "source_name": "FireEye FIN7 April 2017",
+                        "description": "Carr, N., et al. (2017, April 24). FIN7 Evolution and the Phishing LNK. Retrieved April 24, 2017.",
+                        "url": "https://www.fireeye.com/blog/threat-research/2017/04/fin7-phishing-lnk.html"
+                    },
+                    {
+                        "source_name": "Fox-It Anunak Feb 2015",
+                        "description": "Prins, R. (2015, February 16). Anunak (aka Carbanak) Update. Retrieved January 20, 2017.",
+                        "url": "https://www.fox-it.com/en/about-fox-it/corporate/news/anunak-aka-carbanak-update/"
+                    },
+                    {
+                        "source_name": "Crowdstrike State of Criminal May 2016",
+                        "description": "Johnston, R. (2016, May 16). State of the Criminal Address. Retrieved December 7, 2017.",
+                        "url": "https://www.crowdstrike.com/blog/state-criminal-address/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Kimsuky",
+                    "Velvet Chollima"
+                ],
+                "type": "intrusion-set",
+                "name": "Kimsuky",
+                "description": "[Kimsuky](https://attack.mitre.org/groups/G0094) is a North Korean-based threat group that has been active since at least September 2013. The group focuses on targeting Korean think tank as well as DPRK/nuclear-related targets. The group was attributed as the actor behind the Korea Hydro & Nuclear Power Co. compromise.(Citation: EST Kimsuky April 2019)(Citation: BRI Kimsuky April 2019)",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "G0094",
+                        "url": "https://attack.mitre.org/groups/G0094"
+                    },
+                    {
+                        "description": "(Citation: Securelist Kimsuky Sept 2013)",
+                        "source_name": "Kimsuky"
+                    },
+                    {
+                        "description": "(Citation: Zdnet Kimsuky Dec 2018)",
+                        "source_name": "Velvet Chollima"
+                    },
+                    {
+                        "description": "Alyac. (2019, April 3). Kimsuky Organization Steals Operation Stealth Power. Retrieved August 13, 2019.",
+                        "source_name": "EST Kimsuky April 2019",
+                        "url": "https://blog.alyac.co.kr/2234"
+                    },
+                    {
+                        "description": "BRI. (2019, April). Kimsuky unveils APT campaign 'Smoke Screen' aimed at Korea and America. Retrieved October 7, 2019.",
+                        "source_name": "BRI Kimsuky April 2019",
+                        "url": "https://brica.de/alerts/alert/public/1255063/kimsuky-unveils-apt-campaign-smoke-screen-aimed-at-korea-and-america/"
+                    },
+                    {
+                        "description": "Tarakanov , D.. (2013, September 11). The “Kimsuky” Operation: A North Korean APT?. Retrieved August 13, 2019.",
+                        "source_name": "Securelist Kimsuky Sept 2013",
+                        "url": "https://securelist.com/the-kimsuky-operation-a-north-korean-apt/57915/"
+                    },
+                    {
+                        "source_name": "Zdnet Kimsuky Dec 2018",
+                        "description": "Cimpanu, C.. (2018, December 5). Cyber-espionage group uses Chrome extension to infect victims. Retrieved August 26, 2019.",
+                        "url": "https://www.zdnet.com/article/cyber-espionage-group-uses-chrome-extension-to-infect-victims/"
+                    }
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "created": "2019-08-26T15:03:02.577000",
+                "id": "intrusion-set--0ec2f388-bf0f-4b5c-97b1-fc736d26c25f",
+                "modified": "2019-10-07T18:26:15.460000",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "revoked": false
+            },
+            {
+                "aliases": [
+                    "Putter Panda",
+                    "APT2",
+                    "MSUpdater"
+                ],
+                "type": "intrusion-set",
+                "name": "Putter Panda",
+                "description": "[Putter Panda](https://attack.mitre.org/groups/G0024) is a Chinese threat group that has been attributed to Unit 61486 of the 12th Bureau of the PLA’s 3rd General Staff Department (GSD). (Citation: CrowdStrike Putter Panda)",
+                "external_references": [
+                    {
+                        "external_id": "G0024",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/groups/G0024"
+                    },
+                    {
+                        "description": "(Citation: CrowdStrike Putter Panda) (Citation: Cylance Putter Panda)",
+                        "source_name": "Putter Panda"
+                    },
+                    {
+                        "description": "(Citation: Cylance Putter Panda)",
+                        "source_name": "APT2"
+                    },
+                    {
+                        "description": "(Citation: CrowdStrike Putter Panda)",
+                        "source_name": "MSUpdater"
+                    },
+                    {
+                        "source_name": "CrowdStrike Putter Panda",
+                        "description": "Crowdstrike Global Intelligence Team. (2014, June 9). CrowdStrike Intelligence Report: Putter Panda. Retrieved January 22, 2016.",
+                        "url": "http://cdn0.vox-cdn.com/assets/4589853/crowdstrike-intelligence-report-putter-panda.original.pdf"
+                    },
+                    {
+                        "source_name": "Cylance Putter Panda",
+                        "description": "Gross, J. and Walter, J.. (2016, January 12). Puttering into the Future.... Retrieved January 22, 2016.",
+                        "url": "http://blog.cylance.com/puttering-into-the-future"
+                    }
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "created": "2017-05-31T21:31:56.785000",
+                "id": "intrusion-set--5ce5392a-3a6c-4e07-9df3-9b6a9159ac45",
+                "modified": "2019-03-25T16:53:38.621000",
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "revoked": false
+            }
+        ],
+        "software": [
+            {
+                "name": "ZxShell",
+                "description": "[ZxShell](https://attack.mitre.org/software/S0412) is a remote administration tool and backdoor that can be downloaded from the Internet, particularly from Chinese hacker websites. It has been used since at least 2004.(Citation: FireEye APT41 Aug 2019)(Citation: Talos ZxShell Oct 2014 )",
+                "id": "malware--cfc75b0d-e579-40ae-ad07-a1ce00d49a6c",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "ZxShell",
+                    "Sensocode"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-09-24T12:59:57.991000",
+                "modified": "2019-10-14T22:06:29.019000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0412",
+                        "url": "https://attack.mitre.org/software/S0412"
+                    },
+                    {
+                        "description": "(Citation: FireEye APT41 Aug 2019)(Citation: Talos ZxShell Oct 2014 )",
+                        "source_name": "ZxShell"
+                    },
+                    {
+                        "description": "(Citation: Talos ZxShell Oct 2014 )",
+                        "source_name": "Sensocode"
+                    },
+                    {
+                        "source_name": "FireEye APT41 Aug 2019",
+                        "description": "Fraser, N., et al. (2019, August 7). Double DragonAPT41, a dual espionage and cyber crime operation APT41. Retrieved September 23, 2019.",
+                        "url": "https://content.fireeye.com/apt-41/rpt-apt41"
+                    },
+                    {
+                        "description": "Allievi, A., et al. (2014, October 28). Threat Spotlight: Group 72, Opening the ZxShell. Retrieved September 24, 2019.",
+                        "source_name": "Talos ZxShell Oct 2014 ",
+                        "url": "https://blogs.cisco.com/security/talos/opening-zxshell"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "OSX/Shlayer",
+                "description": "[OSX/Shlayer](https://attack.mitre.org/software/S0402) is a Trojan designed to install adware on macOS. It was first discovered in 2018.(Citation: Carbon Black Shlayer Feb 2019)(Citation: Intego Shlayer Feb 2018)",
+                "id": "malware--f1314e75-ada8-49f4-b281-b1fb8b48f2a7",
+                "x_mitre_platforms": [
+                    "macOS"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "type": "malware",
+                "x_mitre_aliases": [
+                    "OSX/Shlayer",
+                    "Crossrider"
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-08-29T18:52:20.879000",
+                "modified": "2019-10-14T19:39:29.576000",
+                "external_references": [
+                    {
+                        "external_id": "S0402",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0402"
+                    },
+                    {
+                        "description": "(Citation: Carbon Black Shlayer Feb 2019)(Citation: Intego Shlayer Feb 2018)",
+                        "source_name": "OSX/Shlayer"
+                    },
+                    {
+                        "description": "(Citation: Intego Shlayer Apr 2018)(Citation: Malwarebytes Crossrider Apr 2018)",
+                        "source_name": "Crossrider"
+                    },
+                    {
+                        "source_name": "Carbon Black Shlayer Feb 2019",
+                        "description": "Carbon Black Threat Analysis Unit. (2019, February 12). New macOS Malware Variant of Shlayer (OSX) Discovered. Retrieved August 8, 2019.",
+                        "url": "https://www.carbonblack.com/2019/02/12/tau-threat-intelligence-notification-new-macos-malware-variant-of-shlayer-osx-discovered/"
+                    },
+                    {
+                        "description": "Long, Joshua. (2018, February 21). OSX/Shlayer: New Mac malware comes out of its shell. Retrieved August 28, 2019.",
+                        "source_name": "Intego Shlayer Feb 2018",
+                        "url": "https://www.intego.com/mac-security-blog/osxshlayer-new-mac-malware-comes-out-of-its-shell/"
+                    },
+                    {
+                        "source_name": "Intego Shlayer Apr 2018",
+                        "description": "Vrijenhoek, Jay. (2018, April 24). New OSX/Shlayer Malware Variant Found Using a Dirty New Trick. Retrieved September 6, 2019.",
+                        "url": "https://www.intego.com/mac-security-blog/new-osxshlayer-malware-variant-found-using-a-dirty-new-trick/"
+                    },
+                    {
+                        "description": "Reed, Thomas. (2018, April 24). New Crossrider variant installs configuration profiles on Macs. Retrieved September 6, 2019.",
+                        "source_name": "Malwarebytes Crossrider Apr 2018",
+                        "url": "https://blog.malwarebytes.com/threat-analysis/2018/04/new-crossrider-variant-installs-configuration-profiles-on-macs/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "DarkComet",
+                "description": "[DarkComet](https://attack.mitre.org/software/S0334) is a Windows remote administration tool and backdoor.(Citation: TrendMicro DarkComet Sept 2014)(Citation: Malwarebytes DarkComet March 2018)",
+                "id": "malware--53ab35c2-d00e-491a-8753-41d35ae7e547",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "type": "malware",
+                "x_mitre_aliases": [
+                    "DarkComet",
+                    "DarkKomet",
+                    "Fynloski",
+                    "Krademok",
+                    "FYNLOS"
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-01-29T19:18:28.468000",
+                "modified": "2019-06-04T19:40:43.387000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0334",
+                        "url": "https://attack.mitre.org/software/S0334"
+                    },
+                    {
+                        "description": "(Citation: TrendMicro DarkComet Sept 2014)",
+                        "source_name": "DarkComet"
+                    },
+                    {
+                        "description": "(Citation: TrendMicro DarkComet Sept 2014)",
+                        "source_name": "DarkKomet"
+                    },
+                    {
+                        "description": "(Citation: TrendMicro DarkComet Sept 2014)",
+                        "source_name": "Fynloski"
+                    },
+                    {
+                        "description": "(Citation: TrendMicro DarkComet Sept 2014)",
+                        "source_name": "Krademok"
+                    },
+                    {
+                        "description": "(Citation: TrendMicro DarkComet Sept 2014)",
+                        "source_name": "FYNLOS"
+                    },
+                    {
+                        "source_name": "TrendMicro DarkComet Sept 2014",
+                        "description": "TrendMicro. (2014, September 03). DARKCOMET. Retrieved November 6, 2018.",
+                        "url": "https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malware/DARKCOMET"
+                    },
+                    {
+                        "source_name": "Malwarebytes DarkComet March 2018",
+                        "description": "Kujawa, A. (2018, March 27). You dirty RAT! Part 1: DarkComet. Retrieved November 6, 2018.",
+                        "url": "https://blog.malwarebytes.com/threat-analysis/2012/06/you-dirty-rat-part-1-darkcomet/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Agent Tesla",
+                "description": "[Agent Tesla](https://attack.mitre.org/software/S0331) is a spyware Trojan written in visual basic.(Citation: Fortinet Agent Tesla April 2018)",
+                "id": "malware--e7a5229f-05eb-440e-b982-9a6d2b2b87c8",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "type": "malware",
+                "x_mitre_aliases": [
+                    "Agent Tesla"
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-01-29T18:44:04.748000",
+                "modified": "2019-04-16T14:30:35.105000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0331",
+                        "url": "https://attack.mitre.org/software/S0331"
+                    },
+                    {
+                        "description": "(Citation: Fortinet Agent Tesla April 2018)(Citation: Talos Agent Tesla Oct 2018)(Citation: DigiTrust Agent Tesla Jan 2017)",
+                        "source_name": "Agent Tesla"
+                    },
+                    {
+                        "description": "Zhang, X. (2018, April 05). Analysis of New Agent Tesla Spyware Variant. Retrieved November 5, 2018.",
+                        "source_name": "Fortinet Agent Tesla April 2018",
+                        "url": "https://www.fortinet.com/blog/threat-research/analysis-of-new-agent-tesla-spyware-variant.html"
+                    },
+                    {
+                        "description": "Brumaghin, E., et al. (2018, October 15). Old dog, new tricks - Analysing new RTF-based campaign distributing Agent Tesla, Loki with PyREbox. Retrieved November 5, 2018.",
+                        "source_name": "Talos Agent Tesla Oct 2018",
+                        "url": "https://blog.talosintelligence.com/2018/10/old-dog-new-tricks-analysing-new-rtf_15.html"
+                    },
+                    {
+                        "description": "The DigiTrust Group. (2017, January 12). The Rise of Agent Tesla. Retrieved November 5, 2018.",
+                        "source_name": "DigiTrust Agent Tesla Jan 2017",
+                        "url": "https://www.digitrustgroup.com/agent-tesla-keylogger/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "HDoor",
+                "description": "[HDoor](https://attack.mitre.org/software/S0061) is malware that has been customized and used by the [Naikon](https://attack.mitre.org/groups/G0019) group. (Citation: Baumgartner Naikon 2015)",
+                "id": "malware--007b44b6-e4c5-480b-b5b9-56f2081b1b7b",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "HDoor",
+                    "Custom HDoor"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2017-05-31T21:32:40.801000",
+                "modified": "2019-04-25T02:33:53.419000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0061",
+                        "url": "https://attack.mitre.org/software/S0061"
+                    },
+                    {
+                        "source_name": "Baumgartner Naikon 2015",
+                        "description": "Baumgartner, K., Golovkin, M.. (2015, May). The MsnMM Campaigns: The Earliest Naikon APT Campaigns. Retrieved April 10, 2019.",
+                        "url": "https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07205555/TheNaikonAPT-MsnMM1.pdf"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "TinyZBot",
+                "description": "[TinyZBot](https://attack.mitre.org/software/S0004) is a bot written in C# that was developed by [Cleaver](https://attack.mitre.org/groups/G0003). (Citation: Cylance Cleaver)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "TinyZBot"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--c0c45d38-fe57-4cd4-b2b2-9ecd0ddd4ca9",
+                "created": "2017-05-31T21:32:12.310000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0004",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0004"
+                    },
+                    {
+                        "description": "Cylance. (2014, December). Operation Cleaver. Retrieved September 14, 2017.",
+                        "source_name": "Cylance Cleaver",
+                        "url": "https://www.cylance.com/content/dam/cylance/pages/operation-cleaver/Cylance_Operation_Cleaver_Report.pdf"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "JPIN",
+                "description": "[JPIN](https://attack.mitre.org/software/S0201) is a custom-built backdoor family used by [PLATINUM](https://attack.mitre.org/groups/G0068). Evidence suggests developers of [JPIN](https://attack.mitre.org/software/S0201) and [Dipsind](https://attack.mitre.org/software/S0200) code bases were related in some way. (Citation: Microsoft PLATINUM April 2016)",
+                "id": "malware--de6cb631-52f6-4169-a73b-7965390b0c30",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "JPIN"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "x_mitre_contributors": [
+                    "Ryan Becwar"
+                ],
+                "created": "2018-04-18T17:59:24.739000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0201",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0201"
+                    },
+                    {
+                        "description": "(Citation: Microsoft PLATINUM April 2016)",
+                        "source_name": "JPIN"
+                    },
+                    {
+                        "description": "Windows Defender Advanced Threat Hunting Team. (2016, April 29). PLATINUM: Targeted attacks in South and Southeast Asia. Retrieved February 15, 2018.",
+                        "source_name": "Microsoft PLATINUM April 2016",
+                        "url": "https://download.microsoft.com/download/2/2/5/225BFE3E-E1DE-4F5B-A77B-71200928D209/Platinum%20feature%20article%20-%20Targeted%20attacks%20in%20South%20and%20Southeast%20Asia%20April%202016.pdf"
+                    }
+                ],
+                "labels": [
+                    "malware"
+                ],
+                "revoked": false
+            },
+            {
+                "name": "H1N1",
+                "description": "[H1N1](https://attack.mitre.org/software/S0132) is a malware variant that has been distributed via a campaign using VBA macros to infect victims. Although it initially had only loader capabilities, it has evolved to include information-stealing functionality. (Citation: Cisco H1N1 Part 1)",
+                "id": "malware--f8dfbc54-b070-4224-b560-79aaa5f835bd",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "H1N1"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.1",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2017-05-31T21:33:15.910000",
+                "modified": "2019-04-29T18:23:15.823000",
+                "external_references": [
+                    {
+                        "external_id": "S0132",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0132"
+                    },
+                    {
+                        "description": "Reynolds, J.. (2016, September 13). H1N1: Technical analysis reveals new capabilities. Retrieved September 26, 2016.",
+                        "source_name": "Cisco H1N1 Part 1",
+                        "url": "http://blogs.cisco.com/security/h1n1-technical-analysis-reveals-new-capabilities"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "TYPEFRAME",
+                "description": "[TYPEFRAME](https://attack.mitre.org/software/S0263) is a remote access tool that has been used by [Lazarus Group](https://attack.mitre.org/groups/G0032). (Citation: US-CERT TYPEFRAME June 2018)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "TYPEFRAME"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--7ba0fc46-197d-466d-8b9f-f1c64d5d81e5",
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0263",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0263"
+                    },
+                    {
+                        "description": "(Citation: US-CERT TYPEFRAME June 2018)",
+                        "source_name": "TYPEFRAME"
+                    },
+                    {
+                        "description": "US-CERT. (2018, June 14). MAR-10135536-12 – North Korean Trojan: TYPEFRAME. Retrieved July 13, 2018.",
+                        "source_name": "US-CERT TYPEFRAME June 2018",
+                        "url": "https://www.us-cert.gov/ncas/analysis-reports/AR18-165A"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Proton",
+                "description": "[Proton](https://attack.mitre.org/software/S0279) is a macOS backdoor focusing on data theft and credential access  (Citation: objsee mac malware 2017).",
+                "id": "malware--c541efb4-e7b1-4ad6-9da8-b4e113f5dd42",
+                "x_mitre_platforms": [
+                    "macOS"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "Proton"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2019-06-24T19:03:52.505000",
+                "external_references": [
+                    {
+                        "external_id": "S0279",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0279"
+                    },
+                    {
+                        "description": "(Citation: objsee mac malware 2017).",
+                        "source_name": "Proton"
+                    },
+                    {
+                        "source_name": "objsee mac malware 2017",
+                        "description": "Patrick Wardle. (n.d.). Mac Malware of 2017. Retrieved September 21, 2018.",
+                        "url": "https://objective-see.com/blog/blog_0x25.html"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "NanHaiShu",
+                "description": "[NanHaiShu](https://attack.mitre.org/software/S0228) is a remote access tool and JScript backdoor used by [Leviathan](https://attack.mitre.org/groups/G0065). [NanHaiShu](https://attack.mitre.org/software/S0228) has been used to target government and private-sector organizations that have relations to the South China Sea dispute. (Citation: Proofpoint Leviathan Oct 2017) (Citation: fsecure NanHaiShu July 2016)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "NanHaiShu"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--705f0783-5f7d-4491-b6b7-9628e6e006d2",
+                "created": "2018-04-18T17:59:24.739000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0228",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0228"
+                    },
+                    {
+                        "description": "(Citation: Proofpoint Leviathan Oct 2017)",
+                        "source_name": "NanHaiShu"
+                    },
+                    {
+                        "description": "Axel F, Pierre T. (2017, October 16). Leviathan: Espionage actor spearphishes maritime and defense targets. Retrieved February 15, 2018.",
+                        "source_name": "Proofpoint Leviathan Oct 2017",
+                        "url": "https://www.proofpoint.com/us/threat-insight/post/leviathan-espionage-actor-spearphishes-maritime-and-defense-targets"
+                    },
+                    {
+                        "description": "F-Secure Labs. (2016, July). NANHAISHU RATing the South China Sea. Retrieved July 6, 2018.",
+                        "source_name": "fsecure NanHaiShu July 2016",
+                        "url": "https://www.f-secure.com/documents/996508/1030745/nanhaishu_whitepaper.pdf"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "LockerGoga",
+                "description": "[LockerGoga](https://attack.mitre.org/software/S0372) is ransomware that has been tied to various attacks on European companies. It was first reported upon in January 2019.(Citation: Unit42 LockerGoga 2019)(Citation: CarbonBlack LockerGoga 2019)",
+                "id": "malware--5af7a825-2d9f-400d-931a-e00eb9e27f48",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.2",
+                "type": "malware",
+                "x_mitre_aliases": [
+                    "LockerGoga"
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-04-16T19:00:49.435000",
+                "modified": "2019-10-10T12:16:50.185000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0372",
+                        "url": "https://attack.mitre.org/software/S0372"
+                    },
+                    {
+                        "source_name": "Unit42 LockerGoga 2019",
+                        "description": "Harbison, M.. (2019, March 26). Born This Way? Origins of LockerGoga. Retrieved April 16, 2019.",
+                        "url": "https://unit42.paloaltonetworks.com/born-this-way-origins-of-lockergoga/"
+                    },
+                    {
+                        "source_name": "CarbonBlack LockerGoga 2019",
+                        "description": "CarbonBlack Threat Analysis Unit. (2019, March 22). TAU Threat Intelligence Notification – LockerGoga Ransomware. Retrieved April 16, 2019.",
+                        "url": "https://www.carbonblack.com/2019/03/22/tau-threat-intelligence-notification-lockergoga-ransomware/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "InvisiMole",
+                "description": "[InvisiMole](https://attack.mitre.org/software/S0260) is a modular spyware program that has been used by threat actors since at least 2013. [InvisiMole](https://attack.mitre.org/software/S0260) has two backdoor modules called RC2FM and RC2CL that are used to perform post-exploitation activities. It has been discovered on compromised victims in the Ukraine and Russia. (Citation: ESET InvisiMole June 2018)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "InvisiMole"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--47afe41c-4c08-485e-b062-c3bd209a1cce",
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0260",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0260"
+                    },
+                    {
+                        "description": "(Citation: ESET InvisiMole June 2018)",
+                        "source_name": "InvisiMole"
+                    },
+                    {
+                        "description": "Hromcová, Z. (2018, June 07). InvisiMole: Surprisingly equipped spyware, undercover since 2013. Retrieved July 10, 2018.",
+                        "source_name": "ESET InvisiMole June 2018",
+                        "url": "https://www.welivesecurity.com/2018/06/07/invisimole-equipped-spyware-undercover/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "TrickBot",
+                "description": "[TrickBot](https://attack.mitre.org/software/S0266) is a Trojan spyware program that has mainly been used for targeting banking sites in United States, Canada, UK, Germany, Australia, Austria, Ireland, London, Switzerland, and Scotland. TrickBot first emerged in the wild in September 2016 and appears to be a successor to [Dyre](https://attack.mitre.org/software/S0024). [TrickBot](https://attack.mitre.org/software/S0266) is developed in the C++ programming language. (Citation: S2 Grupo TrickBot June 2017) (Citation: Fidelis TrickBot Oct 2016) (Citation: IBM TrickBot Nov 2016)",
+                "id": "malware--00806466-754d-44ea-ad6f-0caf59cb8556",
+                "external_references": [
+                    {
+                        "external_id": "S0266",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0266"
+                    },
+                    {
+                        "description": "(Citation: S2 Grupo TrickBot June 2017) (Citation: Trend Micro Totbrick Oct 2016) (Citation: TrendMicro Trickbot Feb 2019)",
+                        "source_name": "TrickBot"
+                    },
+                    {
+                        "description": "(Citation: Trend Micro Totbrick Oct 2016) (Citation: Microsoft Totbrick Oct 2017)",
+                        "source_name": "Totbrick"
+                    },
+                    {
+                        "description": "(Citation: Trend Micro Totbrick Oct 2016)",
+                        "source_name": "TSPY_TRICKLOAD"
+                    },
+                    {
+                        "description": "Salinas, M., Holguin, J. (2017, June). Evolution of Trickbot. Retrieved July 31, 2018.",
+                        "source_name": "S2 Grupo TrickBot June 2017",
+                        "url": "https://www.securityartwork.es/wp-content/uploads/2017/07/Trickbot-report-S2-Grupo.pdf"
+                    },
+                    {
+                        "description": "Reaves, J. (2016, October 15). TrickBot: We Missed you, Dyre. Retrieved August 2, 2018.",
+                        "source_name": "Fidelis TrickBot Oct 2016",
+                        "url": "https://www.fidelissecurity.com/threatgeek/2016/10/trickbot-we-missed-you-dyre"
+                    },
+                    {
+                        "description": "Keshet, L. (2016, November 09). Tricks of the Trade: A Deeper Look Into TrickBot’s Machinations. Retrieved August 2, 2018.",
+                        "source_name": "IBM TrickBot Nov 2016",
+                        "url": "https://securityintelligence.com/tricks-of-the-trade-a-deeper-look-into-trickbots-machinations/"
+                    },
+                    {
+                        "description": "Antazo, F. (2016, October 31). TSPY_TRICKLOAD.N. Retrieved September 14, 2018.",
+                        "source_name": "Trend Micro Totbrick Oct 2016",
+                        "url": "https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malware/tspy_trickload.n"
+                    },
+                    {
+                        "description": "Llimos, N., Pascual, C.. (2019, February 12). Trickbot Adds Remote Application Credential-Grabbing Capabilities to Its Repertoire. Retrieved March 12, 2019.",
+                        "source_name": "TrendMicro Trickbot Feb 2019",
+                        "url": "https://blog.trendmicro.com/trendlabs-security-intelligence/trickbot-adds-remote-application-credential-grabbing-capabilities-to-its-repertoire/"
+                    },
+                    {
+                        "description": "Pornasdoro, A. (2017, October 12). Trojan:Win32/Totbrick. Retrieved September 14, 2018.",
+                        "source_name": "Microsoft Totbrick Oct 2017",
+                        "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Totbrick"
+                    }
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "TrickBot",
+                    "Totbrick",
+                    "TSPY_TRICKLOAD"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.1",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "x_mitre_contributors": [
+                    "Omkar Gudhate",
+                    "FS-ISAC"
+                ],
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2019-06-24T19:15:06.150000",
+                "labels": [
+                    "malware"
+                ],
+                "revoked": false
+            },
+            {
+                "name": "BADCALL",
+                "description": "[BADCALL](https://attack.mitre.org/software/S0245) is a Trojan malware variant used by the group [Lazarus Group](https://attack.mitre.org/groups/G0032). (Citation: US-CERT BADCALL)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "BADCALL"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--9dbdadb6-fdbf-490f-a35f-38762d06a0d2",
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0245",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0245"
+                    },
+                    {
+                        "description": "(Citation: US-CERT BADCALL)",
+                        "source_name": "BADCALL"
+                    },
+                    {
+                        "description": "US-CERT. (2018, February 06). Malware Analysis Report (MAR) - 10135536-G. Retrieved June 7, 2018.",
+                        "source_name": "US-CERT BADCALL",
+                        "url": "https://www.us-cert.gov/sites/default/files/publications/MAR-10135536-G.PDF"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Brave Prince",
+                "description": "[Brave Prince](https://attack.mitre.org/software/S0252) is a Korean-language implant that was first observed in the wild in December 2017. It contains similar code and behavior to [Gold Dragon](https://attack.mitre.org/software/S0249), and was seen along with [Gold Dragon](https://attack.mitre.org/software/S0249) and [RunningRAT](https://attack.mitre.org/software/S0253) in operations surrounding the 2018 Pyeongchang Winter Olympics. (Citation: McAfee Gold Dragon)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "Brave Prince"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--28b97733-ef07-4414-aaa5-df50b2d30cc5",
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0252",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0252"
+                    },
+                    {
+                        "description": "(Citation: McAfee Gold Dragon)",
+                        "source_name": "Brave Prince"
+                    },
+                    {
+                        "description": "Sherstobitoff, R., Saavedra-Morales, J. (2018, February 02). Gold Dragon Widens Olympics Malware Attacks, Gains Permanent Presence on Victims’ Systems. Retrieved June 6, 2018.",
+                        "source_name": "McAfee Gold Dragon",
+                        "url": "https://securingtomorrow.mcafee.com/mcafee-labs/gold-dragon-widens-olympics-malware-attacks-gains-permanent-presence-on-victims-systems/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "RobbinHood",
+                "description": "[RobbinHood](https://attack.mitre.org/software/S0400) is ransomware that was first observed being used in an attack against the Baltimore city government's computer network.(Citation: CarbonBlack RobbinHood May 2019)(Citation: BaltimoreSun RobbinHood May 2019)",
+                "id": "malware--0a607c53-df52-45da-a75d-0e53df4dad5f",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "type": "malware",
+                "x_mitre_aliases": [
+                    "RobbinHood"
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-07-29T14:27:18.204000",
+                "modified": "2019-07-29T15:46:14.570000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0400",
+                        "url": "https://attack.mitre.org/software/S0400"
+                    },
+                    {
+                        "source_name": "CarbonBlack RobbinHood May 2019",
+                        "description": "Lee, S. (2019, May 17). CB TAU Threat Intelligence Notification: RobbinHood Ransomware Stops 181 Windows Services Before Encryption. Retrieved July 29, 2019.",
+                        "url": "https://www.carbonblack.com/2019/05/17/cb-tau-threat-intelligence-notification-robbinhood-ransomware-stops-181-windows-services-before-encryption/"
+                    },
+                    {
+                        "source_name": "BaltimoreSun RobbinHood May 2019",
+                        "description": "Duncan, I., Campbell, C. (2019, May 7). Baltimore city government computer network hit by ransomware attack. Retrieved July 29, 2019.",
+                        "url": "https://www.baltimoresun.com/politics/bs-md-ci-it-outage-20190507-story.html"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "RunningRAT",
+                "description": "[RunningRAT](https://attack.mitre.org/software/S0253) is a remote access tool that appeared in operations surrounding the 2018 Pyeongchang Winter Olympics along with [Gold Dragon](https://attack.mitre.org/software/S0249) and [Brave Prince](https://attack.mitre.org/software/S0252). (Citation: McAfee Gold Dragon)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "RunningRAT"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--60d50676-459a-47dd-92e9-a827a9fe9c58",
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0253",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0253"
+                    },
+                    {
+                        "description": "(Citation: McAfee Gold Dragon)",
+                        "source_name": "RunningRAT"
+                    },
+                    {
+                        "description": "Sherstobitoff, R., Saavedra-Morales, J. (2018, February 02). Gold Dragon Widens Olympics Malware Attacks, Gains Permanent Presence on Victims’ Systems. Retrieved June 6, 2018.",
+                        "source_name": "McAfee Gold Dragon",
+                        "url": "https://securingtomorrow.mcafee.com/mcafee-labs/gold-dragon-widens-olympics-malware-attacks-gains-permanent-presence-on-victims-systems/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "HOPLIGHT",
+                "description": "[HOPLIGHT](https://attack.mitre.org/software/S0376) is a backdoor Trojan that has reportedly been used by the North Korean government.(Citation: US-CERT HOPLIGHT Apr 2019)",
+                "id": "malware--454fe82d-6fd2-4ac6-91ab-28a33fe01369",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "HOPLIGHT"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-04-19T15:30:36.593000",
+                "modified": "2019-04-22T19:41:53.168000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0376",
+                        "url": "https://attack.mitre.org/software/S0376"
+                    },
+                    {
+                        "description": "(Citation: US-CERT HOPLIGHT Apr 2019)",
+                        "source_name": "HOPLIGHT"
+                    },
+                    {
+                        "source_name": "US-CERT HOPLIGHT Apr 2019",
+                        "description": "US-CERT. (2019, April 10). MAR-10135536-8 – North Korean Trojan: HOPLIGHT. Retrieved April 19, 2019.",
+                        "url": "https://www.us-cert.gov/ncas/analysis-reports/AR19-100A"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "BACKSPACE",
+                "description": "[BACKSPACE](https://attack.mitre.org/software/S0031) is a backdoor used by [APT30](https://attack.mitre.org/groups/G0013) that dates back to at least 2005. (Citation: FireEye APT30)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "BACKSPACE",
+                    "Lecna"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--fb261c56-b80e-43a9-8351-c84081e7213d",
+                "created": "2017-05-31T21:32:24.428000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0031",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0031"
+                    },
+                    {
+                        "description": "FireEye Labs. (2015, April). APT30 AND THE MECHANICS OF A LONG-RUNNING CYBER ESPIONAGE OPERATION. Retrieved May 1, 2015.",
+                        "source_name": "FireEye APT30",
+                        "url": "https://www2.fireeye.com/rs/fireye/images/rpt-apt30.pdf"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Unknown Logger",
+                "description": "[Unknown Logger](https://attack.mitre.org/software/S0130) is a publicly released, free backdoor. Version 1.5 of the backdoor has been used by the actors responsible for the MONSOON campaign. (Citation: Forcepoint Monsoon)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "Unknown Logger"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--ab3580c8-8435-4117-aace-3d9fbe46aa56",
+                "created": "2017-05-31T21:33:15.020000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0130",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0130"
+                    },
+                    {
+                        "description": "Settle, A., et al. (2016, August 8). MONSOON - Analysis Of An APT Campaign. Retrieved September 22, 2016.",
+                        "source_name": "Forcepoint Monsoon",
+                        "url": "https://www.forcepoint.com/sites/default/files/resources/files/forcepoint-security-labs-monsoon-analysis-report.pdf"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "NanoCore",
+                "description": "[NanoCore](https://attack.mitre.org/software/S0336) is a modular remote access tool developed in .NET that can be used to spy on victims and steal information. It has been used by threat actors since 2013.(Citation: DigiTrust NanoCore Jan 2017)(Citation: Cofense NanoCore Mar 2018)(Citation: PaloAlto NanoCore Feb 2016)(Citation: Unit 42 Gorgon Group Aug 2018)",
+                "id": "malware--b4d80f8b-d2b9-4448-8844-4bef777ed676",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_version": "1.0",
+                "type": "malware",
+                "x_mitre_aliases": [
+                    "NanoCore"
+                ],
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-01-29T20:05:35.952000",
+                "modified": "2019-04-17T20:47:23.692000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0336",
+                        "url": "https://attack.mitre.org/software/S0336"
+                    },
+                    {
+                        "description": "(Citation: DigiTrust NanoCore Jan 2017)(Citation: Cofense NanoCore Mar 2018)(Citation: PaloAlto NanoCore Feb 2016)(Citation: Unit 42 Gorgon Group Aug 2018)",
+                        "source_name": "NanoCore"
+                    },
+                    {
+                        "description": "The DigiTrust Group. (2017, January 01). NanoCore Is Not Your Average RAT. Retrieved November 9, 2018.",
+                        "source_name": "DigiTrust NanoCore Jan 2017",
+                        "url": "https://www.digitrustgroup.com/nanocore-not-your-average-rat/"
+                    },
+                    {
+                        "description": "Patel, K. (2018, March 02). The NanoCore RAT Has Resurfaced From the Sewers. Retrieved November 9, 2018.",
+                        "source_name": "Cofense NanoCore Mar 2018",
+                        "url": "https://cofense.com/nanocore-rat-resurfaced-sewers/"
+                    },
+                    {
+                        "description": "Kasza, A., Halfpop, T. (2016, February 09). NanoCoreRAT Behind an Increase in Tax-Themed Phishing E-mails. Retrieved November 9, 2018.",
+                        "source_name": "PaloAlto NanoCore Feb 2016",
+                        "url": "https://researchcenter.paloaltonetworks.com/2016/02/nanocorerat-behind-an-increase-in-tax-themed-phishing-e-mails/"
+                    },
+                    {
+                        "description": "Falcone, R., et al. (2018, August 02). The Gorgon Group: Slithering Between Nation State and Cybercrime. Retrieved August 7, 2018.",
+                        "source_name": "Unit 42 Gorgon Group Aug 2018",
+                        "url": "https://researchcenter.paloaltonetworks.com/2018/08/unit42-gorgon-group-slithering-nation-state-cybercrime/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Gold Dragon",
+                "description": "[Gold Dragon](https://attack.mitre.org/software/S0249) is a Korean-language, data gathering implant that was first observed in the wild in South Korea in July 2017. [Gold Dragon](https://attack.mitre.org/software/S0249) was used along with [Brave Prince](https://attack.mitre.org/software/S0252) and [RunningRAT](https://attack.mitre.org/software/S0253) in operations targeting organizations associated with the 2018 Pyeongchang Winter Olympics. (Citation: McAfee Gold Dragon)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "Gold Dragon"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--b9799466-9dd7-4098-b2d6-f999ce50b9a8",
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0249",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0249"
+                    },
+                    {
+                        "description": "(Citation: McAfee Gold Dragon)",
+                        "source_name": "Gold Dragon"
+                    },
+                    {
+                        "description": "Sherstobitoff, R., Saavedra-Morales, J. (2018, February 02). Gold Dragon Widens Olympics Malware Attacks, Gains Permanent Presence on Victims’ Systems. Retrieved June 6, 2018.",
+                        "source_name": "McAfee Gold Dragon",
+                        "url": "https://securingtomorrow.mcafee.com/mcafee-labs/gold-dragon-widens-olympics-malware-attacks-gains-permanent-presence-on-victims-systems/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "SslMM",
+                "description": "[SslMM](https://attack.mitre.org/software/S0058) is a full-featured backdoor used by [Naikon](https://attack.mitre.org/groups/G0019) that has multiple variants. (Citation: Baumgartner Naikon 2015)",
+                "id": "malware--2fb26586-2b53-4b9a-ad4f-2b3bcb9a2421",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "SslMM"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2017-05-31T21:32:39.606000",
+                "modified": "2019-04-25T02:48:47.401000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0058",
+                        "url": "https://attack.mitre.org/software/S0058"
+                    },
+                    {
+                        "description": "Baumgartner, K., Golovkin, M.. (2015, May). The MsnMM Campaigns: The Earliest Naikon APT Campaigns. Retrieved April 10, 2019.",
+                        "source_name": "Baumgartner Naikon 2015",
+                        "url": "https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07205555/TheNaikonAPT-MsnMM1.pdf"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Ebury",
+                "description": "[Ebury](https://attack.mitre.org/software/S0377) is an SSH backdoor targeting Linux operating systems. Attackers require root-level access, which allows them to replace SSH binaries (ssh, sshd, ssh-add, etc) or modify a shared library used by OpenSSH (libkeyutils).(Citation: ESET Ebury Feb 2014)(Citation: BleepingComputer Ebury March 2017)",
+                "id": "malware--d6b3fcd0-1c86-4350-96f0-965ed02fcc51",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0377",
+                        "url": "https://attack.mitre.org/software/S0377"
+                    },
+                    {
+                        "description": "(Citation: ESET Ebury Feb 2014)",
+                        "source_name": "Ebury"
+                    },
+                    {
+                        "source_name": "ESET Ebury Feb 2014",
+                        "description": "M.Léveillé, M.. (2014, February 21). An In-depth Analysis of Linux/Ebury. Retrieved April 19, 2019.",
+                        "url": "https://www.welivesecurity.com/2014/02/21/an-in-depth-analysis-of-linuxebury/"
+                    },
+                    {
+                        "source_name": "BleepingComputer Ebury March 2017",
+                        "description": "Cimpanu, C.. (2017, March 29). Russian Hacker Pleads Guilty for Role in Infamous Linux Ebury Malware. Retrieved April 23, 2019.",
+                        "url": "https://www.bleepingcomputer.com/news/security/russian-hacker-pleads-guilty-for-role-in-infamous-linux-ebury-malware/"
+                    }
+                ],
+                "x_mitre_platforms": [
+                    "Linux"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "Ebury"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "x_mitre_contributors": [
+                    "Marc-Etienne M.Léveillé, ESET"
+                ],
+                "created": "2019-04-19T16:40:24.922000",
+                "modified": "2019-04-26T20:14:18.000000",
+                "labels": [
+                    "malware"
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Remsec",
+                "description": "[Remsec](https://attack.mitre.org/software/S0125) is a modular backdoor that has been used by [Strider](https://attack.mitre.org/groups/G0041) and appears to have been designed primarily for espionage purposes. Many of its modules are written in Lua. (Citation: Symantec Strider Blog)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "Remsec",
+                    "Backdoor.Remsec",
+                    "ProjectSauron"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--69d6f4a9-fcf0-4f51-bca7-597c51ad0bb8",
+                "created": "2017-05-31T21:33:12.858000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0125",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0125"
+                    },
+                    {
+                        "description": "ProjectSauron is used to refer both to the threat group also known as G0041 as well as the malware platform also known as S0125. (Citation: Kaspersky ProjectSauron Blog)",
+                        "source_name": "ProjectSauron"
+                    },
+                    {
+                        "description": "Symantec Security Response. (2016, August 7). Strider: Cyberespionage group turns eye of Sauron on targets. Retrieved August 17, 2016.",
+                        "source_name": "Symantec Strider Blog",
+                        "url": "http://www.symantec.com/connect/blogs/strider-cyberespionage-group-turns-eye-sauron-targets"
+                    },
+                    {
+                        "description": "Kaspersky Lab's Global Research & Analysis Team. (2016, August 8). ProjectSauron: top level cyber-espionage platform covertly extracts encrypted government comms. Retrieved August 17, 2016.",
+                        "source_name": "Kaspersky ProjectSauron Blog",
+                        "url": "https://securelist.com/faq-the-projectsauron-apt/75533/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "POWERSTATS",
+                "description": "[POWERSTATS](https://attack.mitre.org/software/S0223) is a PowerShell-based first stage backdoor used by [MuddyWater](https://attack.mitre.org/groups/G0069). (Citation: Unit 42 MuddyWater Nov 2017)",
+                "id": "malware--e8545794-b98c-492b-a5b3-4b5a02682e37",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "POWERSTATS",
+                    "Powermud"
+                ],
+                "type": "malware",
+                "x_mitre_version": "2.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2018-04-18T17:59:24.739000",
+                "modified": "2019-04-22T22:36:52.629000",
+                "external_references": [
+                    {
+                        "external_id": "S0223",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0223"
+                    },
+                    {
+                        "description": "(Citation: Unit 42 MuddyWater Nov 2017)(Citation: ClearSky MuddyWater Nov 2018)",
+                        "source_name": "POWERSTATS"
+                    },
+                    {
+                        "description": "(Citation: Symantec MuddyWater Dec 2018)",
+                        "source_name": "Powermud"
+                    },
+                    {
+                        "source_name": "Unit 42 MuddyWater Nov 2017",
+                        "description": "Lancaster, T.. (2017, November 14). Muddying the Water: Targeted Attacks in the Middle East. Retrieved March 15, 2018.",
+                        "url": "https://researchcenter.paloaltonetworks.com/2017/11/unit42-muddying-the-water-targeted-attacks-in-the-middle-east/"
+                    },
+                    {
+                        "source_name": "ClearSky MuddyWater Nov 2018",
+                        "description": "ClearSky Cyber Security. (2018, November). MuddyWater Operations in Lebanon and Oman: Using an Israeli compromised domain for a two-stage campaign. Retrieved November 29, 2018.",
+                        "url": "https://www.clearskysec.com/wp-content/uploads/2018/11/MuddyWater-Operations-in-Lebanon-and-Oman.pdf"
+                    },
+                    {
+                        "source_name": "Symantec MuddyWater Dec 2018",
+                        "description": "Symantec DeepSight Adversary Intelligence Team. (2018, December 10). Seedworm: Group Compromises Government Agencies, Oil & Gas, NGOs, Telecoms, and IT Firms. Retrieved December 14, 2018.",
+                        "url": "https://www.symantec.com/blogs/threat-intelligence/seedworm-espionage-group"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "Kasidet",
+                "description": "[Kasidet](https://attack.mitre.org/software/S0088) is a backdoor that has been dropped by using malicious VBA macros. (Citation: Zscaler Kasidet)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "Kasidet"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--26fed817-e7bf-41f9-829a-9075ffac45c2",
+                "created": "2017-05-31T21:32:57.344000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0088",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0088"
+                    },
+                    {
+                        "description": "Yadav, A., et al. (2016, January 29). Malicious Office files dropping Kasidet and Dridex. Retrieved March 24, 2016.",
+                        "source_name": "Zscaler Kasidet",
+                        "url": "http://research.zscaler.com/2016/01/malicious-office-files-dropping-kasidet.html"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "njRAT",
+                "description": "[njRAT](https://attack.mitre.org/software/S0385) is a remote access tool (RAT) that was first observed in 2012. It has been used by threat actors in the Middle East.(Citation: Fidelis njRAT June 2013)",
+                "id": "malware--d906e6f7-434c-44c0-b51a-ed50af8f7945",
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "njRAT",
+                    "Njw0rm",
+                    "LV",
+                    "Bladabindi"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "labels": [
+                    "malware"
+                ],
+                "created": "2019-06-04T17:52:28.806000",
+                "modified": "2019-06-24T18:57:10.889000",
+                "external_references": [
+                    {
+                        "source_name": "mitre-attack",
+                        "external_id": "S0385",
+                        "url": "https://attack.mitre.org/software/S0385"
+                    },
+                    {
+                        "description": "Some sources have discussed Njw0rm as a later variant of njRAT, where Njw0rm adds the ability to spread via removable devices such as USB drives.(Citation: FireEye Njw0rm Aug 2013) Other sources contain that functionality in their description of njRAT itself.(Citation: Fidelis njRAT June 2013)(Citation: Trend Micro njRAT 2018)",
+                        "source_name": "Njw0rm"
+                    },
+                    {
+                        "description": "(Citation: Fidelis njRAT June 2013)",
+                        "source_name": "LV"
+                    },
+                    {
+                        "description": "(Citation: Fidelis njRAT June 2013)(Citation: Trend Micro njRAT 2018)",
+                        "source_name": "Bladabindi"
+                    },
+                    {
+                        "description": "Fidelis Cybersecurity. (2013, June 28). Fidelis Threat Advisory #1009: \"njRAT\" Uncovered. Retrieved June 4, 2019.",
+                        "source_name": "Fidelis njRAT June 2013",
+                        "url": "https://www.threatminer.org/_reports/2013/fta-1009---njrat-uncovered-1.pdf"
+                    },
+                    {
+                        "source_name": "FireEye Njw0rm Aug 2013",
+                        "description": "Dawda, U. and Villeneuve, N. (2013, August 30). Njw0rm - Brother From the Same Mother. Retrieved June 4, 2019.",
+                        "url": "https://www.fireeye.com/blog/threat-research/2013/08/njw0rm-brother-from-the-same-mother.html"
+                    },
+                    {
+                        "description": "Pascual, C. (2018, November 27). AutoIt-Compiled Worm Affecting Removable Media Delivers Fileless Version of BLADABINDI/njRAT Backdoor. Retrieved June 4, 2019.",
+                        "source_name": "Trend Micro njRAT 2018",
+                        "url": "https://blog.trendmicro.com/trendlabs-security-intelligence/autoit-compiled-worm-affecting-removable-media-delivers-fileless-version-of-bladabindi-njrat-backdoor/"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "ChChes",
+                "description": "[ChChes](https://attack.mitre.org/software/S0144) is a Trojan that appears to be used exclusively by [menuPass](https://attack.mitre.org/groups/G0045). It was used to target Japanese organizations in 2016. Its lack of persistence methods suggests it may be intended as a first-stage tool. (Citation: Palo Alto menuPass Feb 2017) (Citation: JPCERT ChChes Feb 2017) (Citation: PWC Cloud Hopper Technical Annex April 2017)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "ChChes",
+                    "Scorpion",
+                    "HAYMAKER"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--dc5d1a33-62aa-4a0c-aa8c-589b87beb11e",
+                "created": "2017-05-31T21:33:22.451000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0144",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0144"
+                    },
+                    {
+                        "description": "(Citation: Palo Alto menuPass Feb 2017) (Citation: JPCERT ChChes Feb 2017) (Citation: PWC Cloud Hopper Technical Annex April 2017)",
+                        "source_name": "ChChes"
+                    },
+                    {
+                        "description": "(Citation: PWC Cloud Hopper Technical Annex April 2017)",
+                        "source_name": "Scorpion"
+                    },
+                    {
+                        "description": "Based on similarities in reported malware behavior and open source reporting, it is assessed that the malware named HAYMAKER by FireEye is likely the same as the malware ChChes. (Citation: FireEye APT10 April 2017) (Citation: Twitter Nick Carr APT10)",
+                        "source_name": "HAYMAKER"
+                    },
+                    {
+                        "description": "Miller-Osborn, J. and Grunzweig, J.. (2017, February 16). menuPass Returns with New Malware and New Attacks Against Japanese Academics and Organizations. Retrieved March 1, 2017.",
+                        "source_name": "Palo Alto menuPass Feb 2017",
+                        "url": "http://researchcenter.paloaltonetworks.com/2017/02/unit42-menupass-returns-new-malware-new-attacks-japanese-academics-organizations/"
+                    },
+                    {
+                        "description": "Nakamura, Y.. (2017, February 17). ChChes - Malware that Communicates with C&C Servers Using Cookie Headers. Retrieved March 1, 2017.",
+                        "source_name": "JPCERT ChChes Feb 2017",
+                        "url": "http://blog.jpcert.or.jp/2017/02/chches-malware--93d6.html"
+                    },
+                    {
+                        "description": "PwC and BAE Systems. (2017, April). Operation Cloud Hopper: Technical Annex. Retrieved April 13, 2017.",
+                        "source_name": "PWC Cloud Hopper Technical Annex April 2017",
+                        "url": "https://www.pwc.co.uk/cyber-security/pdf/cloud-hopper-annex-b-final.pdf"
+                    },
+                    {
+                        "description": "FireEye iSIGHT Intelligence. (2017, April 6). APT10 (MenuPass Group): New Tools, Global Campaign Latest Manifestation of Longstanding Threat. Retrieved June 29, 2017.",
+                        "source_name": "FireEye APT10 April 2017",
+                        "url": "https://www.fireeye.com/blog/threat-research/2017/04/apt10_menupass_grou.html"
+                    },
+                    {
+                        "description": "Carr, N.. (2017, April 6). Retrieved June 29, 2017.",
+                        "source_name": "Twitter Nick Carr APT10",
+                        "url": "https://twitter.com/ItsReallyNick/status/850105140589633536"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "HARDRAIN",
+                "description": "[HARDRAIN](https://attack.mitre.org/software/S0246) is a Trojan malware variant reportedly used by the North Korean government. (Citation: US-CERT HARDRAIN March 2018)",
+                "labels": [
+                    "malware"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "HARDRAIN"
+                ],
+                "type": "malware",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "malware--bd0536d7-b081-43ae-a773-cfb057c5b988",
+                "created": "2018-10-17T00:14:20.652000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0246",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0246"
+                    },
+                    {
+                        "description": "(Citation: US-CERT HARDRAIN March 2018)",
+                        "source_name": "HARDRAIN"
+                    },
+                    {
+                        "description": "US-CERT. (2018, February 05). Malware Analysis Report (MAR) - 10135536-F. Retrieved June 11, 2018.",
+                        "source_name": "US-CERT HARDRAIN March 2018",
+                        "url": "https://www.us-cert.gov/sites/default/files/publications/MAR-10135536-F.pdf"
+                    }
+                ],
+                "revoked": false
+            },
+            {
+                "name": "netsh",
+                "description": "[netsh](https://attack.mitre.org/software/S0108) is a scripting utility used to interact with networking components on local or remote systems. (Citation: TechNet Netsh)",
+                "labels": [
+                    "tool"
+                ],
+                "x_mitre_platforms": [
+                    "Windows"
+                ],
+                "object_marking_refs": [
+                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+                ],
+                "x_mitre_aliases": [
+                    "netsh",
+                    "netsh.exe"
+                ],
+                "type": "tool",
+                "x_mitre_version": "1.0",
+                "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+                "id": "tool--5a63f900-5e7e-4928-a746-dd4558e1df71",
+                "created": "2017-05-31T21:33:06.083000",
+                "modified": "2018-10-17T00:14:20.652000",
+                "external_references": [
+                    {
+                        "external_id": "S0108",
+                        "source_name": "mitre-attack",
+                        "url": "https://attack.mitre.org/software/S0108"
+                    },
+                    {
+                        "description": "Microsoft. (n.d.). Using Netsh. Retrieved February 13, 2017.",
+                        "source_name": "TechNet Netsh",
+                        "url": "https://technet.microsoft.com/library/bb490939.aspx"
+                    }
+                ],
+                "revoked": false
+            }
+        ]
+    }
+}

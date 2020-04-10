@@ -1,0 +1,45 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "type": "x-mitre-tactic",
+            "name": "Defense Evasion",
+            "description": "The adversary is trying to avoid being detected.\n\nDefense Evasion consists of techniques that adversaries use to avoid detection throughout their compromise. Techniques used for defense evasion include uninstalling/disabling security software or obfuscating/encrypting data and scripts. Adversaries also leverage and abuse trusted processes to hide and masquerade their malware. Other tactics’ techniques are cross-listed here when those techniques include the added benefit of subverting defenses. ",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--78b23412-0651-46d7-a540-170a1ce8bd5a",
+            "x_mitre_shortname": "defense-evasion",
+            "modified": "2019-07-19T17:43:23.473Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0005",
+                    "url": "https://attack.mitre.org/tactics/TA0005"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Defense Evasion",
+            "description": "Defense evasion consists of techniques an adversary may use to evade detection or avoid other defenses. Sometimes these actions are the same as or variations of techniques in other categories that have the added benefit of subverting a particular defense or mitigation. Defense evasion may be considered a set of attributes the adversary applies to all other phases of the operation.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--987cda6d-eb77-406b-bf68-bcb5f3d2e1df",
+            "x_mitre_shortname": "defense-evasion",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0030",
+                    "url": "https://attack.mitre.org/tactics/TA0030"
+                }
+            ]
+        }
+    ]
+}

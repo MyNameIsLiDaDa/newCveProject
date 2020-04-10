@@ -1,0 +1,805 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "type": "x-mitre-tactic",
+            "name": "Credential Access",
+            "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--2558fd61-8c75-4730-94c4-11926db2a263",
+            "x_mitre_shortname": "credential-access",
+            "modified": "2019-07-19T17:43:41.967Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0006",
+                    "url": "https://attack.mitre.org/tactics/TA0006"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Execution",
+            "description": "The adversary is trying to run malicious code.\n\nExecution consists of techniques that result in adversary-controlled code running on a local or remote system. Techniques that run malicious code are often paired with techniques from all other tactics to achieve broader goals, like exploring a network or stealing data. For example, an adversary might use a remote access tool to run a PowerShell script that does Remote System Discovery. ",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5",
+            "x_mitre_shortname": "execution",
+            "modified": "2019-07-19T17:42:06.909Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0002",
+                    "url": "https://attack.mitre.org/tactics/TA0002"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Impact",
+            "description": "The adversary is trying to manipulate, interrupt, or destroy your systems and data.\n \nImpact consists of techniques that adversaries use to disrupt availability or compromise integrity by manipulating business and operational processes. Techniques used for impact can include destroying or tampering with data. In some cases, business processes can look fine, but may have been altered to benefit the adversaries’ goals. These techniques might be used by adversaries to follow through on their end goal or to provide cover for a confidentiality breach.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2019-03-14T18:44:44.639Z",
+            "id": "x-mitre-tactic--5569339b-94c2-49ee-afb3-2222936582c8",
+            "x_mitre_shortname": "impact",
+            "modified": "2019-07-25T18:42:23.222Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0040",
+                    "url": "https://attack.mitre.org/tactics/TA0040"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Persistence",
+            "description": "The adversary is trying to maintain their foothold.\n\nPersistence consists of techniques that adversaries use to keep access to systems across restarts, changed credentials, and other interruptions that could cut off their access. Techniques used for persistence include any access, action, or configuration changes that let them maintain their foothold on systems, such as replacing or hijacking legitimate code or adding startup code. ",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--5bc1d813-693e-4823-9961-abf9af4b0e92",
+            "x_mitre_shortname": "persistence",
+            "modified": "2019-07-19T17:42:33.899Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0003",
+                    "url": "https://attack.mitre.org/tactics/TA0003"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Privilege Escalation",
+            "description": "The adversary is trying to gain higher-level permissions.\n\nPrivilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities. Examples of elevated access include: \n•\tSYSTEM/root level\n•\tlocal administrator\n•\tuser account with admin-like access \n•\tuser accounts with access to specific system or perform specific function\nThese techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.  ",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--5e29b093-294e-49e9-a803-dab3d73b77dd",
+            "x_mitre_shortname": "privilege-escalation",
+            "modified": "2019-07-19T17:43:00.594Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0004",
+                    "url": "https://attack.mitre.org/tactics/TA0004"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Lateral Movement",
+            "description": "The adversary is trying to move through your environment.\n\nLateral Movement consists of techniques that adversaries use to enter and control remote systems on a network. Following through on their primary objective often requires exploring the network to find their target and subsequently gaining access to it. Reaching their objective often involves pivoting through multiple systems and accounts to gain. Adversaries might install their own remote access tools to accomplish Lateral Movement or use legitimate credentials with native network and operating system tools, which may be stealthier. ",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--7141578b-e50b-4dcc-bfa4-08a8dd689e9e",
+            "x_mitre_shortname": "lateral-movement",
+            "modified": "2019-07-19T17:44:36.953Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0008",
+                    "url": "https://attack.mitre.org/tactics/TA0008"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Defense Evasion",
+            "description": "The adversary is trying to avoid being detected.\n\nDefense Evasion consists of techniques that adversaries use to avoid detection throughout their compromise. Techniques used for defense evasion include uninstalling/disabling security software or obfuscating/encrypting data and scripts. Adversaries also leverage and abuse trusted processes to hide and masquerade their malware. Other tactics’ techniques are cross-listed here when those techniques include the added benefit of subverting defenses. ",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--78b23412-0651-46d7-a540-170a1ce8bd5a",
+            "x_mitre_shortname": "defense-evasion",
+            "modified": "2019-07-19T17:43:23.473Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0005",
+                    "url": "https://attack.mitre.org/tactics/TA0005"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Exfiltration",
+            "description": "The adversary is trying to steal data.\n\nExfiltration consists of techniques that adversaries may use to steal data from your network. Once they’ve collected data, adversaries often package it to avoid detection while removing it. This can include compression and encryption. Techniques for getting data out of a target network typically include transferring it over their command and control channel or an alternate channel and may also include putting size limits on the transmission.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--9a4e74ab-5008-408c-84bf-a10dfbc53462",
+            "x_mitre_shortname": "exfiltration",
+            "modified": "2019-07-19T17:45:12.806Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0010",
+                    "url": "https://attack.mitre.org/tactics/TA0010"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Discovery",
+            "description": "The adversary is trying to figure out your environment.\n\nDiscovery consists of techniques an adversary may use to gain knowledge about the system and internal network. These techniques help adversaries observe the environment and orient themselves before deciding how to act. They also allow adversaries to explore what they can control and what’s around their entry point in order to discover how it could benefit their current objective. Native operating system tools are often used toward this post-compromise information-gathering objective. ",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--c17c5845-175e-4421-9713-829d0573dbc9",
+            "x_mitre_shortname": "discovery",
+            "modified": "2019-07-19T17:44:13.228Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0007",
+                    "url": "https://attack.mitre.org/tactics/TA0007"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Collection",
+            "description": "The adversary is trying to gather data of interest to their goal.\n\nCollection consists of techniques adversaries may use to gather information and the sources information is collected from that are relevant to following through on the adversary's objectives. Frequently, the next goal after collecting data is to steal (exfiltrate) the data. Common target sources include various drive types, browsers, audio, video, and email. Common collection methods include capturing screenshots and keyboard input.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--d108ce10-2419-4cf9-a774-46161d6c6cfe",
+            "x_mitre_shortname": "collection",
+            "modified": "2019-07-19T17:44:53.176Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0009",
+                    "url": "https://attack.mitre.org/tactics/TA0009"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Command and Control",
+            "description": "The adversary is trying to communicate with compromised systems to control them.\n\nCommand and Control consists of techniques that adversaries may use to communicate with systems under their control within a victim network. Adversaries commonly attempt to mimic normal, expected traffic to avoid detection. There are many ways an adversary can establish command and control with various levels of stealth depending on the victim’s network structure and defenses.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--f72804c5-f15a-449e-a5da-2eecd181f813",
+            "x_mitre_shortname": "command-and-control",
+            "modified": "2019-07-19T17:45:30.644Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0011",
+                    "url": "https://attack.mitre.org/tactics/TA0011"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Initial Access",
+            "description": "The adversary is trying to get into your network.\n\nInitial Access consists of techniques that use various entry vectors to gain their initial foothold within a network. Techniques used to gain a foothold include targeted spearphishing and exploiting weaknesses on public-facing web servers. Footholds gained through initial access may allow for continued access, like valid accounts and use of external remote services, or may be limited-use due to changing passwords.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--ffd5bcee-6e16-4dd2-8eca-7b3beedf33ca",
+            "x_mitre_shortname": "initial-access",
+            "modified": "2019-07-19T17:41:41.425Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0001",
+                    "url": "https://attack.mitre.org/tactics/TA0001"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Technical Information Gathering",
+            "description": "Technical information gathering consists of the process of identifying critical technical elements of intelligence an adversary will need about a target in order to best attack.  Technical intelligence gathering includes, but is not limited to, understanding the target's network architecture, IP space, network services, email format, and security procedures.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--0abac415-7b49-4085-93b3-662ba1258b4b",
+            "x_mitre_shortname": "technical-information-gathering",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0015",
+                    "url": "https://attack.mitre.org/tactics/TA0015"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Priority Definition Direction",
+            "description": "Priority definition direction consists of the process of collecting and assigning requirements for meeting Key Intelligence Topics (KIT) or Key Intelligence Questions (KIQ) as determined by leadership.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--0f0ff9a7-3c8d-4af6-8e45-f6d359553ffd",
+            "x_mitre_shortname": "priority-definition-direction",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0013",
+                    "url": "https://attack.mitre.org/tactics/TA0013"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Establish & Maintain Infrastructure",
+            "description": "Establishing and maintaining infrastructure consists of building, purchasing, co-opting, and maintaining systems and services used to conduct cyber operations. An adversary will need to establish infrastructure used to communicate with and control assets used throughout the course of their operations.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--2289489d-8824-42fb-8c94-411aca6f664c",
+            "x_mitre_shortname": "establish-&-maintain-infrastructure",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0022",
+                    "url": "https://attack.mitre.org/tactics/TA0022"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Adversary OPSEC",
+            "description": "Adversary OPSEC consists of the use of various technologies or 3rd party services to obfuscate, hide, or blend in with accepted network traffic or system behavior.  The adversary may use these techniques to evade defenses, reduce attribution, minimize discovery, and/or increase the time and effort required to analyze.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--4652199e-eef5-4523-bd18-2b5070f56cd8",
+            "x_mitre_shortname": "adversary-opsec",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0021",
+                    "url": "https://attack.mitre.org/tactics/TA0021"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Target Selection",
+            "description": "Target selection consists of an iterative process in which an adversary determines a target by first beginning at the strategic level and then narrowing down operationally and tactically until a specific target is chosen.  A target may be defined as an entity or object that performs a function considered for possible engagement or other action.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--84f3ed3d-c72f-45d8-a3b8-4c18c2b188e6",
+            "x_mitre_shortname": "target-selection",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0014",
+                    "url": "https://attack.mitre.org/tactics/TA0014"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Technical Weakness Identification",
+            "description": "Technical weakness identification consists of identifying and analyzing weaknesses and vulnerabilities collected during the intelligence gathering phases to determine best approach based on technical complexity and adversary priorities (e.g., expediency, stealthiness).",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--97689bbd-d5c4-4293-bde7-f11750cea2ec",
+            "x_mitre_shortname": "technical-weakness-identification",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0018",
+                    "url": "https://attack.mitre.org/tactics/TA0018"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Priority Definition Planning",
+            "description": "Priority definition planning consists of the process of determining the set of Key Intelligence Topics (KIT) or Key Intelligence Questions (KIQ) required for meeting key strategic, operational, or tactical goals.  Leadership outlines the priority definition (may be considered a goal) around which the adversary designs target selection and a plan to achieve.  An analyst may outline the priority definition when in the course of determining gaps in existing KITs or KIQs.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--b2a086f2-d3db-408b-b4d4-e09a1c84f940",
+            "x_mitre_shortname": "priority-definition-planning",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0012",
+                    "url": "https://attack.mitre.org/tactics/TA0012"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Organizational Information Gathering",
+            "description": "Organizational information gathering consists of the process of identifying critical organizational elements of intelligence an adversary will need about a target in order to best attack.  Similar to competitive intelligence, organizational intelligence gathering focuses on understanding the operational tempo of an organization and gathering a deep understanding of the organization and how it operates, in order to best develop a strategy to target it.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--b9f8a273-6167-47cb-89e6-02774d067e24",
+            "x_mitre_shortname": "organizational-information-gathering",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0017",
+                    "url": "https://attack.mitre.org/tactics/TA0017"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Test Capabilities",
+            "description": "Testing capabilities takes place when adversaries may need to test capabilities externally to refine development goals and criteria and to ensure success during an operation. Certain testing may be done after a capability is staged.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--bc5c0e21-7c93-4809-a01e-249bcc42b0a2",
+            "x_mitre_shortname": "test-capabilities",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0025",
+                    "url": "https://attack.mitre.org/tactics/TA0025"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Organizational Weakness Identification",
+            "description": "Organizational weakness identification consists of identifying and analyzing weaknesses and vulnerabilities from the intelligence gathering phases which can be leveraged to gain access to target or intermediate target organizations of interest.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--c6b17c99-31c1-490a-8b2b-a79502d6131b",
+            "x_mitre_shortname": "organizational-weakness-identification",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0020",
+                    "url": "https://attack.mitre.org/tactics/TA0020"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Persona Development",
+            "description": "Persona development consists of the development of public information, presence, history and appropriate affiliations.  This development could be applied to social media, website, or other publicly available information that could be referenced and scrutinized for legitimacy over the course of an operation using that persona or identity.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--d3909f10-8193-4a94-9bbb-1f2d5cb2373e",
+            "x_mitre_shortname": "persona-development",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0023",
+                    "url": "https://attack.mitre.org/tactics/TA0023"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Build Capabilities",
+            "description": "Building capabilities consists of developing and/or acquiring the software, data and techniques used at different phases of an operation.  This is the process of identifying development requirements and implementing solutions such as malware,  delivery mechanisms, obfuscation/cryptographic protections, and call back and O&M functions.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--d849365b-3496-4e5c-b599-019da1b35266",
+            "x_mitre_shortname": "build-capabilities",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0024",
+                    "url": "https://attack.mitre.org/tactics/TA0024"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Stage Capabilities",
+            "description": "Staging capabilities consists of preparing operational environment required to conduct the operation.  This includes activities such as deploying software, uploading data, enabling command and control infrastructure.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--d8c84771-a3fa-4f64-914e-4db3a2be2607",
+            "x_mitre_shortname": "stage-capabilities",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0026",
+                    "url": "https://attack.mitre.org/tactics/TA0026"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "People Information Gathering",
+            "description": "People Information Gathering consists of the process of identifying critical personnel elements of intelligence an adversary will need about a target in order to best attack.  People intelligence gathering focuses on identifying key personnel or individuals with critical accesses in order to best approach a target for attack.  It may involve aspects of social engineering, elicitation, mining social media sources, or be thought of as understanding the personnel element of competitive intelligence.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--d90bd741-2edb-4e74-8a6f-435143ad7bbb",
+            "x_mitre_shortname": "people-information-gathering",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0016",
+                    "url": "https://attack.mitre.org/tactics/TA0016"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "People Weakness Identification",
+            "description": "People weakness identification consists of identifying and analyzing weaknesses and vulnerabilities from the intelligence gathering phases which can be leveraged to gain access to target or intermediate target persons of interest or social trust relationships.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--f30c2753-e6b2-4186-818d-99b8b1a0322b",
+            "x_mitre_shortname": "people-weakness-identification",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0019",
+                    "url": "https://attack.mitre.org/tactics/TA0019"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Initial Access",
+            "description": "The initial access tactic represents the vectors adversaries use to gain an initial foothold onto a mobile device.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--0a93fd8e-4a83-4c15-8203-db290e5f2ac6",
+            "x_mitre_shortname": "initial-access",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0027",
+                    "url": "https://attack.mitre.org/tactics/TA0027"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Exfiltration",
+            "description": "Exfiltration refers to techniques and attributes that result or aid in the adversary removing files and information from the targeted mobile device.\n\nIn the mobile environment, mobile devices are frequently connected to networks outside enterprise control such as cellular networks or public Wi-Fi networks. Adversaries could attempt to evade detection by communicating on these networks, and potentially even by using non-Internet Protocol mechanisms such as Short Message Service (SMS). However, cellular networks often have data caps and/or extra data charges that could increase the potential for adversarial communication to be detected.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--10fa8d8d-1b04-4176-917e-738724239981",
+            "x_mitre_shortname": "exfiltration",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0036",
+                    "url": "https://attack.mitre.org/tactics/TA0036"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Persistence",
+            "description": "Persistence is any access, action, or configuration change to a mobile device that gives an attacker a persistent presence on the device. Attackers often will need to maintain access to mobile devices through interruptions such as device reboots and potentially even factory data resets.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--363bbeff-bb2a-4734-ac74-d6d37202fe54",
+            "x_mitre_shortname": "persistence",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0028",
+                    "url": "https://attack.mitre.org/tactics/TA0028"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Privilege Escalation",
+            "description": "Privilege escalation includes techniques that allow an attacker to obtain a higher level of permissions on the mobile device. Attackers may enter the mobile device with very limited privileges and may be required to take advantage of a device weakness to obtain higher privileges necessary to successfully carry out their mission objectives.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--3e962de5-3280-43b7-bc10-334fbc1d6fa8",
+            "x_mitre_shortname": "privilege-escalation",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0029",
+                    "url": "https://attack.mitre.org/tactics/TA0029"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Command and Control",
+            "description": "The command and control tactic represents how adversaries communicate with systems under their control within a target network. There are many ways an adversary can establish command and control with various levels of covertness, depending on system configuration and network topology. Due to the wide degree of variation available to the adversary at the network level, only the most common factors were used to describe the differences in command and control. There are still a great many specific techniques within the documented methods, largely due to how easy it is to define new protocols and use existing, legitimate protocols and network services for communication. \n\nThe resulting breakdown should help convey the concept that detecting intrusion through command and control protocols without prior knowledge is a difficult proposition over the long term. Adversaries' main constraints in network-level defense avoidance are testing and deployment of tools to rapidly change their protocols, awareness of existing defensive technologies, and access to legitimate Web services that, when used appropriately, make their tools difficult to distinguish from benign traffic.\n\nAdditionally, in the mobile environment, mobile devices are frequently connected to networks outside enterprise control such as cellular networks or public Wi-Fi networks. Adversaries could attempt to evade detection by communicating on these networks, and potentially even by using non-Internet Protocol mechanisms such as Short Message Service (SMS). However, cellular networks often have data caps and/or extra data charges that could increase the potential for adversarial communication to be detected.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--3f660805-fa2e-42e8-8851-57f9e9b653e3",
+            "x_mitre_shortname": "command-and-control",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0037",
+                    "url": "https://attack.mitre.org/tactics/TA0037"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Impact",
+            "description": "The impact tactic consists of techniques used by the adversary to execute his or her mission objectives but that do not cleanly fit into another category such as Collection. Mission objectives vary based on each adversary's goals, but examples include toll fraud, destruction of device data, or locking the user out of his or her device until a ransom is paid.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--6ebce653-294a-444a-bffb-14c04c8d137e",
+            "x_mitre_shortname": "impact",
+            "modified": "2019-07-03T19:24:27.636Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0034",
+                    "url": "https://attack.mitre.org/tactics/TA0034"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Credential Access",
+            "description": "Credential access represents techniques that can be used by adversaries to obtain access to or control over passwords, tokens, cryptographic keys, or other values that could be used by an adversary to gain unauthorized access to resources. Credential access allows the adversary to assume the identity of an account, with all of that account's permissions on the system and network, and makes it harder for defenders to detect the adversary. With sufficient access within a network, an adversary can create accounts for later use within the environment.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--6fcb36b8-3776-483b-8699-42215714fb10",
+            "x_mitre_shortname": "credential-access",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0031",
+                    "url": "https://attack.mitre.org/tactics/TA0031"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Collection",
+            "description": "Collection consists of techniques used to identify and gather information, such as sensitive files, from a target network prior to exfiltration. This category also covers locations on a system or network where the adversary may look for information to exfiltrate.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--7a0d25d3-f0c0-40bf-bf90-c743871b19ba",
+            "x_mitre_shortname": "collection",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0035",
+                    "url": "https://attack.mitre.org/tactics/TA0035"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Lateral Movement",
+            "description": "Lateral movement consists of techniques that enable an adversary to access and control remote systems on a network and could, but does not necessarily, include execution of tools on remote systems. The lateral movement techniques could allow an adversary to gather information from a system without needing additional tools, such as a remote access tool.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--7be441c2-0095-4b1e-8125-fa8ffda29b0f",
+            "x_mitre_shortname": "lateral-movement",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0033",
+                    "url": "https://attack.mitre.org/tactics/TA0033"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Defense Evasion",
+            "description": "Defense evasion consists of techniques an adversary may use to evade detection or avoid other defenses. Sometimes these actions are the same as or variations of techniques in other categories that have the added benefit of subverting a particular defense or mitigation. Defense evasion may be considered a set of attributes the adversary applies to all other phases of the operation.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--987cda6d-eb77-406b-bf68-bcb5f3d2e1df",
+            "x_mitre_shortname": "defense-evasion",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0030",
+                    "url": "https://attack.mitre.org/tactics/TA0030"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Network Effects",
+            "description": "This category refers to network-based techniques that an adversary may be able to use to fulfill his or her objectives without access to the mobile device itself. These include techniques to intercept or manipulate network traffic to and from the mobile device.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--9eb4c21e-4fa8-44c9-b167-dbfc455f9210",
+            "x_mitre_shortname": "network-effects",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0038",
+                    "url": "https://attack.mitre.org/tactics/TA0038"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Discovery",
+            "description": "Discovery consists of techniques that allow the adversary to gain knowledge about the characteristics of the mobile device and potentially other networked systems. When adversaries gain access to a new system, they must orient themselves to what they now have control of and what benefits operating from that system give to their current objective or overall goals during the intrusion. The operating system may provide capabilities that aid in this post-compromise information-gathering phase.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--d418cdeb-1b9f-4a6b-a15d-2f89f549f8c1",
+            "x_mitre_shortname": "discovery",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0032",
+                    "url": "https://attack.mitre.org/tactics/TA0032"
+                }
+            ]
+        },
+        {
+            "type": "x-mitre-tactic",
+            "name": "Remote Service Effects",
+            "description": "This category refers to techniques involving remote services, such as vendor-provided cloud services (e.g. Google Drive, Google Find My Device, or Apple iCloud), or enterprise mobility management (EMM)/mobile device management (MDM) services that an adversary may be able to use to fulfill his or her objectives without access to the mobile device itself.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-10-17T00:14:20.652Z",
+            "id": "x-mitre-tactic--e78d7d60-41b5-49b7-b0a9-5c5d4cbabe17",
+            "x_mitre_shortname": "remote-service-effects",
+            "modified": "2018-10-17T00:14:20.652Z",
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "TA0039",
+                    "url": "https://attack.mitre.org/tactics/TA0039"
+                }
+            ]
+        }
+    ]
+}

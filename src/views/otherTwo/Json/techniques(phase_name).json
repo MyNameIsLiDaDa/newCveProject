@@ -1,0 +1,2325 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "x_mitre_data_sources": [
+                "API monitoring",
+                "Process monitoring",
+                "PowerShell logs",
+                "Process command-line parameters"
+            ],
+            "x_mitre_permissions_required": [
+                "Administrator",
+                "SYSTEM",
+                "root"
+            ],
+            "name": "Credential Dumping",
+            "description": "Credential dumping is the process of obtaining account login and password information, normally in the form of a hash or a clear text password, from the operating system and software. Credentials can then be used to perform Lateral Movement and access restricted information.\n\nSeveral of the tools mentioned in this technique may be used by both adversaries and professional security testers. Additional custom tools likely exist as well.\n\n### Windows\n\n#### SAM (Security Accounts Manager)\n\nThe SAM is a database file that contains local accounts for the host, typically those found with the ‘net user’ command. To enumerate the SAM database, system level access is required.\n \nA number of tools can be used to retrieve the SAM file through in-memory techniques:\n\n* pwdumpx.exe \n* [gsecdump](https://attack.mitre.org/software/S0008)\n* [Mimikatz](https://attack.mitre.org/software/S0002)\n* secretsdump.py\n\nAlternatively, the SAM can be extracted from the Registry with [Reg](https://attack.mitre.org/software/S0075):\n\n* <code>reg save HKLM\\sam sam</code>\n* <code>reg save HKLM\\system system</code>\n\nCreddump7 can then be used to process the SAM database locally to retrieve hashes. (Citation: GitHub Creddump7)\n\nNotes:\nRid 500 account is the local, in-built administrator.\nRid 501 is the guest account.\nUser accounts start with a RID of 1,000+.\n\n#### Cached Credentials\n\nThe DCC2 (Domain Cached Credentials version 2) hash, used by Windows Vista and newer caches credentials when the domain controller is unavailable. The number of default cached credentials varies, and this number can be altered per system. This hash does not allow pass-the-hash style attacks.\n \nA number of tools can be used to retrieve the SAM file through in-memory techniques.\n\n* pwdumpx.exe \n* [gsecdump](https://attack.mitre.org/software/S0008)\n* [Mimikatz](https://attack.mitre.org/software/S0002)\n\nAlternatively, reg.exe can be used to extract from the Registry and Creddump7 used to gather the credentials.\n\nNotes:\nCached credentials for Windows Vista are derived using PBKDF2.\n\n#### Local Security Authority (LSA) Secrets\n\nWith SYSTEM access to a host, the LSA secrets often allows trivial access from a local account to domain-based account credentials. The Registry is used to store the LSA secrets.\n \nWhen services are run under the context of local or domain users, their passwords are stored in the Registry. If auto-logon is enabled, this information will be stored in the Registry as well.\n \nA number of tools can be used to retrieve the SAM file through in-memory techniques.\n\n* pwdumpx.exe \n* [gsecdump](https://attack.mitre.org/software/S0008)\n* [Mimikatz](https://attack.mitre.org/software/S0002)\n* secretsdump.py\n\nAlternatively, reg.exe can be used to extract from the Registry and Creddump7 used to gather the credentials.\n\nNotes:\nThe passwords extracted by his mechanism are UTF-16 encoded, which means that they are returned in plaintext.\nWindows 10 adds protections for LSA Secrets described in Mitigation.\n\n#### NTDS from Domain Controller\n\nActive Directory stores information about members of the domain including devices and users to verify credentials and define access rights. The Active Directory domain database is stored in the NTDS.dit file. By default the NTDS file will be located in %SystemRoot%\\NTDS\\Ntds.dit of a domain controller. (Citation: Wikipedia Active Directory)\n \nThe following tools and techniques can be used to enumerate the NTDS file and the contents of the entire Active Directory hashes.\n\n* Volume Shadow Copy\n* secretsdump.py\n* Using the in-built Windows tool, ntdsutil.exe\n* Invoke-NinjaCopy\n\n#### Group Policy Preference (GPP) Files\n\nGroup Policy Preferences (GPP) are tools that allowed administrators to create domain policies with embedded credentials. These policies, amongst other things, allow administrators to set local accounts.\n\nThese group policies are stored in SYSVOL on a domain controller, this means that any domain user can view the SYSVOL share and decrypt the password (the AES private key was leaked on-line. (Citation: Microsoft GPP Key) (Citation: SRD GPP)\n\nThe following tools and scripts can be used to gather and decrypt the password file from Group Policy Preference XML files:\n\n* Metasploit’s post exploitation module: \"post/windows/gather/credentials/gpp\"\n* Get-GPPPassword (Citation: Obscuresecurity Get-GPPPassword)\n* gpprefdecrypt.py\n\nNotes:\nOn the SYSVOL share, the following can be used to enumerate potential XML files.\ndir /s * .xml\n\n#### Service Principal Names (SPNs)\n\nSee [Kerberoasting](https://attack.mitre.org/techniques/T1208).\n\n#### Plaintext Credentials\n\nAfter a user logs on to a system, a variety of credentials are generated and stored in the Local Security Authority Subsystem Service (LSASS) process in memory. These credentials can be harvested by a administrative user or SYSTEM.\n\nSSPI (Security Support Provider Interface) functions as a common interface to several Security Support Providers (SSPs): A Security Support Provider is a dynamic-link library (DLL) that makes one or more security packages available to applications.\n\nThe following SSPs can be used to access credentials:\n\nMsv: Interactive logons, batch logons, and service logons are done through the MSV authentication package.\nWdigest: The Digest Authentication protocol is designed for use with Hypertext Transfer Protocol (HTTP) and Simple Authentication Security Layer (SASL) exchanges. (Citation: TechNet Blogs Credential Protection)\nKerberos: Preferred for mutual client-server domain authentication in Windows 2000 and later.\nCredSSP:  Provides SSO and Network Level Authentication for Remote Desktop Services. (Citation: Microsoft CredSSP)\n \nThe following tools can be used to enumerate credentials:\n\n* [Windows Credential Editor](https://attack.mitre.org/software/S0005)\n* [Mimikatz](https://attack.mitre.org/software/S0002)\n\nAs well as in-memory techniques, the LSASS process memory can be dumped from the target host and analyzed on a local system.\n\nFor example, on the target host use procdump:\n\n* <code>procdump -ma lsass.exe lsass_dump</code>\n\nLocally, mimikatz can be run:\n\n* <code>sekurlsa::Minidump lsassdump.dmp</code>\n* <code>sekurlsa::logonPasswords</code>\n\n#### DCSync\n\nDCSync is a variation on credential dumping which can be used to acquire sensitive information from a domain controller. Rather than executing recognizable malicious code, the action works by abusing the domain controller's  application programming interface (API) (Citation: Microsoft DRSR Dec 2017) (Citation: Microsoft GetNCCChanges) (Citation: Samba DRSUAPI) (Citation: Wine API samlib.dll) to simulate the replication process from a remote domain controller. Any members of the Administrators, Domain Admins, Enterprise Admin groups or computer accounts on the domain controller are able to run DCSync to pull password data (Citation: ADSecurity Mimikatz DCSync) from Active Directory, which may include current and historical hashes of potentially useful accounts such as KRBTGT and Administrators. The hashes can then in turn be used to create a Golden Ticket for use in [Pass the Ticket](https://attack.mitre.org/techniques/T1097) (Citation: Harmj0y Mimikatz and DCSync) or change an account's password as noted in [Account Manipulation](https://attack.mitre.org/techniques/T1098). (Citation: InsiderThreat ChangeNTLM July 2017) DCSync functionality has been included in the \"lsadump\" module in Mimikatz. (Citation: GitHub Mimikatz lsadump Module) Lsadump also includes NetSync, which performs DCSync over a legacy replication protocol. (Citation: Microsoft NRPC Dec 2017)\n\n### Linux\n\n#### Proc filesystem\n\nThe /proc filesystem on Linux contains a great deal of information regarding the state of the running operating system. Processes running with root privileges can use this facility to scrape live memory of other running programs. If any of these programs store passwords in clear text or password hashes in memory, these values can then be harvested for either usage or brute force attacks, respectively. This functionality has been implemented in the [MimiPenguin](https://attack.mitre.org/software/S0179), an open source tool inspired by [Mimikatz](https://attack.mitre.org/software/S0002). The tool dumps process memory, then harvests passwords and hashes by looking for text strings and regex patterns for how given applications such as Gnome Keyring, sshd, and Apache use memory to store such authentication artifacts.",
+            "id": "attack-pattern--0a3ead4e-6d47-4ccb-854c-a6a4f9d96b22",
+            "x_mitre_platforms": [
+                "Windows",
+                "Linux",
+                "macOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.1",
+            "type": "attack-pattern",
+            "x_mitre_detection": "### Windows\nMonitor for unexpected processes interacting with lsass.exe.(Citation: Medium Detecting Attempts to Steal Passwords from Memory) Common credential dumpers such as [Mimikatz](https://attack.mitre.org/software/S0002) access the LSA Subsystem Service (LSASS) process by opening the process, locating the LSA secrets key, and decrypting the sections in memory where credential details are stored. Credential dumpers may also use methods for reflective [Process Injection](https://attack.mitre.org/techniques/T1055) to reduce potential indicators of malicious activity.\n\nHash dumpers open the Security Accounts Manager (SAM) on the local file system (%SystemRoot%/system32/config/SAM) or create a dump of the Registry SAM key to access stored account password hashes. Some hash dumpers will open the local file system as a device and parse to the SAM table to avoid file access defenses. Others will make an in-memory copy of the SAM table before reading hashes. Detection of compromised [Valid Accounts](https://attack.mitre.org/techniques/T1078) in-use by adversaries may help as well. \n\nOn Windows 8.1 and Windows Server 2012 R2, monitor Windows Logs for LSASS.exe creation to verify that LSASS started as a protected process.\n\nMonitor processes and command-line arguments for program execution that may be indicative of credential dumping. Remote access tools may contain built-in features or incorporate existing tools like [Mimikatz](https://attack.mitre.org/software/S0002). [PowerShell](https://attack.mitre.org/techniques/T1086) scripts also exist that contain credential dumping functionality, such as PowerSploit's Invoke-Mimikatz module, (Citation: Powersploit) which may require additional logging features to be configured in the operating system to collect necessary information for analysis.\n\nMonitor domain controller logs for replication requests and other unscheduled activity possibly associated with DCSync. (Citation: Microsoft DRSR Dec 2017) (Citation: Microsoft GetNCCChanges) (Citation: Samba DRSUAPI) Note: Domain controllers may not log replication requests originating from the default domain controller account. (Citation: Harmj0y DCSync Sept 2015). Also monitor for network protocols  (Citation: Microsoft DRSR Dec 2017) (Citation: Microsoft NRPC Dec 2017) and other replication requests (Citation: Microsoft SAMR) from IPs not associated with known domain controllers. (Citation: AdSecurity DCSync Sept 2015)\n\n### Linux\nTo obtain the passwords and hashes stored in memory, processes must open a maps file in the /proc filesystem for the process being analyzed. This file is stored under the path <code>/proc/<pid>/maps</code>, where the <code><pid></code> directory is the unique pid of the program being interrogated for such authentication data. The AuditD monitoring tool, which ships stock in many Linux distributions, can be used to watch for hostile processes opening this file in the proc file system, alerting on the pid, process name, and arguments of such programs.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Vincent Le Toux",
+                "Ed Williams, Trustwave, SpiderLabs"
+            ],
+            "created": "2017-05-31T21:30:19.735000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1003",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1003"
+                },
+                {
+                    "source_name": "GitHub Creddump7",
+                    "description": "Flathers, R. (2018, February 19). creddump7. Retrieved April 11, 2018.",
+                    "url": "https://github.com/Neohapsis/creddump7"
+                },
+                {
+                    "description": "Wikipedia. (2018, March 10). Active Directory. Retrieved April 11, 2018.",
+                    "source_name": "Wikipedia Active Directory",
+                    "url": "https://en.wikipedia.org/wiki/Active_Directory"
+                },
+                {
+                    "source_name": "Microsoft GPP Key",
+                    "description": "Microsoft. (n.d.). 2.2.1.1.4 Password Encryption. Retrieved April 11, 2018.",
+                    "url": "https://msdn.microsoft.com/library/cc422924.aspx"
+                },
+                {
+                    "source_name": "SRD GPP",
+                    "description": "Security Research and Defense. (2014, May 13). MS14-025: An Update for Group Policy Preferences. Retrieved January 28, 2015.",
+                    "url": "http://blogs.technet.com/b/srd/archive/2014/05/13/ms14-025-an-update-for-group-policy-preferences.aspx"
+                },
+                {
+                    "source_name": "Obscuresecurity Get-GPPPassword",
+                    "description": "Campbell, C. (2012, May 24). GPP Password Retrieval with PowerShell. Retrieved April 11, 2018.",
+                    "url": "https://obscuresecurity.blogspot.co.uk/2012/05/gpp-password-retrieval-with-powershell.html"
+                },
+                {
+                    "source_name": "TechNet Blogs Credential Protection",
+                    "description": "Wilson, B. (2016, April 18). The Importance of KB2871997 and KB2928120 for Credential Protection. Retrieved April 11, 2018.",
+                    "url": "https://blogs.technet.microsoft.com/askpfeplat/2016/04/18/the-importance-of-kb2871997-and-kb2928120-for-credential-protection/"
+                },
+                {
+                    "description": "Microsoft. (2008, July 25). Credential Security Service Provider and SSO for Terminal Services Logon. Retrieved April 11, 2018.",
+                    "source_name": "Microsoft CredSSP",
+                    "url": "https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-vista/cc749211(v=ws.10)"
+                },
+                {
+                    "source_name": "Microsoft DRSR Dec 2017",
+                    "description": "Microsoft. (2017, December 1). MS-DRSR Directory Replication Service (DRS) Remote Protocol. Retrieved December 4, 2017.",
+                    "url": "https://msdn.microsoft.com/library/cc228086.aspx"
+                },
+                {
+                    "description": "Microsoft. (n.d.). IDL_DRSGetNCChanges (Opnum 3). Retrieved December 4, 2017.",
+                    "source_name": "Microsoft GetNCCChanges",
+                    "url": "https://msdn.microsoft.com/library/dd207691.aspx"
+                },
+                {
+                    "description": "SambaWiki. (n.d.). DRSUAPI. Retrieved December 4, 2017.",
+                    "source_name": "Samba DRSUAPI",
+                    "url": "https://wiki.samba.org/index.php/DRSUAPI"
+                },
+                {
+                    "description": "Wine API. (n.d.). samlib.dll. Retrieved December 4, 2017.",
+                    "source_name": "Wine API samlib.dll",
+                    "url": "https://source.winehq.org/WineAPI/samlib.html"
+                },
+                {
+                    "source_name": "ADSecurity Mimikatz DCSync",
+                    "description": "Metcalf, S. (2015, September 25). Mimikatz DCSync Usage, Exploitation, and Detection. Retrieved August 7, 2017.",
+                    "url": "https://adsecurity.org/?p=1729"
+                },
+                {
+                    "source_name": "Harmj0y Mimikatz and DCSync",
+                    "description": "Schroeder, W. (2015, September 22). Mimikatz and DCSync and ExtraSids, Oh My. Retrieved August 7, 2017.",
+                    "url": "http://www.harmj0y.net/blog/redteaming/mimikatz-and-dcsync-and-extrasids-oh-my/"
+                },
+                {
+                    "source_name": "InsiderThreat ChangeNTLM July 2017",
+                    "description": "Warren, J. (2017, July 11). Manipulating User Passwords with Mimikatz. Retrieved December 4, 2017.",
+                    "url": "https://blog.stealthbits.com/manipulating-user-passwords-with-mimikatz-SetNTLM-ChangeNTLM"
+                },
+                {
+                    "description": "Deply, B., Le Toux, V. (2016, June 5). module ~ lsadump. Retrieved August 7, 2017.",
+                    "source_name": "GitHub Mimikatz lsadump Module",
+                    "url": "https://github.com/gentilkiwi/mimikatz/wiki/module-~-lsadump"
+                },
+                {
+                    "source_name": "Microsoft NRPC Dec 2017",
+                    "description": "Microsoft. (2017, December 1). MS-NRPC - Netlogon Remote Protocol. Retrieved December 6, 2017.",
+                    "url": "https://msdn.microsoft.com/library/cc237008.aspx"
+                },
+                {
+                    "description": "Frecn, D.. (2018, October 2). Detecting Attempts to Steal Passwords from Memory. Retrieved October 11, 2019.",
+                    "source_name": "Medium Detecting Attempts to Steal Passwords from Memory",
+                    "url": "https://medium.com/threatpunter/detecting-attempts-to-steal-passwords-from-memory-558f16dce4ea"
+                },
+                {
+                    "source_name": "Powersploit",
+                    "description": "PowerSploit. (n.d.). Retrieved December 4, 2014.",
+                    "url": "https://github.com/mattifestation/PowerSploit"
+                },
+                {
+                    "source_name": "Harmj0y DCSync Sept 2015",
+                    "description": "Schroeder, W. (2015, September 22). Mimikatz and DCSync and ExtraSids, Oh My. Retrieved December 4, 2017.",
+                    "url": "http://www.harmj0y.net/blog/redteaming/mimikatz-and-dcsync-and-extrasids-oh-my/"
+                },
+                {
+                    "source_name": "Microsoft SAMR",
+                    "description": "Microsoft. (n.d.). MS-SAMR Security Account Manager (SAM) Remote Protocol (Client-to-Server) - Transport. Retrieved December 4, 2017.",
+                    "url": "https://msdn.microsoft.com/library/cc245496.aspx"
+                },
+                {
+                    "source_name": "AdSecurity DCSync Sept 2015",
+                    "description": "Metcalf, S. (2015, September 25). Mimikatz DCSync Usage, Exploitation, and Detection. Retrieved December 4, 2017.",
+                    "url": "https://adsecurity.org/?p=1729"
+                }
+            ],
+            "modified": "2019-10-11T12:49:33.530000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Windows event logs",
+                "Windows Registry",
+                "Packet capture",
+                "Netflow/Enclave netflow"
+            ],
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "name": "LLMNR/NBT-NS Poisoning and Relay",
+            "description": "Link-Local Multicast Name Resolution (LLMNR) and NetBIOS Name Service (NBT-NS) are Microsoft Windows components that serve as alternate methods of host identification. LLMNR is based upon the Domain Name System (DNS) format and allows hosts on the same local link to perform name resolution for other hosts. NBT-NS identifies systems on a local network by their NetBIOS name. (Citation: Wikipedia LLMNR) (Citation: TechNet NetBIOS)\n\nAdversaries can spoof an authoritative source for name resolution on a victim network by responding to LLMNR (UDP 5355)/NBT-NS (UDP 137) traffic as if they know the identity of the requested host, effectively poisoning the service so that the victims will communicate with the adversary controlled system. If the requested host belongs to a resource that requires identification/authentication, the username and NTLMv2 hash will then be sent to the adversary controlled system. The adversary can then collect the hash information sent over the wire through tools that monitor the ports for traffic or through [Network Sniffing](https://attack.mitre.org/techniques/T1040) and crack the hashes offline through [Brute Force](https://attack.mitre.org/techniques/T1110) to obtain the plaintext passwords. In some cases where an adversary has access to a system that is in the authentication path between systems or when automated scans that use credentials attempt to authenticate to an adversary controlled system, the NTLMv2 hashes can be intercepted and relayed to access and execute code against a target system. The relay step can happen in conjunction with poisoning but may also be independent of it. (Citation: byt3bl33d3r NTLM Relaying)(Citation: Secure Ideas SMB Relay)\n\nSeveral tools exist that can be used to poison name services within local networks such as NBNSpoof, Metasploit, and [Responder](https://attack.mitre.org/software/S0174). (Citation: GitHub NBNSpoof) (Citation: Rapid7 LLMNR Spoofer) (Citation: GitHub Responder)",
+            "id": "attack-pattern--0dbf5f1b-a560-4d51-ac1b-d70caab3e1f0",
+            "x_mitre_platforms": [
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor <code>HKLM\\Software\\Policies\\Microsoft\\Windows NT\\DNSClient</code> for changes to the \"EnableMulticast\" DWORD value. A value of “0” indicates LLMNR is disabled. (Citation: Sternsecurity LLMNR-NBTNS)\n\nMonitor for traffic on ports UDP 5355 and UDP 137 if LLMNR/NetBIOS is disabled by security policy.\n\nDeploy an LLMNR/NBT-NS spoofing detection tool.(Citation: GitHub Conveigh) Monitoring of Windows event logs for event IDs 4697 and 7045 may help in detecting successful relay techniques.(Citation: Secure Ideas SMB Relay)",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Eric Kuehn, Secure Ideas",
+                "Matthew Demaske, Adaptforward"
+            ],
+            "created": "2018-01-16T16:13:52.465000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1171",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1171"
+                },
+                {
+                    "source_name": "Wikipedia LLMNR",
+                    "description": "Wikipedia. (2016, July 7). Link-Local Multicast Name Resolution. Retrieved November 17, 2017.",
+                    "url": "https://en.wikipedia.org/wiki/Link-Local_Multicast_Name_Resolution"
+                },
+                {
+                    "description": "Microsoft. (n.d.). NetBIOS Name Resolution. Retrieved November 17, 2017.",
+                    "source_name": "TechNet NetBIOS",
+                    "url": "https://technet.microsoft.com/library/cc958811.aspx"
+                },
+                {
+                    "source_name": "byt3bl33d3r NTLM Relaying",
+                    "description": "Salvati, M. (2017, June 2). Practical guide to NTLM Relaying in 2017 (A.K.A getting a foothold in under 5 minutes). Retrieved February 7, 2019.",
+                    "url": "https://byt3bl33d3r.github.io/practical-guide-to-ntlm-relaying-in-2017-aka-getting-a-foothold-in-under-5-minutes.html"
+                },
+                {
+                    "source_name": "Secure Ideas SMB Relay",
+                    "description": "Kuehn, E. (2018, April 11). Ever Run a Relay? Why SMB Relays Should Be On Your Mind. Retrieved February 7, 2019.",
+                    "url": "https://blog.secureideas.com/2018/04/ever-run-a-relay-why-smb-relays-should-be-on-your-mind.html"
+                },
+                {
+                    "source_name": "GitHub NBNSpoof",
+                    "description": "Nomex. (2014, February 7). NBNSpoof. Retrieved November 17, 2017.",
+                    "url": "https://github.com/nomex/nbnspoof"
+                },
+                {
+                    "source_name": "Rapid7 LLMNR Spoofer",
+                    "description": "Francois, R. (n.d.). LLMNR Spoofer. Retrieved November 17, 2017.",
+                    "url": "https://www.rapid7.com/db/modules/auxiliary/spoof/llmnr/llmnr_response"
+                },
+                {
+                    "source_name": "GitHub Responder",
+                    "description": "Gaffie, L. (2016, August 25). Responder. Retrieved November 17, 2017.",
+                    "url": "https://github.com/SpiderLabs/Responder"
+                },
+                {
+                    "source_name": "Sternsecurity LLMNR-NBTNS",
+                    "description": "Sternstein, J. (2013, November). Local Network Attacks: LLMNR and NBT-NS Poisoning. Retrieved November 17, 2017.",
+                    "url": "https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning"
+                },
+                {
+                    "source_name": "GitHub Conveigh",
+                    "description": "Robertson, K. (2016, August 28). Conveigh. Retrieved November 17, 2017.",
+                    "url": "https://github.com/Kevin-Robertson/Conveigh"
+                }
+            ],
+            "modified": "2019-06-25T13:11:17.247000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "x_mitre_data_sources": [
+                "File monitoring",
+                "API monitoring"
+            ],
+            "name": "Steal Web Session Cookie",
+            "description": "An adversary may steal web application or service session cookies and use them to gain access web applications or Internet services as an authenticated user without needing credentials. Web applications and services often use session cookies as an authentication token after a user has authenticated to a website.\n\nCookies are often valid for an extended period of time, even if the web application is not actively used. Cookies can be found on disk, in the process memory of the browser, and in network traffic to remote systems. Additionally, other applications on the targets machine might store sensitive authentication cookies in memory (e.g. apps which authenticate to cloud services). Session cookies can be used to bypasses some multi-factor authentication protocols.(Citation: Pass The Cookie)\n\nThere are several examples of malware targeting cookies from web browsers on the local system.(Citation: Kaspersky TajMahal April 2019)(Citation: Unit 42 Mac Crypto Cookies January 2019) There are also open source frameworks such as Evilginx 2 and Mauraena that can gather session cookies through a man-in-the-middle proxy that can be set up by an adversary and used in phishing campaigns.(Citation: Github evilginx2)(Citation: GitHub Mauraena)\n\nAfter an adversary acquires a valid cookie, they can then perform a [Web Session Cookie](https://attack.mitre.org/techniques/T1506) technique to login to the corresponding web application.",
+            "id": "attack-pattern--10ffac09-e42d-4f56-ab20-db94c67d76ff",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows",
+                "Office 365",
+                "SaaS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor for attempts to access files and repositories on a local system that are used to store browser session cookies. Monitor for attempts by programs to inject into or dump browser process memory.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Microsoft Threat Intelligence Center (MSTIC)",
+                "Johann Rehberger"
+            ],
+            "created": "2019-10-08T20:04:35.508000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "T1539",
+                    "url": "https://attack.mitre.org/techniques/T1539"
+                },
+                {
+                    "source_name": "Pass The Cookie",
+                    "description": "Rehberger, J. (2018, December). Pivot to the Cloud using Pass the Cookie. Retrieved April 5, 2019.",
+                    "url": "https://wunderwuzzi23.github.io/blog/passthecookie.html"
+                },
+                {
+                    "description": "GReAT. (2019, April 10). Project TajMahal – a sophisticated new APT framework. Retrieved October 14, 2019.",
+                    "source_name": "Kaspersky TajMahal April 2019",
+                    "url": "https://securelist.com/project-tajmahal/90240/"
+                },
+                {
+                    "description": "Chen, Y., Hu, W., Xu, Z., et. al.. (2019, January 31). Mac Malware Steals Cryptocurrency Exchanges’ Cookies. Retrieved October 14, 2019.",
+                    "source_name": "Unit 42 Mac Crypto Cookies January 2019",
+                    "url": "https://unit42.paloaltonetworks.com/mac-malware-steals-cryptocurrency-exchanges-cookies/"
+                },
+                {
+                    "description": "Gretzky, Kuba. (2019, April 10). Retrieved October 8, 2019.",
+                    "source_name": "Github evilginx2",
+                    "url": "https://github.com/kgretzky/evilginx2"
+                },
+                {
+                    "description": "Orrù, M., Trotta, G.. (2019, September 11). Muraena. Retrieved October 14, 2019.",
+                    "source_name": "GitHub Mauraena",
+                    "url": "https://github.com/muraenateam/muraena"
+                }
+            ],
+            "modified": "2019-10-22T19:59:20.282000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "x_mitre_data_sources": [
+                "Azure activity logs",
+                "AWS CloudTrail logs",
+                "Authentication logs"
+            ],
+            "name": "Cloud Instance Metadata API",
+            "description": "Adversaries may attempt to access the Cloud Instance Metadata API to collect credentials and other sensitive data.\n\nMost cloud service providers support a Cloud Instance Metadata API which is a service provided to running virtual instances that allows applications to access information about the running virtual instance. Available information generally includes name, security group, and additional metadata including sensitive data such as credentials and UserData scripts that may contain additional secrets. The Instance Metadata API is provided as a convenience to assist in managing applications and is accessible by anyone who can access the instance.(Citation: AWS Instance Metadata API)\n\nIf adversaries have a presence on the running virtual instance, they may query the Instance Metadata API directly to identify credentials that grant access to additional resources. Additionally, attackers may exploit a Server-Side Request Forgery (SSRF) vulnerability in a public facing web proxy that allows the attacker to gain access to the sensitive information via a request to the Instance Metadata API.(Citation: RedLock Instance Metadata API 2018)\n\nThe de facto standard across cloud service providers is to host the Instance Metadata API at <code>http[:]//169.254.169.254</code>.\n",
+            "id": "attack-pattern--1c2fd73a-e634-44ed-b1b5-9e7cf7404e9f",
+            "x_mitre_platforms": [
+                "AWS",
+                "GCP",
+                "Azure"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "* Monitor access to the Instance Metadata API and look for anomalous queries.\n* It may be possible to detect adversary use of credentials they have obtained. See [Valid Accounts](https://attack.mitre.org/techniques/T1078) for more information.\n",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Praetorian"
+            ],
+            "created": "2019-09-04T14:41:32.317000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "T1522",
+                    "url": "https://attack.mitre.org/techniques/T1522"
+                },
+                {
+                    "description": "AWS. (n.d.). Instance Metadata and User Data. Retrieved July 18, 2019.",
+                    "source_name": "AWS Instance Metadata API",
+                    "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html"
+                },
+                {
+                    "source_name": "RedLock Instance Metadata API 2018",
+                    "description": "Higashi, Michael. (2018, May 15). Instance Metadata API: A Modern Day Trojan Horse. Retrieved July 16, 2019.",
+                    "url": "https://redlock.io/blog/instance-metadata-api-a-modern-day-trojan-horse"
+                }
+            ],
+            "modified": "2019-10-22T19:57:25.998000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Process monitoring"
+            ],
+            "x_mitre_permissions_required": [
+                "root"
+            ],
+            "name": "Securityd Memory",
+            "description": "In OS X prior to El Capitan, users with root access can read plaintext keychain passwords of logged-in users because Apple’s keychain implementation allows these credentials to be cached so that users are not repeatedly prompted for passwords. (Citation: OS X Keychain) (Citation: External to DA, the OS X Way) Apple’s securityd utility takes the user’s logon password, encrypts it with PBKDF2, and stores this master key in memory. Apple also uses a set of keys and algorithms to encrypt the user’s password, but once the master key is found, an attacker need only iterate over the other values to unlock the final password. (Citation: OS X Keychain)\n\nIf an adversary can obtain root access (allowing them to read securityd’s memory), then they can scan through memory to find the correct sequence of keys in relatively few tries to decrypt the user’s logon keychain. This provides the adversary with all the plaintext passwords for users, WiFi, mail, browsers, certificates, secure notes, etc. (Citation: OS X Keychain) (Citation: OSX Keydnap malware)",
+            "id": "attack-pattern--2715c335-1bf2-4efe-9f18-0691317ff83b",
+            "x_mitre_platforms": [
+                "macOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-12-14T16:46:06.044000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1167",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1167"
+                },
+                {
+                    "description": "Juuso Salonen. (2012, September 5). Breaking into the OS X keychain. Retrieved July 15, 2017.",
+                    "source_name": "OS X Keychain",
+                    "url": "http://juusosalonen.com/post/30923743427/breaking-into-the-os-x-keychain"
+                },
+                {
+                    "description": "Marc-Etienne M.Leveille. (2016, July 6). New OSX/Keydnap malware is hungry for credentials. Retrieved July 3, 2017.",
+                    "source_name": "OSX Keydnap malware",
+                    "url": "https://www.welivesecurity.com/2016/07/06/new-osxkeydnap-malware-hungry-credentials/"
+                },
+                {
+                    "description": "Alex Rymdeko-Harvey, Steve Borosh. (2016, May 14). External to DA, the OS X Way. Retrieved July 3, 2017.",
+                    "source_name": "External to DA, the OS X Way",
+                    "url": "http://www.slideshare.net/StephanBorosh/external-to-da-the-os-x-way"
+                }
+            ],
+            "modified": "2018-10-31T13:45:13.024000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "User",
+                "Administrator"
+            ],
+            "x_mitre_data_sources": [
+                "Windows Registry",
+                "Process command-line parameters",
+                "Process monitoring"
+            ],
+            "name": "Credentials in Registry",
+            "description": "The Windows Registry stores configuration information that can be used by the system or other programs. Adversaries may query the Registry looking for credentials and passwords that have been stored for use by other programs or services. Sometimes these credentials are used for automatic logons.\n\nExample commands to find Registry keys related to password information: (Citation: Pentestlab Stored Credentials)\n\n* Local Machine Hive: <code>reg query HKLM /f password /t REG_SZ /s</code>\n* Current User Hive: <code>reg query HKCU /f password /t REG_SZ /s</code>",
+            "id": "attack-pattern--2edd9d6a-5674-4326-a600-ba56de467286",
+            "x_mitre_platforms": [
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "x_mitre_system_requirements": [
+                "Ability to query some Registry locations depends on the adversary's level of access. User permissions are usually limited to access of user-related Registry keys."
+            ],
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor processes for applications that can be used to query the Registry, such as [Reg](https://attack.mitre.org/software/S0075), and collect command parameters that may indicate credentials are being searched. Correlate activity with related suspicious behavior that may indicate an active intrusion to reduce false positives.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Sudhanshu Chauhan, @Sudhanshu_C"
+            ],
+            "created": "2018-04-18T17:59:24.739000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1214",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1214"
+                },
+                {
+                    "source_name": "Pentestlab Stored Credentials",
+                    "description": "netbiosX. (2017, April 19). Stored Credentials. Retrieved April 6, 2018.",
+                    "url": "https://pentestlab.blog/2017/04/19/stored-credentials/"
+                }
+            ],
+            "modified": "2019-07-17T16:02:42.791000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Network device logs",
+                "Host network interface",
+                "Netflow/Enclave netflow",
+                "Process monitoring"
+            ],
+            "x_mitre_permissions_required": [
+                "Administrator",
+                "SYSTEM"
+            ],
+            "name": "Network Sniffing",
+            "description": "Network sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection. An adversary may place a network interface into promiscuous mode to passively access data in transit over the network, or use span ports to capture a larger amount of data.\n\nData captured via this technique may include user credentials, especially those sent over an insecure, unencrypted protocol. Techniques for name service resolution poisoning, such as [LLMNR/NBT-NS Poisoning and Relay](https://attack.mitre.org/techniques/T1171), can also be used to capture credentials to websites, proxies, and internal systems by redirecting traffic to an adversary.\n\nNetwork sniffing may also reveal configuration details, such as running services, version numbers, and other network characteristics (ex: IP addressing, hostnames, VLAN IDs) necessary for follow-on Lateral Movement and/or Defense Evasion activities.",
+            "id": "attack-pattern--3257eb21-f9a7-4430-8de1-d8b6e288f529",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "x_mitre_system_requirements": [
+                "Network interface access and packet capture driver"
+            ],
+            "type": "attack-pattern",
+            "x_mitre_detection": "Detecting the events leading up to sniffing network traffic may be the best method of detection. From the host level, an adversary would likely need to perform a man-in-the-middle attack against other devices on a wired network in order to capture traffic that was not to or from the current compromised system. This change in the flow of information is detectable at the enclave network level. Monitor for ARP spoofing and gratuitous ARP broadcasts. Detecting compromised network devices is a bit more challenging. Auditing administrator logins, configuration changes, and device images is required to detect malicious changes.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-05-31T21:30:41.399000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "discovery"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1040",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1040"
+                },
+                {
+                    "source_name": "capec",
+                    "external_id": "CAPEC-158",
+                    "url": "https://capec.mitre.org/data/definitions/158.html"
+                }
+            ],
+            "modified": "2019-07-18T16:42:21.548000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "x_mitre_data_sources": [
+                "File monitoring",
+                "Process monitoring",
+                "Process command-line parameters"
+            ],
+            "name": "Bash History",
+            "description": "Bash keeps track of the commands users type on the command-line with the \"history\" utility. Once a user logs out, the history is flushed to the user’s <code>.bash_history</code> file. For each user, this file resides at the same location: <code>~/.bash_history</code>. Typically, this file keeps track of the user’s last 500 commands. Users often type usernames and passwords on the command-line as parameters to programs, which then get saved to this file when they log out. Attackers can abuse this by looking through the file for potential credentials. (Citation: External to DA, the OS X Way)",
+            "id": "attack-pattern--44dca04b-808d-46ca-b25f-d85236d4b9f8",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitoring when the user's <code>.bash_history</code> is read can help alert to suspicious activity. While users do typically rely on their history of commands, they often access this history through other utilities like \"history\" instead of commands like <code>cat ~/.bash_history</code>.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-12-14T16:46:06.044000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1139",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1139"
+                },
+                {
+                    "source_name": "External to DA, the OS X Way",
+                    "description": "Alex Rymdeko-Harvey, Steve Borosh. (2016, May 14). External to DA, the OS X Way. Retrieved July 3, 2017.",
+                    "url": "http://www.slideshare.net/StephanBorosh/external-to-da-the-os-x-way"
+                }
+            ],
+            "modified": "2019-07-16T19:54:57.273000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "x_mitre_data_sources": [
+                "Process monitoring",
+                "PowerShell logs",
+                "File monitoring",
+                "API monitoring"
+            ],
+            "name": "Credentials from Web Browsers",
+            "description": "Adversaries may acquire credentials from web browsers by reading files specific to the target browser.  (Citation: Talos Olympic Destroyer 2018) \n\nWeb browsers commonly save credentials such as website usernames and passwords so that they do not need to be entered manually in the future. Web browsers typically store the credentials in an encrypted format within a credential store; however, methods exist to extract plaintext credentials from web browsers.\n\nFor example, on Windows systems, encrypted credentials may be obtained from Google Chrome by reading a database file, <code>AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data</code> and executing a SQL query: <code>SELECT action_url, username_value, password_value FROM logins;</code>. The plaintext password can then be obtained by passing the encrypted credentials to the Windows API function <code>CryptUnprotectData</code>, which uses the victim’s cached logon credentials as the decryption key. (Citation: Microsoft CryptUnprotectData \u200eApril 2018)\n \nAdversaries have executed similar procedures for common web browsers such as FireFox, Safari, Edge, etc. (Citation: Proofpoint Vega Credential Stealer May 2018)(Citation: FireEye HawkEye Malware July 2017)\n\nAdversaries may also acquire credentials by searching web browser process memory for patterns that commonly match credentials.(Citation: GitHub Mimikittenz July 2016)\n\nAfter acquiring credentials from web browsers, adversaries may attempt to recycle the credentials across different systems and/or accounts in order to expand access. This can result in significantly furthering an adversary's objective in cases where credentials gained from web browsers overlap with privileged accounts (e.g. domain administrator).",
+            "id": "attack-pattern--4579d9c9-d5b9-45e0-9848-0104637b579f",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Identify web browser files that contain credentials such as Google Chrome’s Login Data database file: <code>AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data</code>. Monitor file read events of web browser files that contain credentials, especially when the reading process is unrelated to the subject web browser. Monitor process execution logs to include PowerShell Transcription focusing on those that perform a combination of behaviors including reading web browser process memory, utilizing regular expressions, and those that contain numerous keywords for common web applications (Gmail, Twitter, Office365, etc.).",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Ryan Benson, Exabeam",
+                "Barry Shteiman, Exabeam",
+                "Sylvain Gil, Exabeam",
+                "RedHuntLabs, @redhuntlabs"
+            ],
+            "created": "2019-06-17T19:34:51.855000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "T1503",
+                    "url": "https://attack.mitre.org/techniques/T1503"
+                },
+                {
+                    "description": "Mercer, W. and Rascagneres, P. (2018, February 12). Olympic Destroyer Takes Aim At Winter Olympics. Retrieved March 14, 2019.",
+                    "source_name": "Talos Olympic Destroyer 2018",
+                    "url": "https://blog.talosintelligence.com/2018/02/olympic-destroyer.html"
+                },
+                {
+                    "description": "Microsoft. (2018, April 12). CryptUnprotectData function. Retrieved June 18, 2019.",
+                    "source_name": "Microsoft CryptUnprotectData \u200eApril 2018",
+                    "url": "https://docs.microsoft.com/en-us/windows/desktop/api/dpapi/nf-dpapi-cryptunprotectdata"
+                },
+                {
+                    "description": "Proofpoint. (2018, May 10). New Vega Stealer shines brightly in targeted campaign . Retrieved June 18, 2019.",
+                    "source_name": "Proofpoint Vega Credential Stealer May 2018",
+                    "url": "https://www.proofpoint.com/us/threat-insight/post/new-vega-stealer-shines-brightly-targeted-campaign"
+                },
+                {
+                    "description": "Swapnil Patil, Yogesh Londhe. (2017, July 25). HawkEye Credential Theft Malware Distributed in Recent Phishing Campaign. Retrieved June 18, 2019.",
+                    "source_name": "FireEye HawkEye Malware July 2017",
+                    "url": "https://www.fireeye.com/blog/threat-research/2017/07/hawkeye-malware-distributed-in-phishing-campaign.html"
+                },
+                {
+                    "description": "Jamieson O'Reilly (putterpanda). (2016, July 4). mimikittenz. Retrieved June 20, 2019.",
+                    "source_name": "GitHub Mimikittenz July 2016",
+                    "url": "https://github.com/putterpanda/mimikittenz"
+                }
+            ],
+            "modified": "2019-07-10T20:57:36.851000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "File monitoring"
+            ],
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "name": "Private Keys",
+            "description": "Private cryptographic keys and certificates are used for authentication, encryption/decryption, and digital signatures. (Citation: Wikipedia Public Key Crypto)\n\nAdversaries may gather private keys from compromised systems for use in authenticating to [Remote Services](https://attack.mitre.org/techniques/T1021) like SSH or for use in decrypting other collected files such as email. Common key and certificate file extensions include: .key, .pgp, .gpg, .ppk., .p12, .pem, .pfx, .cer, .p7b, .asc. Adversaries may also look in common key directories, such as <code>~/.ssh</code> for SSH keys on * nix-based systems or <code>C:\\Users\\(username)\\.ssh\\</code> on Windows.\n\nPrivate keys should require a password or passphrase for operation, so an adversary may also use [Input Capture](https://attack.mitre.org/techniques/T1056) for keylogging or attempt to [Brute Force](https://attack.mitre.org/techniques/T1110) the passphrase off-line.\n\nAdversary tools have been discovered that search compromised systems for file extensions relating to cryptographic keys and certificates. (Citation: Kaspersky Careto) (Citation: Palo Alto Prince of Persia)",
+            "id": "attack-pattern--56ff457d-5e39-492b-974c-dfd2b8603ffe",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor access to files and directories related to cryptographic keys and certificates as a means for potentially detecting access patterns that may indicate collection and exfiltration activity. Collect authentication logs and look for potentially abnormal activity that may indicate improper use of keys or certificates for remote authentication.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Itzik Kotler, SafeBreach"
+            ],
+            "created": "2017-12-14T16:46:06.044000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1145",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1145"
+                },
+                {
+                    "source_name": "Wikipedia Public Key Crypto",
+                    "description": "Wikipedia. (2017, June 29). Public-key cryptography. Retrieved July 5, 2017.",
+                    "url": "https://en.wikipedia.org/wiki/Public-key_cryptography"
+                },
+                {
+                    "source_name": "Kaspersky Careto",
+                    "description": "Kaspersky Labs. (2014, February 11). Unveiling “Careto” - The Masked APT. Retrieved July 5, 2017.",
+                    "url": "https://kasperskycontenthub.com/wp-content/uploads/sites/43/vlpdfs/unveilingthemask_v1.0.pdf"
+                },
+                {
+                    "source_name": "Palo Alto Prince of Persia",
+                    "description": "Bar, T., Conant, S., Efraim, L. (2016, June 28). Prince of Persia – Game Over. Retrieved July 5, 2017.",
+                    "url": "https://researchcenter.paloaltonetworks.com/2016/06/unit42-prince-of-persia-game-over/"
+                }
+            ],
+            "modified": "2019-07-18T17:21:52.708000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "API monitoring",
+                "Binary file metadata",
+                "DLL monitoring",
+                "Loaded DLLs",
+                "Process monitoring",
+                "Windows event logs"
+            ],
+            "x_mitre_permissions_required": [
+                "Administrator",
+                "SYSTEM"
+            ],
+            "name": "Hooking",
+            "description": "Windows processes often leverage application programming interface (API) functions to perform tasks that require reusable system resources. Windows API functions are typically stored in dynamic-link libraries (DLLs) as exported functions. \n\nHooking involves redirecting calls to these functions and can be implemented via:\n\n* **Hooks procedures**, which intercept and execute designated code in response to events such as messages, keystrokes, and mouse inputs. (Citation: Microsoft Hook Overview) (Citation: Endgame Process Injection July 2017)\n* **Import address table (IAT) hooking**, which use modifications to a process’s IAT, where pointers to imported API functions are stored. (Citation: Endgame Process Injection July 2017) (Citation: Adlice Software IAT Hooks Oct 2014) (Citation: MWRInfoSecurity Dynamic Hooking 2015)\n* **Inline hooking**, which overwrites the first bytes in an API function to redirect code flow. (Citation: Endgame Process Injection July 2017) (Citation: HighTech Bridge Inline Hooking Sept 2011) (Citation: MWRInfoSecurity Dynamic Hooking 2015)\n\nSimilar to [Process Injection](https://attack.mitre.org/techniques/T1055), adversaries may use hooking to load and execute malicious code within the context of another process, masking the execution while also allowing access to the process's memory and possibly elevated privileges. Installing hooking mechanisms may also provide Persistence via continuous invocation when the functions are called through normal use.\n\nMalicious hooking mechanisms may also capture API calls that include parameters that reveal user authentication credentials for Credential Access. (Citation: Microsoft TrojanSpy:Win32/Ursnif.gen!I Sept 2017)\n\nHooking is commonly utilized by [Rootkit](https://attack.mitre.org/techniques/T1014)s to conceal files, processes, Registry keys, and other objects in order to hide malware and associated behaviors. (Citation: Symantec Windows Rootkits)",
+            "id": "attack-pattern--66f73398-8394-4711-85e5-34c8540b22a5",
+            "x_mitre_platforms": [
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor for calls to the SetWindowsHookEx and SetWinEventHook functions, which install a hook procedure. (Citation: Microsoft Hook Overview) (Citation: Volatility Detecting Hooks Sept 2012) Also consider analyzing hook chains (which hold pointers to hook procedures for each type of hook) using tools  (Citation: Volatility Detecting Hooks Sept 2012) (Citation: PreKageo Winhook Jul 2011) (Citation: Jay GetHooks Sept 2011) or by programmatically examining internal kernel structures. (Citation: Zairon Hooking Dec 2006) (Citation: EyeofRa Detecting Hooking June 2017)\n\nRootkits detectors  (Citation: GMER Rootkits) can also be used to monitor for various flavors of hooking activity.\n\nVerify integrity of live processes by comparing code in memory to that of corresponding static binaries, specifically checking for jumps and other instructions that redirect code flow. Also consider taking snapshots of newly started processes  (Citation: Microsoft Process Snapshot) to compare the in-memory IAT to the real addresses of the referenced functions. (Citation: StackExchange Hooks Jul 2012) (Citation: Adlice Software IAT Hooks Oct 2014)\n\nAnalyze process behavior to determine if a process is performing actions it usually does not, such as opening network connections, reading files, or other suspicious actions that could relate to post-compromise behavior.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2018-01-16T16:13:52.465000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "persistence"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "privilege-escalation"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1179",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1179"
+                },
+                {
+                    "source_name": "Microsoft Hook Overview",
+                    "description": "Microsoft. (n.d.). Hooks Overview. Retrieved December 12, 2017.",
+                    "url": "https://msdn.microsoft.com/library/windows/desktop/ms644959.aspx"
+                },
+                {
+                    "source_name": "Endgame Process Injection July 2017",
+                    "description": "Hosseini, A. (2017, July 18). Ten Process Injection Techniques: A Technical Survey Of Common And Trending Process Injection Techniques. Retrieved December 7, 2017.",
+                    "url": "https://www.endgame.com/blog/technical-blog/ten-process-injection-techniques-technical-survey-common-and-trending-process"
+                },
+                {
+                    "source_name": "Adlice Software IAT Hooks Oct 2014",
+                    "description": "Tigzy. (2014, October 15). Userland Rootkits: Part 1, IAT hooks. Retrieved December 12, 2017.",
+                    "url": "https://www.adlice.com/userland-rootkits-part-1-iat-hooks/"
+                },
+                {
+                    "source_name": "MWRInfoSecurity Dynamic Hooking 2015",
+                    "description": "Hillman, M. (2015, August 8). Dynamic Hooking Techniques: User Mode. Retrieved December 20, 2017.",
+                    "url": "https://www.mwrinfosecurity.com/our-thinking/dynamic-hooking-techniques-user-mode/"
+                },
+                {
+                    "source_name": "HighTech Bridge Inline Hooking Sept 2011",
+                    "description": "Mariani, B. (2011, September 6). Inline Hooking in Windows. Retrieved December 12, 2017.",
+                    "url": "https://www.exploit-db.com/docs/17802.pdf"
+                },
+                {
+                    "source_name": "Microsoft TrojanSpy:Win32/Ursnif.gen!I Sept 2017",
+                    "description": "Microsoft. (2017, September 15). TrojanSpy:Win32/Ursnif.gen!I. Retrieved December 18, 2017."
+                },
+                {
+                    "source_name": "Symantec Windows Rootkits",
+                    "description": "Symantec. (n.d.). Windows Rootkit Overview. Retrieved December 21, 2017.",
+                    "url": "https://www.symantec.com/avcenter/reference/windows.rootkit.overview.pdf"
+                },
+                {
+                    "source_name": "Volatility Detecting Hooks Sept 2012",
+                    "description": "Volatility Labs. (2012, September 24). MoVP 3.1 Detecting Malware Hooks in the Windows GUI Subsystem. Retrieved December 12, 2017.",
+                    "url": "https://volatility-labs.blogspot.com/2012/09/movp-31-detecting-malware-hooks-in.html"
+                },
+                {
+                    "source_name": "PreKageo Winhook Jul 2011",
+                    "description": "Prekas, G. (2011, July 11). Winhook. Retrieved December 12, 2017.",
+                    "url": "https://github.com/prekageo/winhook"
+                },
+                {
+                    "source_name": "Jay GetHooks Sept 2011",
+                    "description": "Satiro, J. (2011, September 14). GetHooks. Retrieved December 12, 2017.",
+                    "url": "https://github.com/jay/gethooks"
+                },
+                {
+                    "source_name": "Zairon Hooking Dec 2006",
+                    "description": "Felici, M. (2006, December 6). Any application-defined hook procedure on my machine?. Retrieved December 12, 2017.",
+                    "url": "https://zairon.wordpress.com/2006/12/06/any-application-defined-hook-procedure-on-my-machine/"
+                },
+                {
+                    "source_name": "EyeofRa Detecting Hooking June 2017",
+                    "description": "Eye of Ra. (2017, June 27). Windows Keylogger Part 2: Defense against user-land. Retrieved December 12, 2017.",
+                    "url": "https://eyeofrablog.wordpress.com/2017/06/27/windows-keylogger-part-2-defense-against-user-land/"
+                },
+                {
+                    "source_name": "GMER Rootkits",
+                    "description": "GMER. (n.d.). GMER. Retrieved December 12, 2017.",
+                    "url": "http://www.gmer.net/"
+                },
+                {
+                    "source_name": "Microsoft Process Snapshot",
+                    "description": "Microsoft. (n.d.). Taking a Snapshot and Viewing Processes. Retrieved December 12, 2017.",
+                    "url": "https://msdn.microsoft.com/library/windows/desktop/ms686701.aspx"
+                },
+                {
+                    "source_name": "StackExchange Hooks Jul 2012",
+                    "description": "Stack Exchange - Security. (2012, July 31). What are the methods to find hooked functions and APIs?. Retrieved December 12, 2017.",
+                    "url": "https://security.stackexchange.com/questions/17904/what-are-the-methods-to-find-hooked-functions-and-apis"
+                }
+            ],
+            "modified": "2019-04-03T15:02:18.662000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Azure activity logs",
+                "OAuth audit logs"
+            ],
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "name": "Steal Application Access Token",
+            "description": "Adversaries can steal user application access tokens as a means of acquiring credentials to access remote systems and resources. This can occur through social engineering and typically requires user action to grant access.\n\nApplication access tokens are used to make authorized API requests on behalf of a user and are commonly used as a way to access resources in cloud-based applications and software-as-a-service (SaaS).(Citation: Auth0 - Why You Should Always Use Access Tokens to Secure APIs Sept 2019) OAuth is one commonly implemented framework that issues tokens to users for access to systems. An application desiring access to cloud-based services or protected APIs can gain entry using OAuth 2.0 through a variety of authorization protocols. An example commonly-used sequence is Microsoft's Authorization Code Grant flow.(Citation: Microsoft Identity Platform Protocols May 2019)(Citation: Microsoft - OAuth Code Authorization flow - June 2019) An OAuth access token enables a third-party application to interact with resources containing user data in the ways requested by the application without obtaining user credentials. \n \nAdversaries can leverage OAuth authorization by constructing a malicious application designed to be granted access to resources with the target user's OAuth token. The adversary will need to complete registration of their application with the authorization server, for example Microsoft Identity Platform using Azure Portal, the Visual Studio IDE, the command-line interface, PowerShell, or REST API calls.(Citation: Microsoft - Azure AD App Registration - May 2019) Then, they can send a link through [Spearphishing Link](https://attack.mitre.org/techniques/T1192) to the target user to entice them to grant access to the application. Once the OAuth access token is granted, the application can gain potentially long-term access to features of the user account through [Application Access Token](https://attack.mitre.org/techniques/T1527).(Citation: Microsoft - Azure AD Identity Tokens - Aug 2019)\n\nAdversaries have been seen targeting Gmail, Microsoft Outlook, and Yahoo Mail users.(Citation: Amnesty OAuth Phishing Attacks, August 2019)(Citation: Trend Micro Pawn Storm OAuth 2017)",
+            "id": "attack-pattern--890c9858-598c-401d-a4d5-c67ebcdd703a",
+            "x_mitre_platforms": [
+                "SaaS",
+                "Office 365",
+                "Azure AD"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Administrators should set up monitoring to trigger automatic alerts when policy criteria are met. For example, using a Cloud Access Security Broker (CASB), admins can create a “High severity app permissions” policy that generates alerts if apps request high severity permissions or send permissions requests for too many users.\n\nSecurity analysts can hunt for malicious apps using the tools available in their CASB, identity provider, or resource provider (depending on platform.) For example, they can filter for apps that are authorized by a small number of users, apps requesting high risk permissions, permissions incongruous with the app’s purpose, or apps with old “Last authorized” fields. A specific app can be investigated using an activity log displaying activities the app has performed, although some activities may be mis-logged as being performed by the user. App stores can be useful resources to further investigate suspicious apps.\n\nAdministrators can set up a variety of logs and leverage audit tools to monitor actions that can be conducted as a result of OAuth 2.0 access. For instance, audit reports enable admins to identify privilege escalation actions such as role creations or policy modifications, which could be actions performed after initial access.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Shailesh Tiwary (Indian Army)",
+                "Mark Wee",
+                "Jeff Sakowicz, Microsoft Identity Developer Platform Services (IDPM Services)",
+                "Saisha Agrawal, Microsoft Threat Intelligent Center (MSTIC)"
+            ],
+            "created": "2019-09-04T15:54:25.684000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "T1528",
+                    "url": "https://attack.mitre.org/techniques/T1528"
+                },
+                {
+                    "description": "Auth0. (n.d.). Why You Should Always Use Access Tokens to Secure APIs. Retrieved September 12, 2019.",
+                    "source_name": "Auth0 - Why You Should Always Use Access Tokens to Secure APIs Sept 2019",
+                    "url": "https://auth0.com/docs/api-auth/why-use-access-tokens-to-secure-apis"
+                },
+                {
+                    "description": "Microsoft. (n.d.). Retrieved September 12, 2019.",
+                    "source_name": "Microsoft Identity Platform Protocols May 2019",
+                    "url": "https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols"
+                },
+                {
+                    "description": "Microsoft. (n.d.). Microsoft identity platform and OAuth 2.0 authorization code flow. Retrieved September 12, 2019.",
+                    "source_name": "Microsoft - OAuth Code Authorization flow - June 2019",
+                    "url": "https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow"
+                },
+                {
+                    "description": "Microsoft. (2019, May 8). Quickstart: Register an application with the Microsoft identity platform. Retrieved September 12, 2019.",
+                    "source_name": "Microsoft - Azure AD App Registration - May 2019",
+                    "url": "https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app"
+                },
+                {
+                    "description": "Microsoft. (2019, August 29). Microsoft identity platform access tokens. Retrieved September 12, 2019.",
+                    "source_name": "Microsoft - Azure AD Identity Tokens - Aug 2019",
+                    "url": "https://docs.microsoft.com/en-us/azure/active-directory/develop/access-tokens"
+                },
+                {
+                    "description": "Amnesty International. (2019, August 16). Evolving Phishing Attacks Targeting Journalists and Human Rights Defenders from the Middle-East and North Africa. Retrieved October 8, 2019.",
+                    "source_name": "Amnesty OAuth Phishing Attacks, August 2019",
+                    "url": "https://www.amnesty.org/en/latest/research/2019/08/evolving-phishing-attacks-targeting-journalists-and-human-rights-defenders-from-the-middle-east-and-north-africa/"
+                },
+                {
+                    "description": "Hacquebord, F.. (2017, April 25). Pawn Storm Abuses Open Authentication in Advanced Social Engineering Attacks. Retrieved October 4, 2019.",
+                    "source_name": "Trend Micro Pawn Storm OAuth 2017",
+                    "url": "https://blog.trendmicro.com/trendlabs-security-intelligence/pawn-storm-abuses-open-authentication-advanced-social-engineering-attacks"
+                }
+            ],
+            "modified": "2019-10-18T15:20:05.470000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Process monitoring",
+                "Process command-line parameters",
+                "User interface",
+                "PowerShell logs"
+            ],
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "name": "Input Prompt",
+            "description": "When programs are executed that need additional privileges than are present in the current user context, it is common for the operating system to prompt the user for proper credentials to authorize the elevated privileges for the task (ex: [Bypass User Account Control](https://attack.mitre.org/techniques/T1088)).\n\nAdversaries may mimic this functionality to prompt users for credentials with a seemingly legitimate prompt for a number of reasons that mimic normal usage, such as a fake installer requiring additional access or a fake malware removal suite.(Citation: OSX Malware Exploits MacKeeper) This type of prompt can be used to collect credentials via various languages such as [AppleScript](https://attack.mitre.org/techniques/T1155)(Citation: LogRhythm Do You Trust Oct 2014)(Citation: OSX Keydnap malware) and [PowerShell](https://attack.mitre.org/techniques/T1086)(Citation: LogRhythm Do You Trust Oct 2014)(Citation: Enigma Phishing for Credentials Jan 2015).",
+            "id": "attack-pattern--91ce1ede-107f-4d8b-bf4c-735e8789c94b",
+            "x_mitre_platforms": [
+                "macOS",
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor process execution for unusual programs as well as malicious instances of [Scripting](https://attack.mitre.org/techniques/T1064) that could be used to prompt users for credentials.\n\nInspect and scrutinize input prompts for indicators of illegitimacy, such as non-traditional banners, text, timing, and/or sources.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Matthew Molyett, @s1air"
+            ],
+            "created": "2017-12-14T16:46:06.044000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1141",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1141"
+                },
+                {
+                    "source_name": "capec",
+                    "external_id": "CAPEC-569",
+                    "url": "https://capec.mitre.org/data/definitions/569.html"
+                },
+                {
+                    "source_name": "OSX Malware Exploits MacKeeper",
+                    "description": "Sergei Shevchenko. (2015, June 4). New Mac OS Malware Exploits Mackeeper. Retrieved July 3, 2017.",
+                    "url": "https://baesystemsai.blogspot.com/2015/06/new-mac-os-malware-exploits-mackeeper.html"
+                },
+                {
+                    "description": "Foss, G. (2014, October 3). Do You Trust Your Computer?. Retrieved December 17, 2018.",
+                    "source_name": "LogRhythm Do You Trust Oct 2014",
+                    "url": "https://logrhythm.com/blog/do-you-trust-your-computer/"
+                },
+                {
+                    "source_name": "OSX Keydnap malware",
+                    "description": "Marc-Etienne M.Leveille. (2016, July 6). New OSX/Keydnap malware is hungry for credentials. Retrieved July 3, 2017.",
+                    "url": "https://www.welivesecurity.com/2016/07/06/new-osxkeydnap-malware-hungry-credentials/"
+                },
+                {
+                    "description": "Nelson, M. (2015, January 21). Phishing for Credentials: If you want it, just ask!. Retrieved December 17, 2018.",
+                    "source_name": "Enigma Phishing for Credentials Jan 2015",
+                    "url": "https://enigma0x3.net/2015/01/21/phishing-for-credentials-if-you-want-it-just-ask/"
+                }
+            ],
+            "modified": "2019-06-25T14:06:02.686000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Authentication logs",
+                "Windows Error Reporting",
+                "Process monitoring"
+            ],
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "name": "Exploitation for Credential Access",
+            "description": "Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. Credentialing and authentication mechanisms may be targeted for exploitation by adversaries as a means to gain access to useful credentials or circumvent the process to gain access to systems. One example of this is MS14-068, which targets Kerberos and can be used to forge Kerberos tickets using domain user permissions. (Citation: Technet MS14-068) (Citation: ADSecurity Detecting Forged Tickets) Exploitation for credential access may also result in Privilege Escalation depending on the process targeted or credentials obtained.",
+            "id": "attack-pattern--9c306d8d-cde7-4b4c-b6e8-d0bb16caca36",
+            "x_mitre_platforms": [
+                "Linux",
+                "Windows",
+                "macOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Detecting software exploitation may be difficult depending on the tools available. Software exploits may not always succeed or may cause the exploited process to become unstable or crash. Also look for behavior on the system that might indicate successful compromise, such as abnormal behavior of processes. Credential resources obtained through exploitation may be detectable in use if they are not normally used or seen.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "John Lambert, Microsoft Threat Intelligence Center"
+            ],
+            "created": "2018-04-18T17:59:24.739000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1212",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1212"
+                },
+                {
+                    "description": "Microsoft. (2014, November 18). Vulnerability in Kerberos Could Allow Elevation of Privilege (3011780). Retrieved December 23, 2015.",
+                    "source_name": "Technet MS14-068",
+                    "url": "https://technet.microsoft.com/en-us/library/security/ms14-068.aspx"
+                },
+                {
+                    "source_name": "ADSecurity Detecting Forged Tickets",
+                    "description": "Metcalf, S. (2015, May 03). Detecting Forged Kerberos Ticket (Golden Ticket & Silver Ticket) Use in Active Directory. Retrieved December 23, 2015.",
+                    "url": "https://adsecurity.org/?p=1515"
+                }
+            ],
+            "modified": "2019-07-25T18:56:25.151000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "System calls",
+                "Process monitoring"
+            ],
+            "x_mitre_permissions_required": [
+                "Administrator"
+            ],
+            "name": "Keychain",
+            "description": "Keychains are the built-in way for macOS to keep track of users' passwords and credentials for many services and features such as WiFi passwords, websites, secure notes, certificates, and Kerberos. Keychain files are located in <code>~/Library/Keychains/</code>,<code>/Library/Keychains/</code>, and <code>/Network/Library/Keychains/</code>. (Citation: Wikipedia keychain) The <code>security</code> command-line utility, which is built into macOS by default, provides a useful way to manage these credentials.\n\nTo manage their credentials, users have to use additional credentials to access their keychain. If an adversary knows the credentials for the login keychain, then they can get access to all the other credentials stored in this vault. (Citation: External to DA, the OS X Way) By default, the passphrase for the keychain is the user’s logon credentials.",
+            "id": "attack-pattern--9e09ddb2-1746-4448-9cad-7f8b41777d6d",
+            "x_mitre_platforms": [
+                "macOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Unlocking the keychain and using passwords from it is a very common process, so there is likely to be a lot of noise in any detection technique. Monitoring of system calls to the keychain can help determine if there is a suspicious process trying to access it.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-12-14T16:46:06.044000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1142",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1142"
+                },
+                {
+                    "source_name": "Wikipedia keychain",
+                    "description": "Wikipedia. (n.d.). Keychain (software). Retrieved July 5, 2017.",
+                    "url": "https://en.wikipedia.org/wiki/Keychain_(software)"
+                },
+                {
+                    "source_name": "External to DA, the OS X Way",
+                    "description": "Alex Rymdeko-Harvey, Steve Borosh. (2016, May 14). External to DA, the OS X Way. Retrieved July 3, 2017.",
+                    "url": "http://www.slideshare.net/StephanBorosh/external-to-da-the-os-x-way"
+                }
+            ],
+            "modified": "2019-07-18T15:25:08.539000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "Administrator"
+            ],
+            "x_mitre_data_sources": [
+                "Authentication logs",
+                "API monitoring",
+                "Windows event logs",
+                "Packet capture"
+            ],
+            "name": "Account Manipulation",
+            "description": "Account manipulation may aid adversaries in maintaining access to credentials and certain permission levels within an environment. Manipulation could consist of modifying permissions, modifying credentials, adding or changing permission groups, modifying account settings, or modifying how authentication is performed. These actions could also include account activity designed to subvert security policies, such as performing iterative password updates to subvert password duration policies and preserve the life of compromised credentials. In order to create or manipulate accounts, the adversary must already have sufficient permissions on systems or the domain.\n\n### Exchange Email Account Takeover\n\nThe Add-MailboxPermission PowerShell cmdlet, available in on-premises Exchange and in the cloud-based service Office 365, adds permissions to a mailbox.(Citation: Microsoft - Add-MailboxPermission) This command can be run, given adequate permissions, to further access granted to certain user accounts. This may be used in persistent threat incidents as well as BEC (Business Email Compromise) incidents where an adversary can assign more access rights to the accounts they wish to compromise. This may further enable use of additional techniques for gaining access to systems. For example, compromised business accounts are often used to send messages to other accounts in the network of the target business while creating inbox rules so the messages evade spam/phishing detection mechanisms.(Citation: Bienstock, D. - Defending O365 - 2019)\n\n### Azure AD\n\nIn Azure, an adversary can set a second password for Service Principals, facilitating persistence.(Citation: Blue Cloud of Death)\n\n### AWS\n\nAWS policies allow trust between accounts by simply identifying the account name. It is then up to the trusted account to only allow the correct roles to have access.(Citation: Summit Route Advanced AWS policy auditing)",
+            "id": "attack-pattern--a10641f4-87b4-45a3-a906-92a149cb2c27",
+            "x_mitre_platforms": [
+                "Windows",
+                "Office 365",
+                "Azure",
+                "GCP",
+                "Azure AD",
+                "AWS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "x_mitre_system_requirements": [
+                "Exchange email account takeover: Sufficient permission to run the Add-MailboxPermission PowerShell cmdlet (depending on parameters used, may require more permission)"
+            ],
+            "type": "attack-pattern",
+            "x_mitre_detection": "Collect events that correlate with changes to account objects on systems and the domain, such as event ID 4738.(Citation: Microsoft User Modified Event) Monitor for modification of accounts in correlation with other suspicious activity. Changes may occur at unusual times or from unusual systems. Especially flag events where the subject and target accounts differ(Citation: InsiderThreat ChangeNTLM July 2017) or that include additional flags such as changing a password without knowledge of the old password.(Citation: GitHub Mimikatz Issue 92 June 2017)\n\nUse of credentials may also occur at unusual times or to unusual systems or services and may correlate with other suspicious activity.\n\nMonitor for unusual Exchange and Office 365 email account permissions changes that may indicate excessively broad permissions being granted to compromised accounts.\n\nA larger volume of emails sent from an account than normal and the discovery of similar phishing emails being sent from\u202freal accounts within a network may be signs that an account may have been compromised and attempts to leverage access with modified email permissions is occurring.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Jannie Li, Microsoft Threat Intelligence\u202fCenter\u202f(MSTIC)",
+                "Praetorian",
+                "Tim MalcomVetter"
+            ],
+            "created": "2017-05-31T21:31:12.196000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "persistence"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "external_id": "T1098",
+                    "url": "https://attack.mitre.org/techniques/T1098"
+                },
+                {
+                    "description": "Microsoft. (n.d.). Add-Mailbox Permission. Retrieved September 13, 2019.",
+                    "source_name": "Microsoft - Add-MailboxPermission",
+                    "url": "https://docs.microsoft.com/en-us/powershell/module/exchange/mailboxes/add-mailboxpermission?view=exchange-ps"
+                },
+                {
+                    "description": "Bienstock, D.. (2019). BECS and Beyond: Investigating and Defending O365. Retrieved September 13, 2019.",
+                    "source_name": "Bienstock, D. - Defending O365 - 2019",
+                    "url": "https://www.slideshare.net/DouglasBienstock/shmoocon-2019-becs-and-beyond-investigating-and-defending-office-365"
+                },
+                {
+                    "description": "Kunz, Bryce. (2018, May 11). Blue Cloud of Death: Red Teaming Azure. Retrieved October 23, 2019.",
+                    "source_name": "Blue Cloud of Death",
+                    "url": "https://speakerdeck.com/tweekfawkes/blue-cloud-of-death-red-teaming-azure-1"
+                },
+                {
+                    "description": "Piper, Scott. (2019, April 3). Advanced AWS policy auditing - Confused deputies with AWS services. Retrieved October 23, 2019.",
+                    "source_name": "Summit Route Advanced AWS policy auditing",
+                    "url": "https://summitroute.com/blog/2019/04/03/advanced_aws_policy_auditing_confused_deputies_with_aws_services/"
+                },
+                {
+                    "description": "Lich, B., Miroshnikov, A. (2017, April 5). 4738(S): A user account was changed. Retrieved June 30, 2017.",
+                    "source_name": "Microsoft User Modified Event",
+                    "url": "https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4738"
+                },
+                {
+                    "source_name": "InsiderThreat ChangeNTLM July 2017",
+                    "description": "Warren, J. (2017, July 11). Manipulating User Passwords with Mimikatz. Retrieved December 4, 2017.",
+                    "url": "https://blog.stealthbits.com/manipulating-user-passwords-with-mimikatz-SetNTLM-ChangeNTLM"
+                },
+                {
+                    "source_name": "GitHub Mimikatz Issue 92 June 2017",
+                    "description": "Warren, J. (2017, June 22). lsadump::changentlm and lsadump::setntlm work, but generate Windows events #92. Retrieved December 4, 2017.",
+                    "url": "https://github.com/gentilkiwi/mimikatz/issues/92"
+                }
+            ],
+            "modified": "2019-10-23T14:49:39.188000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "x_mitre_data_sources": [
+                "Office 365 account logs",
+                "Authentication logs"
+            ],
+            "name": "Brute Force",
+            "description": "Adversaries may use brute force techniques to attempt access to accounts when passwords are unknown or when password hashes are obtained.\n\n[Credential Dumping](https://attack.mitre.org/techniques/T1003) is used to obtain password hashes, this may only get an adversary so far when [Pass the Hash](https://attack.mitre.org/techniques/T1075) is not an option. Techniques to systematically guess the passwords used to compute hashes are available, or the adversary may use a pre-computed rainbow table to crack hashes. Cracking hashes is usually done on adversary-controlled systems outside of the target network. (Citation: Wikipedia Password cracking)\n\nAdversaries may attempt to brute force logins without knowledge of passwords or hashes during an operation either with zero knowledge or by attempting a list of known or possible passwords. This is a riskier option because it could cause numerous authentication failures and account lockouts, depending on the organization's login failure policies. (Citation: Cylance Cleaver)\n\nA related technique called password spraying uses one password (e.g. 'Password01'), or a small list of passwords, that matches the complexity policy of the domain and may be a commonly used password. Logins are attempted with that password and many different accounts on a network to avoid account lockouts that would normally occur when brute forcing a single account with many passwords. (Citation: BlackHillsInfosec Password Spraying)\n\nTypically, management services over commonly used ports are used when password spraying. Commonly targeted services include the following:\n\n* SSH (22/TCP)\n* Telnet (23/TCP)\n* FTP (21/TCP)\n* NetBIOS / SMB / Samba (139/TCP & 445/TCP)\n* LDAP (389/TCP)\n* Kerberos (88/TCP)\n* RDP / Terminal Services (3389/TCP)\n* HTTP/HTTP Management Services (80/TCP & 443/TCP)\n* MSSQL (1433/TCP)\n* Oracle (1521/TCP)\n* MySQL (3306/TCP)\n* VNC (5900/TCP)\n\nIn addition to management services, adversaries may \"target single sign-on (SSO) and cloud-based applications utilizing federated authentication protocols,\" as well as externally facing email applications, such as Office 365.(Citation: US-CERT TA18-068A 2018)\n\n\nIn default environments, LDAP and Kerberos connection attempts are less likely to trigger events over SMB, which creates Windows \"logon failure\" event ID 4625.",
+            "id": "attack-pattern--a93494bb-4b80-4ea1-8695-3236a49916fd",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows",
+                "Office 365",
+                "Azure AD",
+                "SaaS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "It is difficult to detect when hashes are cracked, since this is generally done outside the scope of the target network. \n\nMonitor authentication logs for system and application login failures of [Valid Accounts](https://attack.mitre.org/techniques/T1078). If authentication failures are high, then there may be a brute force attempt to gain access to a system using legitimate credentials.\n\nAlso monitor for many failed authentication attempts across various accounts that may result from password spraying attempts.\n\nFor password spraying consider the following(Citation: Trimarc Detecting Password Spraying):\n\n* Domain Controllers: \"Audit Logon\" (Success & Failure) for event ID 4625.\n* Domain Controllers: \"Audit Kerberos Authentication Service\" (Success & Failure) for event ID 4771.\n* All systems: \"Audit Logon\" (Success & Failure) for event ID 4648.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Microsoft Threat Intelligence Center (MSTIC)",
+                "John Strand",
+                "Ed Williams, Trustwave, SpiderLabs"
+            ],
+            "created": "2017-05-31T21:31:22.767000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1110",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1110"
+                },
+                {
+                    "source_name": "capec",
+                    "external_id": "CAPEC-49",
+                    "url": "https://capec.mitre.org/data/definitions/49.html"
+                },
+                {
+                    "source_name": "Wikipedia Password cracking",
+                    "description": "Wikipedia. (n.d.). Password cracking. Retrieved December 23, 2015.",
+                    "url": "https://en.wikipedia.org/wiki/Password_cracking"
+                },
+                {
+                    "source_name": "Cylance Cleaver",
+                    "description": "Cylance. (2014, December). Operation Cleaver. Retrieved September 14, 2017.",
+                    "url": "https://www.cylance.com/content/dam/cylance/pages/operation-cleaver/Cylance_Operation_Cleaver_Report.pdf"
+                },
+                {
+                    "source_name": "BlackHillsInfosec Password Spraying",
+                    "description": "Thyer, J. (2015, October 30). Password Spraying & Other Fun with RPCCLIENT. Retrieved April 25, 2017.",
+                    "url": "http://www.blackhillsinfosec.com/?p=4645"
+                },
+                {
+                    "description": "US-CERT. (2018, March 27). TA18-068A Brute Force Attacks Conducted by Cyber Actors. Retrieved October 2, 2019.",
+                    "source_name": "US-CERT TA18-068A 2018",
+                    "url": "https://www.us-cert.gov/ncas/alerts/TA18-086A"
+                },
+                {
+                    "description": "Metcalf, S. (2018, May 6). Trimarc Research: Detecting Password Spraying with Security Event Auditing. Retrieved January 16, 2019.",
+                    "source_name": "Trimarc Detecting Password Spraying",
+                    "url": "https://www.trimarcsecurity.com/single-post/2018/05/06/Trimarc-Research-Detecting-Password-Spraying-with-Security-Event-Auditing"
+                }
+            ],
+            "modified": "2019-10-09T20:58:13.919000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Windows event logs"
+            ],
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "name": "Kerberoasting",
+            "description": "Service principal names (SPNs) are used to uniquely identify each instance of a Windows service. To enable authentication, Kerberos requires that SPNs be associated with at least one service logon account (an account specifically tasked with running a service (Citation: Microsoft Detecting Kerberoasting Feb 2018)). (Citation: Microsoft SPN) (Citation: Microsoft SetSPN) (Citation: SANS Attacking Kerberos Nov 2014) (Citation: Harmj0y Kerberoast Nov 2016)\n\nAdversaries possessing a valid Kerberos ticket-granting ticket (TGT) may request one or more Kerberos ticket-granting service (TGS) service tickets for any SPN from a domain controller (DC). (Citation: Empire InvokeKerberoast Oct 2016) (Citation: AdSecurity Cracking Kerberos Dec 2015) Portions of these tickets may be encrypted with the RC4 algorithm, meaning the Kerberos 5 TGS-REP etype 23 hash of the service account associated with the SPN is used as the private key and is thus vulnerable to offline [Brute Force](https://attack.mitre.org/techniques/T1110) attacks that may expose plaintext credentials. (Citation: AdSecurity Cracking Kerberos Dec 2015) (Citation: Empire InvokeKerberoast Oct 2016) (Citation: Harmj0y Kerberoast Nov 2016)\n\nThis same attack could be executed using service tickets captured from network traffic. (Citation: AdSecurity Cracking Kerberos Dec 2015)\n\nCracked hashes may enable Persistence, Privilege Escalation, and  Lateral Movement via access to [Valid Accounts](https://attack.mitre.org/techniques/T1078). (Citation: SANS Attacking Kerberos Nov 2014)",
+            "id": "attack-pattern--b39d03cb-7b98-41c4-a878-c40c1a913dc0",
+            "x_mitre_platforms": [
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "x_mitre_system_requirements": [
+                "Valid domain account or the ability to sniff traffic within a domain."
+            ],
+            "type": "attack-pattern",
+            "x_mitre_detection": "Enable Audit Kerberos Service Ticket Operations to log Kerberos TGS service ticket requests. Particularly investigate irregular patterns of activity (ex: accounts making numerous requests, Event ID 4769, within a small time frame, especially if they also request RC4 encryption [Type 0x17]). (Citation: Microsoft Detecting Kerberoasting Feb 2018) (Citation: AdSecurity Cracking Kerberos Dec 2015)",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Praetorian"
+            ],
+            "created": "2018-04-18T17:59:24.739000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1208",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1208"
+                },
+                {
+                    "source_name": "Microsoft Detecting Kerberoasting Feb 2018",
+                    "description": "Bani, M. (2018, February 23). Detecting Kerberoasting activity using Azure Security Center. Retrieved March 23, 2018.",
+                    "url": "https://blogs.technet.microsoft.com/motiba/2018/02/23/detecting-kerberoasting-activity-using-azure-security-center/"
+                },
+                {
+                    "source_name": "Microsoft SPN",
+                    "description": "Microsoft. (n.d.). Service Principal Names. Retrieved March 22, 2018.",
+                    "url": "https://msdn.microsoft.com/library/ms677949.aspx"
+                },
+                {
+                    "source_name": "Microsoft SetSPN",
+                    "description": "Microsoft. (2010, April 13). Service Principal Names (SPNs) SetSPN Syntax (Setspn.exe). Retrieved March 22, 2018.",
+                    "url": "https://social.technet.microsoft.com/wiki/contents/articles/717.service-principal-names-spns-setspn-syntax-setspn-exe.aspx"
+                },
+                {
+                    "source_name": "SANS Attacking Kerberos Nov 2014",
+                    "description": "Medin, T. (2014, November). Attacking Kerberos - Kicking the Guard Dog of Hades. Retrieved March 22, 2018."
+                },
+                {
+                    "source_name": "Harmj0y Kerberoast Nov 2016",
+                    "description": "Schroeder, W. (2016, November 1). Kerberoasting Without Mimikatz. Retrieved March 23, 2018.",
+                    "url": "https://www.harmj0y.net/blog/powershell/kerberoasting-without-mimikatz/"
+                },
+                {
+                    "source_name": "Empire InvokeKerberoast Oct 2016",
+                    "description": "EmpireProject. (2016, October 31). Invoke-Kerberoast.ps1. Retrieved March 22, 2018.",
+                    "url": "https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1"
+                },
+                {
+                    "source_name": "AdSecurity Cracking Kerberos Dec 2015",
+                    "description": "Metcalf, S. (2015, December 31). Cracking Kerberos TGS Tickets Using Kerberoast – Exploiting Kerberos to Compromise the Active Directory Domain. Retrieved March 22, 2018.",
+                    "url": "https://adsecurity.org/?p=2293"
+                }
+            ],
+            "modified": "2019-07-18T15:18:23.401000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "File monitoring",
+                "Network protocol analysis",
+                "Network device logs",
+                "Process use of network"
+            ],
+            "x_mitre_permissions_required": [
+                "User"
+            ],
+            "name": "Forced Authentication",
+            "description": "The Server Message Block (SMB) protocol is commonly used in Windows networks for authentication and communication between systems for access to resources and file sharing. When a Windows system attempts to connect to an SMB resource it will automatically attempt to authenticate and send credential information for the current user to the remote system. (Citation: Wikipedia Server Message Block) This behavior is typical in enterprise environments so that users do not need to enter credentials to access network resources. Web Distributed Authoring and Versioning (WebDAV) is typically used by Windows systems as a backup protocol when SMB is blocked or fails. WebDAV is an extension of HTTP and will typically operate over TCP ports 80 and 443. (Citation: Didier Stevens WebDAV Traffic) (Citation: Microsoft Managing WebDAV Security)\n\nAdversaries may take advantage of this behavior to gain access to user account hashes through forced SMB authentication. An adversary can send an attachment to a user through spearphishing that contains a resource link to an external server controlled by the adversary (i.e. [Template Injection](https://attack.mitre.org/techniques/T1221)), or place a specially crafted file on navigation path for privileged accounts (e.g. .SCF file placed on desktop) or on a publicly accessible share to be accessed by victim(s). When the user's system accesses the untrusted resource it will attempt authentication and send information including the user's hashed credentials over SMB to the adversary controlled server. (Citation: GitHub Hashjacking) With access to the credential hash, an adversary can perform off-line [Brute Force](https://attack.mitre.org/techniques/T1110) cracking to gain access to plaintext credentials. (Citation: Cylance Redirect to SMB)\n\nThere are several different ways this can occur. (Citation: Osanda Stealing NetNTLM Hashes) Some specifics from in-the-wild use include:\n\n* A spearphishing attachment containing a document with a resource that is automatically loaded when the document is opened (i.e. [Template Injection](https://attack.mitre.org/techniques/T1221)). The document can include, for example, a request similar to <code>file[:]//[remote address]/Normal.dotm</code> to trigger the SMB request. (Citation: US-CERT APT Energy Oct 2017)\n* A modified .LNK or .SCF file with the icon filename pointing to an external reference such as <code>\\\\[remote address]\\pic.png</code> that will force the system to load the resource when the icon is rendered to repeatedly gather credentials. (Citation: US-CERT APT Energy Oct 2017)",
+            "id": "attack-pattern--b77cf5f3-6060-475d-bd60-40ccbf28fdc2",
+            "x_mitre_platforms": [
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.1",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor for SMB traffic on TCP ports 139, 445 and UDP port 137 and WebDAV traffic attempting to exit the network to unknown external systems. If attempts are detected, then investigate endpoint data sources to find the root cause. For internal traffic, monitor the workstation-to-workstation unusual (vs. baseline) SMB traffic. For many networks there should not be any, but it depends on how systems on the network are configured and where resources are located.\n\nMonitor creation and modification of .LNK, .SCF, or any other files on systems and within virtual environments that contain resources that point to external network resources as these could be used to gather credentials when the files are rendered. (Citation: US-CERT APT Energy Oct 2017)",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Teodor Cimpoesu",
+                "Sudhanshu Chauhan, @Sudhanshu_C"
+            ],
+            "created": "2018-01-16T16:13:52.465000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1187",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1187"
+                },
+                {
+                    "source_name": "Wikipedia Server Message Block",
+                    "description": "Wikipedia. (2017, December 16). Server Message Block. Retrieved December 21, 2017.",
+                    "url": "https://en.wikipedia.org/wiki/Server_Message_Block"
+                },
+                {
+                    "source_name": "Didier Stevens WebDAV Traffic",
+                    "description": "Stevens, D. (2017, November 13). WebDAV Traffic To Malicious Sites. Retrieved December 21, 2017.",
+                    "url": "https://blog.didierstevens.com/2017/11/13/webdav-traffic-to-malicious-sites/"
+                },
+                {
+                    "source_name": "Microsoft Managing WebDAV Security",
+                    "description": "Microsoft. (n.d.). Managing WebDAV Security (IIS 6.0). Retrieved December 21, 2017.",
+                    "url": "https://www.microsoft.com/technet/prodtechnol/WindowsServer2003/Library/IIS/4beddb35-0cba-424c-8b9b-a5832ad8e208.mspx"
+                },
+                {
+                    "source_name": "GitHub Hashjacking",
+                    "description": "Dunning, J. (2016, August 1). Hashjacking. Retrieved December 21, 2017.",
+                    "url": "https://github.com/hob0/hashjacking"
+                },
+                {
+                    "source_name": "Cylance Redirect to SMB",
+                    "description": "Cylance. (2015, April 13). Redirect to SMB. Retrieved December 21, 2017.",
+                    "url": "https://www.cylance.com/content/dam/cylance/pdfs/white_papers/RedirectToSMB.pdf"
+                },
+                {
+                    "source_name": "Osanda Stealing NetNTLM Hashes",
+                    "description": "Malith, O. (2017, March 24). Places of Interest in Stealing NetNTLM Hashes. Retrieved January 26, 2018.",
+                    "url": "https://osandamalith.com/2017/03/24/places-of-interest-in-stealing-netntlm-hashes/"
+                },
+                {
+                    "source_name": "US-CERT APT Energy Oct 2017",
+                    "description": "US-CERT. (2017, October 20). Alert (TA17-293A): Advanced Persistent Threat Activity Targeting Energy and Other Critical Infrastructure Sectors. Retrieved November 2, 2017.",
+                    "url": "https://www.us-cert.gov/ncas/alerts/TA17-293A"
+                }
+            ],
+            "modified": "2019-09-16T17:15:43.746000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "Administrator",
+                "SYSTEM"
+            ],
+            "x_mitre_data_sources": [
+                "DLL monitoring",
+                "Process monitoring",
+                "Windows Registry"
+            ],
+            "name": "Password Filter DLL",
+            "description": "Windows password filters are password policy enforcement mechanisms for both domain and local accounts. Filters are implemented as dynamic link libraries (DLLs) containing a method to validate potential passwords against password policies. Filter DLLs can be positioned on local computers for local accounts and/or domain controllers for domain accounts.\n\nBefore registering new passwords in the Security Accounts Manager (SAM), the Local Security Authority (LSA) requests validation from each registered filter. Any potential changes cannot take effect until every registered filter acknowledges validation.\n\nAdversaries can register malicious password filters to harvest credentials from local computers and/or entire domains. To perform proper validation, filters must receive plain-text credentials from the LSA. A malicious password filter would receive these plain-text credentials every time a password request is made. (Citation: Carnal Ownage Password Filters Sept 2013)",
+            "id": "attack-pattern--b8c5c9dd-a662-479d-9428-ae745872537c",
+            "x_mitre_platforms": [
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Monitor for change notifications to and from unfamiliar password filters.\n\nNewly installed password filters will not take effect until after a system reboot.\n\nPassword filters will show up as an autorun and loaded DLL in lsass.exe. (Citation: Clymb3r Function Hook Passwords Sept 2013)",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Vincent Le Toux"
+            ],
+            "created": "2018-01-16T16:13:52.465000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1174",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1174"
+                },
+                {
+                    "source_name": "Carnal Ownage Password Filters Sept 2013",
+                    "description": "Fuller, R. (2013, September 11). Stealing passwords every time they change. Retrieved November 21, 2017.",
+                    "url": "http://carnal0wnage.attackresearch.com/2013/09/stealing-passwords-every-time-they.html"
+                },
+                {
+                    "source_name": "Clymb3r Function Hook Passwords Sept 2013",
+                    "description": "Bialek, J. (2013, September 15). Intercepting Password Changes With Function Hooking. Retrieved November 21, 2017.",
+                    "url": "https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/"
+                }
+            ],
+            "modified": "2019-07-18T17:02:26.038000",
+            "revoked": false
+        },
+        {
+            "x_mitre_permissions_required": [
+                "User",
+                "Administrator",
+                "SYSTEM"
+            ],
+            "x_mitre_data_sources": [
+                "File monitoring",
+                "Process command-line parameters"
+            ],
+            "name": "Credentials in Files",
+            "description": "Adversaries may search local file systems and remote file shares for files containing passwords. These can be files created by users to store their own credentials, shared credential stores for a group of individuals, configuration files containing passwords for a system or service, or source code/binary files containing embedded passwords.\n\nIt is possible to extract passwords from backups or saved virtual machines through [Credential Dumping](https://attack.mitre.org/techniques/T1003). (Citation: CG 2014) Passwords may also be obtained from Group Policy Preferences stored on the Windows Domain Controller. (Citation: SRD GPP)\n\nIn cloud environments, authenticated user credentials are often stored in local configuration and credential files. In some cases, these files can be copied and reused on another machine or the contents can be read and then used to authenticate without needing to copy any files. (Citation: Specter Ops - Cloud Credential Storage)\n\n",
+            "id": "attack-pattern--ba8e391f-14b5-496f-81f2-2d5ecd646c1c",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows",
+                "AWS",
+                "GCP",
+                "Azure"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.1",
+            "x_mitre_system_requirements": [
+                "Access to files"
+            ],
+            "type": "attack-pattern",
+            "x_mitre_detection": "While detecting adversaries accessing these files may be difficult without knowing they exist in the first place, it may be possible to detect adversary use of credentials they have obtained. Monitor the command-line arguments of executing processes for suspicious words or regular expressions that may indicate searching for a password (for example: password, pwd, login, secure, or credentials). See [Valid Accounts](https://attack.mitre.org/techniques/T1078) for more information.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Microsoft Threat Intelligence Center (MSTIC)"
+            ],
+            "created": "2017-05-31T21:31:02.188000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1081",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1081"
+                },
+                {
+                    "source_name": "capec",
+                    "external_id": "CAPEC-639",
+                    "url": "https://capec.mitre.org/data/definitions/639.html"
+                },
+                {
+                    "source_name": "CG 2014",
+                    "description": "CG. (2014, May 20). Mimikatz Against Virtual Machine Memory Part 1. Retrieved November 12, 2014.",
+                    "url": "http://carnal0wnage.attackresearch.com/2014/05/mimikatz-against-virtual-machine-memory.html"
+                },
+                {
+                    "source_name": "SRD GPP",
+                    "description": "Security Research and Defense. (2014, May 13). MS14-025: An Update for Group Policy Preferences. Retrieved January 28, 2015.",
+                    "url": "http://blogs.technet.com/b/srd/archive/2014/05/13/ms14-025-an-update-for-group-policy-preferences.aspx"
+                },
+                {
+                    "description": "Maddalena, C.. (2018, September 12). Head in the Clouds. Retrieved October 4, 2019.",
+                    "source_name": "Specter Ops - Cloud Credential Storage",
+                    "url": "https://posts.specterops.io/head-in-the-clouds-bd038bb69e48"
+                }
+            ],
+            "modified": "2019-10-08T19:24:28.773000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "Windows Registry",
+                "Kernel drivers",
+                "Process monitoring",
+                "API monitoring"
+            ],
+            "x_mitre_permissions_required": [
+                "Administrator",
+                "SYSTEM"
+            ],
+            "name": "Input Capture",
+            "description": "Adversaries can use methods of capturing user input for obtaining credentials for [Valid Accounts](https://attack.mitre.org/techniques/T1078) and information Collection that include keylogging and user input field interception.\n\nKeylogging is the most prevalent type of input capture, with many different ways of intercepting keystrokes, (Citation: Adventures of a Keystroke) but other methods exist to target information for specific purposes, such as performing a UAC prompt or wrapping the Windows default credential provider. (Citation: Wrightson 2012)\n\nKeylogging is likely to be used to acquire credentials for new access opportunities when [Credential Dumping](https://attack.mitre.org/techniques/T1003) efforts are not effective, and may require an adversary to remain passive on a system for a period of time before an opportunity arises.\n\nAdversaries may also install code on externally facing portals, such as a VPN login page, to capture and transmit credentials of users who attempt to log into the service. This variation on input capture may be conducted post-compromise using legitimate administrative access as a backup measure to maintain network access through [External Remote Services](https://attack.mitre.org/techniques/T1133) and [Valid Accounts](https://attack.mitre.org/techniques/T1078) or as part of the initial compromise by exploitation of the externally facing web service. (Citation: Volexity Virtual Private Keylogging)",
+            "id": "attack-pattern--bb5a00de-e086-4859-a231-fa793f6797e2",
+            "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Keyloggers may take many forms, possibly involving modification to the Registry and installation of a driver, setting a hook, or polling to intercept keystrokes. Commonly used API calls include SetWindowsHook, GetKeyState, and GetAsyncKeyState. (Citation: Adventures of a Keystroke) Monitor the Registry and file system for such changes and detect driver installs, as well as looking for common keylogging API calls. API calls alone are not an indicator of keylogging, but may provide behavioral data that is useful when combined with other information such as new files written to disk and unusual processes.\n\nMonitor the Registry for the addition of a Custom Credential Provider. (Citation: Wrightson 2012) Detection of compromised [Valid Accounts](https://attack.mitre.org/techniques/T1078) in use by adversaries may help to catch the result of user input interception if new techniques are used.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "John Lambert, Microsoft Threat Intelligence Center"
+            ],
+            "created": "2017-05-31T21:30:48.323000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1056",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1056"
+                },
+                {
+                    "source_name": "capec",
+                    "external_id": "CAPEC-568",
+                    "url": "https://capec.mitre.org/data/definitions/568.html"
+                },
+                {
+                    "source_name": "Adventures of a Keystroke",
+                    "description": "Tinaztepe,  E. (n.d.). The Adventures of a Keystroke:  An in-depth look into keyloggers on Windows. Retrieved April 27, 2016.",
+                    "url": "http://opensecuritytraining.info/Keylogging_files/The%20Adventures%20of%20a%20Keystroke.pdf"
+                },
+                {
+                    "source_name": "Wrightson 2012",
+                    "description": "Wrightson, T. (2012, January 2). CAPTURING WINDOWS 7 CREDENTIALS AT LOGON USING CUSTOM CREDENTIAL PROVIDER. Retrieved November 12, 2014.",
+                    "url": "http://blog.leetsys.com/2012/01/02/capturing-windows-7-credentials-at-logon-using-custom-credential-provider/"
+                },
+                {
+                    "source_name": "Volexity Virtual Private Keylogging",
+                    "description": "Adair, S. (2015, October 7). Virtual Private Keylogging: Cisco Web VPNs Leveraged for Access and Persistence. Retrieved March 20, 2017.",
+                    "url": "https://www.volexity.com/blog/2015/10/07/virtual-private-keylogging-cisco-web-vpns-leveraged-for-access-and-persistence/"
+                }
+            ],
+            "modified": "2019-06-18T13:33:08.842000",
+            "revoked": false
+        },
+        {
+            "x_mitre_data_sources": [
+                "API monitoring",
+                "Process monitoring",
+                "Kernel drivers"
+            ],
+            "x_mitre_permissions_required": [
+                "Administrator",
+                "SYSTEM"
+            ],
+            "name": "Two-Factor Authentication Interception",
+            "description": "Use of two- or multifactor authentication is recommended and provides a higher level of security than user names and passwords alone, but organizations should be aware of techniques that could be used to intercept and bypass these security mechanisms. Adversaries may target authentication mechanisms, such as smart cards, to gain access to systems, services, and network resources.\n\nIf a smart card is used for two-factor authentication (2FA), then a keylogger will need to be used to obtain the password associated with a smart card during normal use. With both an inserted card and access to the smart card password, an adversary can connect to a network resource using the infected system to proxy the authentication with the inserted hardware token. (Citation: Mandiant M Trends 2011)\n\nAdversaries may also employ a keylogger to similarly target other hardware tokens, such as RSA SecurID. Capturing token input (including a user's personal identification code) may provide temporary access (i.e. replay the one-time passcode until the next value rollover) as well as possibly enabling adversaries to reliably predict future authentication values (given access to both the algorithm and any seed values used to generate appended temporary codes). (Citation: GCN RSA June 2011)\n\nOther methods of 2FA may be intercepted and used by an adversary to authenticate. It is common for one-time codes to be sent via out-of-band communications (email, SMS). If the device and/or service is not secured, then it may be vulnerable to interception. Although primarily focused on by cyber criminals, these authentication mechanisms have been targeted by advanced actors. (Citation: Operation Emmental)",
+            "id": "attack-pattern--dd43c543-bb85-4a6f-aa6e-160d90d06a49",
+            "x_mitre_platforms": [
+                "Linux",
+                "Windows",
+                "macOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "x_mitre_system_requirements": [
+                "Smart card Proxy: Use of smart cards for single or multifactor authentication to access to network resources. Attached smart card reader with card inserted.\n\nOut-of-band one-time code: Access to the device, service, or communications to intercept the one-time code.\n\nHardware token: Access to the seed and algorithm of generating one-time codes."
+            ],
+            "type": "attack-pattern",
+            "x_mitre_detection": "Detecting use of proxied smart card connections by an adversary may be difficult because it requires the token to be inserted into a system; thus it is more likely to be in use by a legitimate user and blend in with other network behavior.\n\nSimilar to [Input Capture](https://attack.mitre.org/techniques/T1056), keylogging activity can take various forms but can may be detected via installation of a driver, setting a hook, or usage of particular API calls associated with polling to intercept keystrokes.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "John Lambert, Microsoft Threat Intelligence Center"
+            ],
+            "created": "2017-05-31T21:31:23.195000",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1111",
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1111"
+                },
+                {
+                    "source_name": "Mandiant M Trends 2011",
+                    "description": "Mandiant. (2011, January 27). Mandiant M-Trends 2011. Retrieved January 10, 2016.",
+                    "url": "https://dl.mandiant.com/EE/assets/PDF_MTrends_2011.pdf"
+                },
+                {
+                    "source_name": "GCN RSA June 2011",
+                    "description": "Jackson, William. (2011, June 7). RSA confirms its tokens used in Lockheed hack. Retrieved September 24, 2018.",
+                    "url": "https://gcn.com/articles/2011/06/07/rsa-confirms-tokens-used-to-hack-lockheed.aspx"
+                },
+                {
+                    "description": "Sancho, D., Hacquebord, F., Link, R. (2014, July 22). Finding Holes Operation Emmental. Retrieved February 9, 2016.",
+                    "source_name": "Operation Emmental",
+                    "url": "http://www.trendmicro.com/cloud-content/us/pdfs/security-intelligence/white-papers/wp-finding-holes-operation-emmental.pdf"
+                }
+            ],
+            "modified": "2019-06-21T16:38:57.913000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1056",
+            "name": "Abuse Accessibility Features",
+            "description": "**This technique has been deprecated by [Input Capture](https://attack.mitre.org/techniques/T1417), [Input Injection](https://attack.mitre.org/techniques/T1516), and [Input Prompt](https://attack.mitre.org/techniques/T1411).**\n\nA malicious app could abuse Android's accessibility features to capture sensitive data or perform other malicious actions.(Citation: Skycure-Accessibility)\n\nAdversaries may abuse accessibility features on Android to emulate a user's clicks, for example to steal money from a user's bank account.(Citation: android-trojan-steals-paypal-2fa)(Citation: banking-trojans-google-play)\n\nAdversaries may abuse accessibility features on Android devices to evade defenses by repeatedly clicking the \"Back\" button when a targeted app manager or mobile security app is launched, or when strings suggesting uninstallation are detected in the foreground. This effectively prevents the malicious application from being uninstalled.(Citation: android-trojan-steals-paypal-2fa)",
+            "id": "attack-pattern--2204c371-6100-4ae0-82f3-25c07c29772a",
+            "x_mitre_platforms": [
+                "Android"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "x_mitre_deprecated": true,
+            "type": "attack-pattern",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Lukas Štefanko, ESET"
+            ],
+            "created": "2017-10-25T14:48:08.613000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "impact"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "defense-evasion"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1453",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1453"
+                },
+                {
+                    "source_name": "Skycure-Accessibility",
+                    "description": "Yair Amit. (2016, March 3). “Accessibility Clickjacking” – The Next Evolution in Android Malware that Impacts More Than 500 Million Devices. Retrieved December 21, 2016.",
+                    "url": "https://www.skycure.com/blog/accessibility-clickjacking/"
+                },
+                {
+                    "description": "Lukas Stefanko. (2018, December 11). Android Trojan steals money from PayPal accounts even with 2FA on. Retrieved July 11, 2019.",
+                    "source_name": "android-trojan-steals-paypal-2fa",
+                    "url": "https://www.welivesecurity.com/2018/12/11/android-trojan-steals-money-paypal-accounts-2fa/"
+                },
+                {
+                    "description": "Lukas Stefanko. (2018, October 24). Banking Trojans continue to surface on Google Play. Retrieved July 11, 2019.",
+                    "source_name": "banking-trojans-google-play",
+                    "url": "https://www.welivesecurity.com/2018/10/24/banking-trojans-continue-surface-google-play/"
+                }
+            ],
+            "modified": "2019-10-01T14:06:51.071000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1016",
+            "name": "Access Sensitive Data in Device Logs",
+            "description": "On versions of Android prior to 4.1, an adversary may use a malicious application that holds the READ_LOGS permission to obtain private keys, passwords, other credentials, or other sensitive data stored in the device's system log. On Android 4.1 and later, an adversary would need to attempt to perform an operating system privilege escalation attack to be able to access the log.",
+            "id": "attack-pattern--29e07491-8947-43a3-8d4e-9a787c45f3d3",
+            "x_mitre_platforms": [
+                "Android"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:17.176000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1413",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1413"
+                },
+                {
+                    "external_id": "APP-3",
+                    "source_name": "NIST Mobile Threat Catalogue",
+                    "url": "https://pages.nist.gov/mobile-threat-catalogue/application-threats/APP-3.html"
+                },
+                {
+                    "external_id": "APP-13",
+                    "source_name": "NIST Mobile Threat Catalogue",
+                    "url": "https://pages.nist.gov/mobile-threat-catalogue/application-threats/APP-13.html"
+                }
+            ],
+            "modified": "2018-10-17T00:14:20.652000",
+            "revoked": false
+        },
+        {
+            "name": "Access Notifications",
+            "description": "A malicious application can read notifications sent by the operating system or other applications, which may contain sensitive data such as one-time authentication codes sent over SMS, email, or other mediums. A malicious application can also dismiss notifications to prevent the user from noticing that the notifications arrived and can trigger action buttons contained within notifications.(Citation: ESET 2FA Bypass)",
+            "id": "attack-pattern--39dd7871-f59b-495f-a9a5-3cb8cc50c9b2",
+            "x_mitre_platforms": [
+                "Android"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "The user can inspect (and modify) the list of applications that have notification access through the device settings (e.g. Apps & notification -> Special app access -> Notification access).",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_contributors": [
+                "Lukáš Štefanko, ESET"
+            ],
+            "created": "2019-09-15T15:26:08.183000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-mobile-attack",
+                    "external_id": "T1517",
+                    "url": "https://attack.mitre.org/techniques/T1517"
+                },
+                {
+                    "description": "Lukas Stefanko. (2019, June 17). Malware sidesteps Google permissions policy with new 2FA bypass technique. Retrieved September 15, 2019.",
+                    "source_name": "ESET 2FA Bypass",
+                    "url": "https://www.welivesecurity.com/2019/06/17/malware-google-permissions-2fa-bypass/"
+                }
+            ],
+            "modified": "2019-09-24T13:51:53.065000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1013",
+            "name": "Network Traffic Capture or Redirection",
+            "description": "An adversary may capture network traffic to and from the device to obtain credentials or other sensitive data, or redirect network traffic to flow through an adversary-controlled gateway to do the same.\n\nA malicious app could register itself as a VPN client on Android or iOS to gain access to network packets. However, on both platforms, the user must grant consent to the app to act as a VPN client, and on iOS the app requires a special entitlement that must be granted by Apple.\n\nAlternatively, if a malicious app is able to escalate operating system privileges, it may be able to use those privileges to gain access to network traffic.\n\nAn adversary could redirect network traffic to an adversary-controlled gateway by establishing a VPN connection or by manipulating the device's proxy settings. For example, Skycure (Citation: Skycure-Profiles) describes the ability to redirect network traffic by installing a malicious iOS Configuration Profile.\n\nIf applications encrypt their network traffic, sensitive data may not be accessible to an adversary, depending on the point of capture.",
+            "id": "attack-pattern--3b0b604f-10db-41a0-b54c-493124d455b9",
+            "x_mitre_platforms": [
+                "Android",
+                "iOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "On both Android and iOS the user must grant consent to an app to act as a VPN. Both platforms also provide visual context to the user in the top status bar when a VPN connection is in place.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:14.982000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1410",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1410"
+                },
+                {
+                    "description": "Yair Amit. (2013, March 12). Malicious Profiles - The Sleeping Giant of iOS Security. Retrieved December 22, 2016.",
+                    "source_name": "Skycure-Profiles",
+                    "url": "https://www.skycure.com/blog/malicious-profiles-the-sleeping-giant-of-ios-security/"
+                }
+            ],
+            "modified": "2018-10-17T00:14:20.652000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1014",
+            "name": "Input Prompt",
+            "description": "The operating system and installed applications often have legitimate needs to prompt the user for sensitive information such as account credentials, bank account information, or Personally Identifiable Information (PII). Adversaries may mimic this functionality to prompt users for sensitive information.\n\nCompared to traditional PCs, the constrained display size of mobile devices may impair the ability to provide users with contextual information, making users more susceptible to this technique’s use.(Citation: Felt-PhishingOnMobileDevices)\n\nSpecific approaches to this technique include:\n\n### Impersonate the identity of a legitimate application\n\nA malicious application could impersonate the identity of a legitimate application (e.g. use the same application name and/or icon) and get installed on the device. The malicious app could then prompt the user for sensitive information.(Citation: eset-finance)\n\n### Display a prompt on top of a running legitimate application\n\nA malicious application could display a prompt on top of a running legitimate application to trick users into entering sensitive information into the malicious application rather than the legitimate application. Typically, the malicious application would need to know when the targeted application (and individual activity within the targeted application) is running in the foreground, so that the malicious application knows when to display its prompt. Android 5.0 and 5.1.1, respectively, increased the difficulty of determining the current foreground application through modifications to the `ActivityManager` API.(Citation: Android-getRunningTasks)(Citation: StackOverflow-getRunningAppProcesses). A malicious application can still abuse Android’s accessibility features to determine which application is currently in the foreground.(Citation: ThreatFabric Cerberus) Approaches to display a prompt include:\n\n* A malicious application could start a new activity on top of a running legitimate application.(Citation: Felt-PhishingOnMobileDevices)(Citation: Hassell-ExploitingAndroid) Android 10 places new restrictions on the ability for an application to start a new activity on top of another application, which may make it more difficult for adversaries to utilize this technique.(Citation: Android Background)\n* A malicious application could create an application overlay window on top of a running legitimate application. Applications must hold the `SYSTEM_ALERT_WINDOW` permission to create overlay windows. This permission is handled differently than typical Android permissions, and at least under certain conditions is automatically granted to applications installed from the Google Play Store.(Citation: Cloak and Dagger)(Citation: NowSecure Android Overlay)(Citation: Skycure-Accessibility) The `SYSTEM_ALERT_WINDOW` permission and its associated ability to create application overlay windows are expected to be deprecated in a future release of Android in favor of a new API.(Citation: XDA Bubbles)\n\n### Fake device notifications\n\nA malicious application could send fake device notifications to the user. Clicking on the device notification could trigger the malicious application to display an input prompt.(Citation: Group IB Gustuff Mar 2019)",
+            "id": "attack-pattern--3dd58c80-4c2e-458c-9503-1b2cd273c4d2",
+            "x_mitre_platforms": [
+                "Android",
+                "iOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "The user can view and manage which applications hold the SYSTEM_ALERT_WINDOW permission to create overlay windows on top of other apps through the device settings in Apps & notifications -> Special app access -> Display over other apps (the exact menu location may vary between Android versions).",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:34.407000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-mobile-attack",
+                    "external_id": "T1411",
+                    "url": "https://attack.mitre.org/techniques/T1411"
+                },
+                {
+                    "external_id": "APP-31",
+                    "source_name": "NIST Mobile Threat Catalogue",
+                    "url": "https://pages.nist.gov/mobile-threat-catalogue/application-threats/APP-31.html"
+                },
+                {
+                    "description": "A.P. Felt and D. Wagner. (2011, May 26). Phishing on Mobile Devices. Retrieved August 25, 2016.",
+                    "source_name": "Felt-PhishingOnMobileDevices",
+                    "url": "http://w2spconf.com/2011/papers/felt-mobilephishing.pdf"
+                },
+                {
+                    "description": "Lukas Stefanko. (2016, July 7). Fake finance apps on Google Play target users from around the world. Retrieved September 24, 2018.",
+                    "source_name": "eset-finance",
+                    "url": "https://www.welivesecurity.com/2018/09/19/fake-finance-apps-google-play-target-around-world/"
+                },
+                {
+                    "description": "Android. (n.d.). ActivityManager getRunningTasks documentation. Retrieved January 19, 2017.",
+                    "source_name": "Android-getRunningTasks",
+                    "url": "https://developer.android.com/reference/android/app/ActivityManager.html#getRunningTasks%28int%29"
+                },
+                {
+                    "description": "Various. (n.d.). Android 5.1.1 and above - getRunningAppProcesses() returns my application package only. Retrieved January 19, 2017.",
+                    "source_name": "StackOverflow-getRunningAppProcesses",
+                    "url": "http://stackoverflow.com/questions/30619349/android-5-1-1-and-above-getrunningappprocesses-returns-my-application-packag"
+                },
+                {
+                    "source_name": "ThreatFabric Cerberus",
+                    "description": "ThreatFabric. (2019, August). Cerberus - A new banking Trojan from the underworld. Retrieved September 18, 2019.",
+                    "url": "https://www.threatfabric.com/blogs/cerberus-a-new-banking-trojan-from-the-underworld.html"
+                },
+                {
+                    "source_name": "Hassell-ExploitingAndroid",
+                    "description": "R. Hassell. (2011, October 12-13). Exploiting Androids for Fun and Profit. Retrieved October 10, 2019.",
+                    "url": "https://conference.hitb.org/hitbsecconf2011kul/materials/D1T1%20-%20Riley%20Hassell%20-%20Exploiting%20Androids%20for%20Fun%20and%20Profit.pdf"
+                },
+                {
+                    "source_name": "Android Background",
+                    "description": "Android Developers. (n.d.). Restrictions on starting activities from the background. Retrieved September 18, 2019.",
+                    "url": "https://developer.android.com/guide/components/activities/background-starts"
+                },
+                {
+                    "source_name": "Cloak and Dagger",
+                    "description": "Fratantonio, Y., et al.. (2017). Cloak & Dagger. Retrieved September 18, 2019.",
+                    "url": "http://cloak-and-dagger.org/"
+                },
+                {
+                    "source_name": "NowSecure Android Overlay",
+                    "description": "Ramirez, T.. (2017, May 25). ‘SAW’-ing through the UI: Android overlay malware and the System Alert Window permission explained. Retrieved September 18, 2019.",
+                    "url": "https://www.nowsecure.com/blog/2017/05/25/android-overlay-malware-system-alert-window-permission/"
+                },
+                {
+                    "description": "Yair Amit. (2016, March 3). “Accessibility Clickjacking” – The Next Evolution in Android Malware that Impacts More Than 500 Million Devices. Retrieved December 21, 2016.",
+                    "source_name": "Skycure-Accessibility",
+                    "url": "https://www.skycure.com/blog/accessibility-clickjacking/"
+                },
+                {
+                    "source_name": "XDA Bubbles",
+                    "description": "Rahman, M.. (2019, May 8). Bubbles in Android Q will fully replace the overlay API in a future Android version. Retrieved September 18, 2019.",
+                    "url": "https://www.xda-developers.com/android-q-system-alert-window-deprecate-bubbles/"
+                },
+                {
+                    "description": "Group-IB. (2019, March 28). Group-IB uncovers Android Trojan named «Gustuff» capable of targeting more than 100 global banking apps, cryptocurrency and marketplace applications. Retrieved September 3, 2019.",
+                    "source_name": "Group IB Gustuff Mar 2019",
+                    "url": "https://www.group-ib.com/blog/gustuff"
+                }
+            ],
+            "modified": "2019-10-14T19:07:24.369000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1012",
+            "name": "Access Stored Application Data",
+            "description": "Adversaries may access and collect application data resident on the device. Adversaries often target popular applications such as Facebook, WeChat, and Gmail.(Citation: SWB Exodus March 2019)\n\nThis technique requires either escalated privileges or for the targeted app to have stored the data in an insecure manner (e.g., with insecure file permissions or in an insecure location such as an external storage directory).",
+            "id": "attack-pattern--702055ac-4e54-4ae9-9527-e23a38e0b160",
+            "x_mitre_platforms": [
+                "Android",
+                "iOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Accessing stored application data can be difficult to detect, and therefore enterprises may be better served focusing on detection at other stages of adversarial behavior.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:15.402000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1409",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1409"
+                },
+                {
+                    "source_name": "NIST Mobile Threat Catalogue",
+                    "external_id": "AUT-0",
+                    "url": "https://pages.nist.gov/mobile-threat-catalogue/authentication-threats/AUT-0.html"
+                },
+                {
+                    "source_name": "SWB Exodus March 2019",
+                    "description": "Security Without Borders. (2019, March 29). Exodus: New Android Spyware Made in Italy. Retrieved September 3, 2019.",
+                    "url": "https://securitywithoutborders.org/blog/2019/03/29/exodus.html"
+                }
+            ],
+            "modified": "2019-10-10T14:17:48.920000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1019",
+            "name": "Android Intent Hijacking",
+            "description": "A malicious app can register to receive intents meant for other applications and may then be able to receive sensitive values such as OAuth authorization codes(Citation: IETF-PKCE).",
+            "id": "attack-pattern--77e30eee-fd48-40b4-99ec-73e97c158b58",
+            "x_mitre_platforms": [
+                "Android"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.1",
+            "type": "attack-pattern",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:32.008000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1416",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1416"
+                },
+                {
+                    "description": "N. Sakimura, J. Bradley, and N. Agarwal. (2015, September). IETF RFC 7636: Proof Key for Code Exchange by OAuth Public Clients. Retrieved December 21, 2016.",
+                    "source_name": "IETF-PKCE",
+                    "url": "https://tools.ietf.org/html/rfc7636"
+                }
+            ],
+            "modified": "2019-02-03T17:05:31.465000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1018",
+            "name": "URL Scheme Hijacking",
+            "description": "An iOS application may be able to maliciously claim a URL scheme, allowing it to intercept calls that are meant for a different application(Citation: FireEye-Masque2)(Citation: Dhanjani-URLScheme). This technique, for example, could be used to capture OAuth authorization codes(Citation: IETF-PKCE) or to phish user credentials(Citation: MobileIron-XARA).",
+            "id": "attack-pattern--8f142a25-f6c3-4520-bd50-2ae3ab50ed3e",
+            "x_mitre_platforms": [
+                "iOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.1",
+            "type": "attack-pattern",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:17.533000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1415",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1415"
+                },
+                {
+                    "external_id": "AUT-10",
+                    "source_name": "NIST Mobile Threat Catalogue",
+                    "url": "https://pages.nist.gov/mobile-threat-catalogue/authentication-threats/AUT-10.html"
+                },
+                {
+                    "description": "Hui Xue, Tao Wei, Yulong Zhang, Song Jin, Zhaofeng Chen. (2015, February 19). IOS MASQUE ATTACK REVIVED: BYPASSING PROMPT FOR TRUST AND APP URL SCHEME HIJACKING. Retrieved December 21, 2016.",
+                    "source_name": "FireEye-Masque2",
+                    "url": "https://www.fireeye.com/blog/threat-research/2015/02/ios_masque_attackre.html"
+                },
+                {
+                    "description": "Nitesh Dhanjani. (2010, November 8). Insecure Handling of URL Schemes in Apple’s iOS. Retrieved December 21, 2016.",
+                    "source_name": "Dhanjani-URLScheme",
+                    "url": "http://www.dhanjani.com/blog/2010/11/insecure-handling-of-url-schemes-in-apples-ios.html"
+                },
+                {
+                    "description": "N. Sakimura, J. Bradley, and N. Agarwal. (2015, September). IETF RFC 7636: Proof Key for Code Exchange by OAuth Public Clients. Retrieved December 21, 2016.",
+                    "source_name": "IETF-PKCE",
+                    "url": "https://tools.ietf.org/html/rfc7636"
+                },
+                {
+                    "description": "Michael T. Raggo. (2015, October 1). iOS URL Scheme Hijacking (XARA) Attack Analysis and Countermeasures. Retrieved December 21, 2016.",
+                    "source_name": "MobileIron-XARA",
+                    "url": "https://www.mobileiron.com/en/smartwork-blog/ios-url-scheme-hijacking-xara-attack-analysis-and-countermeasures"
+                }
+            ],
+            "modified": "2019-02-03T17:03:45.255000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1020",
+            "name": "Input Capture",
+            "description": "Adversaries may capture user input to obtain credentials or other information from the user through various methods.\n\nMalware may masquerade as a legitimate third-party keyboard to record user keystrokes.(Citation: Zeltser-Keyboard) On both Android and iOS, users must explicitly authorize the use of third-party keyboard apps. Users should be advised to use extreme caution before granting this authorization when it is requested.\n\nOn Android, malware may abuse accessibility features to record keystrokes by registering an `AccessibilityService` class, overriding the `onAccessibilityEvent` method, and listening for the `AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED` event type. The event object passed into the function will contain the data that the user typed.\n\nAdditional methods of keylogging may be possible if root access is available.",
+            "id": "attack-pattern--a8c31121-852b-46bd-9ba4-674ae5afe7ad",
+            "x_mitre_platforms": [
+                "Android",
+                "iOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "On Android, users can view and manage which applications have third-party keyboard access through the device settings in System -> Languages & input -> Virtual keyboard. On iOS, users can view and manage which applications have third-party keyboard access through the device settings in General -> Keyboard. On Android, users can view and manage which applications can use accessibility services through the device settings in Accessibility. The exact device settings menu locations may vary between operating system versions.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:27.660000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1417",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1417"
+                },
+                {
+                    "source_name": "Zeltser-Keyboard",
+                    "description": "Lenny Zeltser. (2016, July 30). Security of Third-Party Keyboard Apps on Mobile Devices. Retrieved December 21, 2016.",
+                    "url": "https://zeltser.com/third-party-keyboards-security/"
+                }
+            ],
+            "modified": "2019-10-10T14:44:30.571000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1017",
+            "name": "Capture Clipboard Data",
+            "description": "Adversaries may abuse Clipboard Manager APIs to obtain sensitive information copied to the global clipboard. For example, passwords being copy-and-pasted from a password manager app could be captured by another application installed on the device.(Citation: Fahl-Clipboard)\n\nOn Android, <code>ClipboardManager.OnPrimaryClipChangedListener</code> can be used by applications to register as a listener and monitor the clipboard for changes.(Citation: Github Capture Clipboard 2019)\n\nAndroid 10 mitigates this technique by preventing applications from accessing clipboard data unless the application is on the foreground or is set as the device’s default input method editor (IME).(Citation: Android 10 Privacy Changes)",
+            "id": "attack-pattern--c4b96c0b-cb58-497a-a1c2-bb447d79d692",
+            "x_mitre_platforms": [
+                "Android",
+                "iOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "2.0",
+            "type": "attack-pattern",
+            "x_mitre_detection": "Capturing clipboard content can be difficult to detect, and therefore enterprises may be better served focusing on detection at other stages of adversarial behavior.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:19.996000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "phase_name": "collection",
+                    "kill_chain_name": "mitre-mobile-attack"
+                },
+                {
+                    "phase_name": "credential-access",
+                    "kill_chain_name": "mitre-mobile-attack"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-mobile-attack",
+                    "external_id": "T1414",
+                    "url": "https://attack.mitre.org/techniques/T1414"
+                },
+                {
+                    "source_name": "NIST Mobile Threat Catalogue",
+                    "external_id": "APP-35",
+                    "url": "https://pages.nist.gov/mobile-threat-catalogue/application-threats/APP-35.html"
+                },
+                {
+                    "description": "Fahl, S, et al.. (2013). Hey, You, Get Off of My Clipboard. Retrieved August 27, 2019.",
+                    "source_name": "Fahl-Clipboard",
+                    "url": "http://saschafahl.de/static/paper/pwmanagers2013.pdf"
+                },
+                {
+                    "description": "Pearce, G. (, January). Retrieved August 8, 2019.",
+                    "source_name": "Github Capture Clipboard 2019",
+                    "url": "https://github.com/grepx/android-clipboard-security"
+                },
+                {
+                    "description": "Android Developers. (n.d.). Privacy changes in Android 10. Retrieved September 11, 2019.",
+                    "source_name": "Android 10 Privacy Changes",
+                    "url": "https://developer.android.com/about/versions/10/privacy/changes#clipboard-data"
+                }
+            ],
+            "modified": "2019-09-13T20:46:26.223000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1015",
+            "name": "Capture SMS Messages",
+            "description": "A malicious application could capture sensitive data sent via SMS, including authentication credentials. SMS is frequently used to transmit codes used for multi-factor authentication.\n\nOn Android, a malicious application must request and obtain permission (either at app install time or run time) in order to receive SMS messages. Alternatively, a malicious application could attempt to perform an operating system privilege escalation attack to bypass the permission requirement.\n\nOn iOS, applications cannot access SMS messages in normal operation, so an adversary would need to attempt to perform an operating system privilege escalation attack to potentially be able to access SMS messages.",
+            "id": "attack-pattern--e8b4e1ec-8e3b-484c-9038-4459b1ed8060",
+            "x_mitre_platforms": [
+                "Android",
+                "iOS"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.1",
+            "type": "attack-pattern",
+            "x_mitre_detection": "On Android, the user can view which applications have permission to access SMS messages through the device settings, and the user can choose to revoke the permission.",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:15.920000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "collection"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1412",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1412"
+                }
+            ],
+            "modified": "2019-09-18T18:28:50.898000",
+            "revoked": false
+        },
+        {
+            "x_mitre_old_attack_id": "MOB-T1008",
+            "name": "Exploit TEE Vulnerability",
+            "description": "A malicious app or other attack vector could be used to exploit vulnerabilities in code running within the Trusted Execution Environment (TEE) (Citation: Thomas-TrustZone). The adversary could then obtain privileges held by the TEE potentially including the ability to access cryptographic keys or other sensitive data (Citation: QualcommKeyMaster). Escalated operating system privileges may be first required in order to have the ability to attack the TEE (Citation: EkbergTEE). If not, privileges within the TEE can potentially be used to exploit the operating system (Citation: laginimaineb-TEE).",
+            "id": "attack-pattern--ef771e03-e080-43b4-a619-ac6f84899884",
+            "x_mitre_platforms": [
+                "Android"
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_version": "1.0",
+            "type": "attack-pattern",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-10-25T14:48:22.716000",
+            "x_mitre_tactic_type": [
+                "Post-Adversary Device Access"
+            ],
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "credential-access"
+                },
+                {
+                    "kill_chain_name": "mitre-mobile-attack",
+                    "phase_name": "privilege-escalation"
+                }
+            ],
+            "external_references": [
+                {
+                    "external_id": "T1405",
+                    "source_name": "mitre-mobile-attack",
+                    "url": "https://attack.mitre.org/techniques/T1405"
+                },
+                {
+                    "external_id": "APP-27",
+                    "source_name": "NIST Mobile Threat Catalogue",
+                    "url": "https://pages.nist.gov/mobile-threat-catalogue/application-threats/APP-27.html"
+                },
+                {
+                    "description": "Josh Thomas and Charles Holmes. (2015, September). An infestation of dragons: Exploring vulnerabilities in the ARM TrustZone architecture. Retrieved December 9, 2016.",
+                    "source_name": "Thomas-TrustZone",
+                    "url": "https://usmile.at/symposium/program/2015/thomas-holmes"
+                },
+                {
+                    "description": "laginimaineb. (2016, June). Extracting Qualcomm's KeyMaster Keys - Breaking Android Full Disk Encryption. Retrieved December 9, 2016.",
+                    "source_name": "QualcommKeyMaster",
+                    "url": "https://bits-please.blogspot.in/2016/06/extracting-qualcomms-keymaster-keys.html"
+                },
+                {
+                    "description": "Jan-Erik Ekberg. (2015, September 10). Android and trusted execution environments. Retrieved December 9, 2016.",
+                    "source_name": "EkbergTEE",
+                    "url": "https://usmile.at/symposium/program/2015/ekberg"
+                },
+                {
+                    "description": "laginimaineb. (2016, May). War of the Worlds - Hijacking the Linux Kernel from QSEE. Retrieved December 21, 2016.",
+                    "source_name": "laginimaineb-TEE",
+                    "url": "http://bits-please.blogspot.co.il/2016/05/war-of-worlds-hijacking-linux-kernel.html"
+                }
+            ],
+            "modified": "2018-10-17T00:14:20.652000",
+            "revoked": false
+        }
+    ]
+}

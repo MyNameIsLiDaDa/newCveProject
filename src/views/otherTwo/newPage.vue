@@ -1,178 +1,267 @@
 <template>
-  <div>
-    <a-card :bordered="false" class="ant-pro-components-tag-select">
-      <!-- 选中表格start -->
-      <div class="line-style">
-        <!-- <label class="line-label-3">已选择:</label> -->
-        <template v-for="(tag, index) in tags">
-          <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
-            <!-- <a-tag :key="tag" :closable="index !== 0" :afterClose="() => handleClose(tag)"> -->
-            <a-tag
-              :key="tag"
-              :closable="index !== 0"
-              :afterClose="() => handleClose(tag)"
-            >{{ `${tags.slice(0, 20)}...` }}</a-tag>
-          </a-tooltip>
-          <a-tag
-            v-else
-            :key="tag"
-            :closable="index !== 0"
-            :afterClose="() => handleClose(tag)"
-          >{{ tag }}</a-tag>
-        </template>
-      </div>
-      <!-- 选中表格end -->
-
-      <!-- 厂商盒子start -->
-      <div style="width: 100%; height: 230px; border-top: 1px solid #eee;overflow: hidden">
-        <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
-          <!-- <label class="line-label-1">供应商:</label> -->
-          供应商:
-        </div>
-        <!-- <a href="javascript:;" style="float: right;"> more > </a> -->
-        <div style="height: 60px; width: 100%; box-sizing: border-box">
-          <div class="vendor-search">
-            <i class="el-icon-search" style="height: 30px;line-height: 30px;text-align: center;padding: 0 10px;"></i>
-            <el-input size="mini" v-model="searchData" placeholder="请输入内容..." style="width: 45%"></el-input>
-             <el-button size="mini" @click="vendorSearch">查 询</el-button>
+  <div class="big-box">
+    <el-tabs v-model="activeName" class="tabStyle" @tab-click="handleClick">
+      <el-tab-pane label="正序" name="first">
+        <a-card :bordered="false" class="ant-pro-components-tag-select">
+          <!-- 选中表格start -->
+          <div class="line-style">
+            <!-- <label class="line-label-3">已选择:</label> -->
+            <template v-for="(tag, index) in tags">
+              <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
+                <!-- <a-tag :key="tag" :closable="index !== 0" :afterClose="() => handleClose(tag)"> -->
+                <a-tag
+                  :key="tag"
+                  :closable="index !== 0"
+                  :afterClose="() => handleClose(tag)"
+                >{{ `${tags.slice(0, 20)}...` }}</a-tag>
+              </a-tooltip>
+              <a-tag
+                v-else
+                :key="tag"
+                :closable="index !== 0"
+                :afterClose="() => handleClose(tag)"
+              >{{ tag }}</a-tag>
+            </template>
           </div>
-          <ul class="letter-style">
-            <li style="height: 30px; widht: 3%">
-              <i class="el-icon-menu"></i>
+          <!-- 选中表格end -->
+
+          <!-- 厂商盒子start -->
+          <div style="width: 100%; height: 230px; border-top: 1px solid #eee;overflow: hidden">
+            <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
+              <!-- <label class="line-label-1">供应商:</label> -->
+              供应商:
+            </div>
+            <!-- <a href="javascript:;" style="float: right;"> more > </a> -->
+            <div style="height: 60px; width: 100%; box-sizing: border-box">
+              <div class="vendor-search">
+                <i class="el-icon-search" style="height: 30px;line-height: 30px;text-align: center;padding: 0 10px;"></i>
+                <el-input size="mini" v-model="searchData" placeholder="请输入内容..." style="width: 45%"></el-input>
+                <el-button size="mini" @click="vendorSearch">查 询</el-button>
+              </div>
+              <ul class="letter-style">
+                <li style="height: 30px; widht: 3%">
+                  <i class="el-icon-menu"></i>
+                </li>
+                <li v-for="item in letter" :class="[letterIndex === item.id ? 'letter-line' : '']" :key="item.id" @mouseenter="letterMouseenter(item)">{{ item.name }}</li>
+              </ul>
+            </div>
+            <div class="line-style" style="width: 90%; float: right; height: 170px;">
+              <el-radio-group size="small" v-model="vendorsObj" @change="radioButtonEvent(1, $event)" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
+                  <!-- @click="radioButtonEvent(1, item)" -->
+                <el-radio-button
+                  class="line-radio"
+                  :value="item.vendor"
+                  :title="item.vendor"
+                  v-for="item in VendorsData"
+                  :key="item.vendor"
+                  :label="item"
+                >{{ item.vendor }}</el-radio-button>
+              </el-radio-group>
+              <p class="loadP" v-if="vendorsNoMore">没有更多了</p>
+              <p class="loadP" v-if="vendorsLoading">加载中...</p>
+            </div>
+          </div>
+          <!-- 厂商盒子end -->
+
+          <!-- 其他数据start -->
+          <div v-show="isTrue1" style="margin-top: 10px; border-top: 1px solid #eee;">
+            <div style="width: 100%; height: 50px; overflow: hidden">
+              <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
+                商品:
+              </div>
+              <div class="box-style-productsData">
+                <el-radio-group size="small" v-model="productsObj" @change="radioButtonEvent(2, $event)">
+                  <el-radio-button
+                    class="line-radio"
+                    :value="item"
+                    v-for="item in productsData"
+                    :key="item"
+                    :label="item"
+                  >{{ item }}</el-radio-button>
+                </el-radio-group>
+              </div>
+            </div>
+          </div>
+
+          <div v-show="isTrue2" style="margin-top: 10px; border-top: 1px solid #eee;">
+            <div style="width: 100%; height: 50px; overflow: hidden">
+              <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
+                版本:
+              </div>
+              <!-- <label class="line-label-2">版本:</label> -->
+              <div class="box-style-productsData">
+                <el-radio-group size="small" v-model="versionsObj" @change="radioButtonEvent(3, $event)">
+                  <el-radio-button
+                    class="line-radio"
+                    :value="item.version"
+                    v-for="item in versionsData"
+                    :key="item.cpe_id"
+                    :label="item"
+                  >{{ item.version }}</el-radio-button>
+                </el-radio-group>
+              </div>
+            </div>
+          </div>
+
+          <!-- 其他数据end -->
+          <div style="margin-top: 10px;">
+            <a-button v-show="tags.length === 4" @click="initECharts">查看可视图</a-button>
+          </div>
+        </a-card>
+        <div style="height: 10px; width: 100%; background-color: rgb(243, 243, 243);"></div>
+        <!-- CvE详细数据start -->
+        <a-card style="margin-top: 24px;" :bordered="false">
+          <!-- <a-list size="large" rowKey="id" itemLayout="vertical" :dataSource="cveInfoData">
+            <a-list-item :key="item.id" slot="renderItem" slot-scope="item">
+              <a-list-item-meta>
+                <a slot="title" href="javascript:;" @click="cveClick(1, item)">{{ item.CVE_ID }}</a>
+              </a-list-item-meta>
+              <p style="margin: 10px 0;">
+                <strong>Description:</strong>
+                {{ item.Description }}
+              </p>
+              <div style="width: 100%; height: 1px; background-color: #eee;"></div>
+            </a-list-item>
+          </a-list> -->
+          <el-collapse v-model="cveListNum" accordion>
+            <template v-for="item in cveInfoData">
+              <el-collapse-item :key="item.id" :title="item.CVE_ID" :name="item.id">
+                <a slot="title" href="javascript:;" @click="cveClick(1, item)">{{ item.CVE_ID }}</a>
+                <div>
+                  <div><strong>CVE_ID:</strong> {{ item.CVE_ID }}</div>
+                  <div><strong>Publish_Date:</strong> {{ item.Publish_Date || null }}</div>
+                  <div><strong>Update_Date:</strong> {{ item.Update_Date || null }}</div>
+                  <div><strong>Description:</strong> {{ item.Description || null }}</div>
+                </div>
+              </el-collapse-item>
+            </template>
+          </el-collapse>
+        </a-card>
+        <!-- CvE详细数据end -->
+
+        <!-- CwE详细 弹出层start -->
+        <a-modal title="cwe漏洞" v-model="cweVisible" @ok="cweVisible = false">
+          <!-- <div class="cwe-style" style="height: 350px; overflow-y: auto;">
+            <li v-for="item in cweInfoData" :key="item.id">
+              <a slot="title" href="javascript:;" @click="cveClick(2, item)">{{ item.Name }}</a>
+              <p>
+                <strong>Description:</strong>
+                {{ item.Description }}
+              </p>
             </li>
-            <li v-for="item in letter" :class="[letterIndex === item.id ? 'letter-line' : '']" :key="item.id" @mouseenter="letterMouseenter(item)">{{ item.name }}</li>
-          </ul>
-        </div>
-        <div class="line-style" style="width: 90%; float: right; height: 170px;">
-          <el-radio-group size="small" v-model="vendorsObj" @change="radioButtonEvent(1, $event)" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
-              <!-- @click="radioButtonEvent(1, item)" -->
-            <el-radio-button
-              class="line-radio"
-              :value="item.vendor"
-              :title="item.vendor"
-              v-for="item in VendorsData"
-              :key="item.vendor"
-              :label="item"
-            >{{ item.vendor }}</el-radio-button>
+          </div> -->
+          <div class="cweList">
+            <el-collapse v-model="cweListNum" accordion>
+              <template v-for="item in cweInfoData">
+                <el-collapse-item :key="item.id" :title="item.Name" :name="item.id">
+                  <a slot="title" href="javascript:;" @click="cveClick(2, item)">{{ item.Name }}</a>
+                  <!-- <template slot-scope="item"> -->
+                    <div v-for="(value, name, index) in item" :key="index">
+                      <div><strong>{{ name }}:</strong>  {{ value === null? 'null' : value }} </div>
+                    </div>
+                  <!-- </template> -->
+                </el-collapse-item>
+              </template>
+            </el-collapse>
+          </div>
+        </a-modal>
+        <!-- CwE详细 弹出层end -->
+
+        <!-- 攻击手段 弹出层start -->
+        <a-modal title="capec攻击手段" v-model="attackVisible" @ok="attackVisible = false">
+          <!-- <div class="cwe-style" style="height: 350px; overflow-y: auto;">
+            <li v-for="item in data" :key="item.id">
+              <h3>{{ item.Name }}</h3>
+              <p>
+                <strong>Description:</strong>
+                {{ item.Description }}
+              </p>
+            </li>
+          </div> -->
+          <div class="cweList">
+            <el-collapse v-model="capecListNum" accordion>
+              <template v-for="item in data">
+                <el-collapse-item :key="item.id" :title="item.Name" :name="item.id">
+                  <a slot="title" href="javascript:;" @click="cveClick(2, item)">{{ item.Name }}</a>
+                  <!-- <template slot-scope="item"> -->
+                    <div v-for="(value, name, index) in item" :key="index">
+                      <div><strong>{{ name }}:</strong>  {{ value === null? 'null' : value }} </div>
+                    </div>
+                  <!-- </template> -->
+                </el-collapse-item>
+              </template>
+            </el-collapse>
+          </div>
+        </a-modal>
+        <!-- 攻击手段 弹出层end -->
+
+        <!-- ECharts 弹出层start -->
+        <!-- <a-modal title="网络空间知识图谱" v-model="echartsVisible">
+          <div style="widht: 800px; height: 450px" id="main"></div>
+        </a-modal> -->
+        <!-- ECharts 弹出层end -->
+        <!-- new ECharts 弹出层 -->
+      </el-tab-pane>
+
+      <div class="box" v-if="echartsVisible">
+        <header>
+          <div class="title">网络空间知识图谱</div>
+          <div class="close" @click="echartsVisible = false">
+            <a-icon type="close" />
+          </div>
+        </header>
+        <div style="widht: 100%; height: 100%" id="main"></div>
+      </div>
+
+      <!-- next page start -->
+      <el-tab-pane label="倒序" name="second">
+        <!-- 提示选择框 -->
+        <el-dialog title="战术选择" :visible.sync="selectTactics" width="74%" :before-close="handleClose">
+          <el-radio-group v-model="selectTacticsObj" @change="radioButtonEvent(4, $event)">
+            <el-radio-button style="margin: 10px" size="small" v-for="item in selectTacticsList" :key="item.tId" :label="item">{{ item.tId }}</el-radio-button>
           </el-radio-group>
-          <p class="loadP" v-if="vendorsNoMore">没有更多了</p>
-          <p class="loadP" v-if="vendorsLoading">加载中...</p>
-        </div>
-      </div>
-      <!-- 厂商盒子end -->
+          <span slot="footer" class="dialog-footer">
+            <!-- <el-button type="primary" @click="selectTactics = false">确 定</el-button> -->
+          </span>
+        </el-dialog>
 
-      <!-- 其他数据start -->
-      <div v-show="isTrue1" style="margin-top: 10px; border-top: 1px solid #eee;">
-        <div style="width: 100%; height: 50px; overflow: hidden">
-          <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
-            商品:
-          </div>
-          <div class="box-style-productsData">
-            <el-radio-group size="small" v-model="productsObj" @change="radioButtonEvent(2, $event)">
-              <el-radio-button
-                class="line-radio"
-                :value="item"
-                v-for="item in productsData"
-                :key="item"
-                :label="item"
-              >{{ item }}</el-radio-button>
-            </el-radio-group>
-          </div>
-        </div>
-      </div>
+      </el-tab-pane>
+      <!-- next page end -->
+    </el-tabs>
 
-      <div v-show="isTrue2" style="margin-top: 10px; border-top: 1px solid #eee;">
-        <div style="width: 100%; height: 50px; overflow: hidden">
-          <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
-            版本:
-          </div>
-          <!-- <label class="line-label-2">版本:</label> -->
-          <div class="box-style-productsData">
-            <el-radio-group size="small" v-model="versionsObj" @change="radioButtonEvent(3, $event)">
-              <el-radio-button
-                class="line-radio"
-                :value="item.version"
-                v-for="item in versionsData"
-                :key="item.cpe_id"
-                :label="item"
-              >{{ item.version }}</el-radio-button>
-            </el-radio-group>
-          </div>
-        </div>
-      </div>
-
-      <!-- 其他数据end -->
-      <div style="margin-top: 10px;">
-        <a-button v-show="tags.length === 4" @click="initECharts">查看可视图</a-button>
-      </div>
-    </a-card>
-    <div style="height: 20px; width: 100%; background-color: rgb(243, 243, 243);"></div>
-    <!-- CvE详细数据start -->
-    <a-card style="margin-top: 24px;" :bordered="false">
-      <a-list size="large" rowKey="id" itemLayout="vertical" :dataSource="cveInfoData">
-        <a-list-item :key="item.id" slot="renderItem" slot-scope="item">
-          <a-list-item-meta>
-            <a slot="title" href="javascript:;" @click="cveClick(1, item)">{{ item.CVE_ID }}</a>
-          </a-list-item-meta>
-          <p style="margin: 10px 0;">
-            <strong>Description:</strong>
-            {{ item.Description }}
-          </p>
-        </a-list-item>
-      </a-list>
-    </a-card>
-    <!-- CvE详细数据end -->
-
-    <!-- CwE详细 弹出层start -->
-    <a-modal title="cwe漏洞" v-model="cweVisible">
-      <div class="cwe-style" style="height: 350px; overflow-y: auto;">
-        <li v-for="item in cweInfoData" :key="item.id">
-          <a slot="title" href="javascript:;" @click="cveClick(2, item)">{{ item.Name }}</a>
-          <p>
-            <strong>Description:</strong>
-            {{ item.Description }}
-          </p>
+    <el-dialog title="详细配置信息" :visible.sync="dialogTableVisible" width="50%">
+      <!-- table 自动增加列 -->
+      <!-- <el-table :data="gridData" border height="400">
+        <el-table-column property="name" label="名称" width="80"></el-table-column>
+        <el-table-column property="description" label="描述" width="400"></el-table-column>
+        <template v-if="dialogTableData.length >= 1">
+          <el-table-column 
+            v-for="(item, index) in dialogTableData"
+            :key="index"
+            :prop="item.prop"
+            :label="item.label"
+            width="300"
+          >
+          </el-table-column>
+        </template>
+      </el-table> -->
+      <ul class="configuration-ul">
+        <li v-for="(value, name, index) in gridData" :key="index">
+          <div>{{ name }}</div>
+          <div>{{ value }}</div>
         </li>
-      </div>
-    </a-modal>
-    <!-- CwE详细 弹出层end -->
+      </ul>
+    </el-dialog>
 
-    <!-- 攻击手段 弹出层start -->
-    <a-modal title="capec攻击手段" v-model="attackVisible">
-      <div class="cwe-style" style="height: 350px; overflow-y: auto;">
-        <li v-for="item in data" :key="item.id">
-          <h3>{{ item.Name }}</h3>
-          <p>
-            <strong>Description:</strong>
-            {{ item.Description }}
-          </p>
-        </li>
-      </div>
-    </a-modal>
-    <!-- 攻击手段 弹出层end -->
-
-    <!-- ECharts 弹出层start -->
-    <!-- <a-modal title="网络空间知识图谱" v-model="echartsVisible">
-      <div style="widht: 800px; height: 450px" id="main"></div>
-    </a-modal> -->
-    <!-- ECharts 弹出层end -->
-    <!-- new ECharts 弹出层 -->
-    <div class="box" v-if="echartsVisible">
-      <header>
-        <div class="title">网络空间知识图谱</div>
-        <div class="close" @click="echartsVisible = false">
-          <a-icon type="close" />
-        </div>
-      </header>
-      <div style="widht: 100%; height: 100%" id="main"></div>
-    </div>
   </div>
 </template>
 
 <script>
 import 'ant-design-vue/lib/date-picker/style/css';
 import { Card, Tag, Radio, Button, List, Modal, Icon, Tooltip } from "ant-design-vue";
-import { vendorsData, productsData, versionsData, CveData, CweData, capecData, cceData, vendorSearch } from "@/api"
+import { vendorsData, productsData, versionsData, CveData, CweData,
+         capecData, cceData, vendorSearchApi, allTactics, techniquesNext,
+          capec_info, cwe_info, cve_info, cpe_info, vendor_detail } from "@/api"
 // import * as d3 from 'd3'
 // const main = document.getElementById('main')
 const echarts = require('echarts')
@@ -247,9 +336,20 @@ export default {
       attackVisible: false,
       cweVisible: false,
       echartsVisible: false,
-      echartsDom: echarts,
+      // echartsDom: echarts,
       letter: letter,
       letterIndex: 0,
+      // next page data ---------------------
+      activeName: 'first', // tab栏属性
+      selectTactics: false, // 选择所有任务;
+      selectTacticsObj: null, // 选中的任务;
+      selectTacticsList: [],  // 所有任务数据;
+      dialogTableVisible: false,
+      gridData: {},
+      dialogTableData: [],
+      cveListNum: '',
+      cweListNum: '',
+      capecListNum: ''
     }
   },
   created () {
@@ -358,8 +458,6 @@ export default {
           ]}}
 
           this.vendors.push(...qqq.data.Data)
-          console.log(this.vendors, 'ldkfjals')
-          
           this.vendors.forEach((v, index) => {
             if (VendorsObject[v.pattern]) {
               VendorsObject[v.pattern].push(v)
@@ -379,7 +477,6 @@ export default {
     },
     // getList () {
     //   this.$http.get('/list/article').then(res => {
-    //     console.log('res', res)
     //     this.data = res.result
     //   })
     //   // const res = require('./Json/cve_info.json')
@@ -397,8 +494,6 @@ export default {
     //     })
     // },
     // radioChanged (num, e) {
-    //   // console.log(num)
-    //   // console.log(e)
     //   if (num === 1) {
     //     this.optionTitle = e.target.value
     //   } else if (num === 2) {
@@ -416,12 +511,9 @@ export default {
     //   // });
     // },
     radioButtonEvent (num, item) {
-      console.log(num, item)
       this.isTrue1 = false
       this.isTrue2 = false
       // this.isTrue3 = false
-      // console.log(num)
-      // console.log(item)
       // 插入 tags 数组 并且显示在页面上面;
       // this.$http ...
       if (num === 1) {
@@ -429,76 +521,74 @@ export default {
         this.cweInfoData = []
         this.versionsData = []
         this.cveInfoData = []
-        productsData(item).then(res => {
-          this.productsData = res.data.Data || []
-          this.isTrue1 = true
-        })
-        // ------------------------------------------------------------
-        // if (item.vendor === 'google') {
-        //   const res = require('./Json/products.json')
-        //   this.productsData = res.Data
+        // productsData(item).then(res => {
+        //   this.productsData = res.data.Data || []
         //   this.isTrue1 = true
-        // }
-      } else if (num === 2) {
-        versionsData(this.vendorsObj.vendor, item).then(res => {
-          this.versionsData = res.data.Data
+        // })
+        // ------------------------------------------------------------
+        if (item.vendor === 'google') {
+          const res = require('./Json/products.json')
+          this.productsData = res.Data
           this.isTrue1 = true
-          this.isTrue2 = true
-          this.tags[2] = item         
-        })
+        }
+      } else if (num === 2) {
+        // versionsData(this.vendorsObj.vendor, item).then(res => {
+        //   this.versionsData = res.data.Data
+        //   this.isTrue1 = true
+        //   this.isTrue2 = true
+        //   this.tags[2] = item         
+        // })
         // ---------------------------------------------------------------
-        // const res = require('./Json/versions.json')
-        // this.versionsData = res.Data
-        // this.isTrue1 = true
-        // this.isTrue2 = true
-        // this.tags[2] = item
+        const res = require('./Json/versions.json')
+        this.versionsData = res.Data
+        this.isTrue1 = true
+        this.isTrue2 = true
+        this.tags[2] = item
       } else if (num === 3) {
 
-        CveData(item.cpe_id).then(res => {
-          this.isTrue1 = true
-          this.isTrue2 = true
-          this.tags[3] = item.version
-          this.cveInfoData = res.data.Data
-        })
+        // CveData(item.cpe_id).then(res => {
+        //   this.isTrue1 = true
+        //   this.isTrue2 = true
+        //   this.tags[3] = item.version
+        //   this.cveInfoData = res.data.Data
+        // })
         // ------------------------------------------------------------------
-        // const res = require('./Json/cve_info.json')
-        // this.isTrue1 = true
-        // this.isTrue2 = true
-        // this.tags[3] = item.version
-        // this.cveInfoData = res.Data
+        const res = require('./Json/cve_info.json')
+        this.isTrue1 = true
+        this.isTrue2 = true
+        this.tags[3] = item.version
+        this.cveInfoData = res.Data
+        console.log(this.cveInfoData, 'this.cveInfoData')
+      } else if (num === 4) {
+        this.selectTactics = false
+        this.nextPageInitECharts(item)
+        this.echartsVisible = true
       }
-      // else if (num === 4) {
-      //   this.isTrue1 = true
-      //   this.isTrue2 = true
-      //   this.isTrue3 = true
-      //   this.tags[4] = item.CVE_ID
-      //   const res = require('./Json/cwe_info.json')
-      //   this.cweInfoData = res.Data
-      // }
     },
     cveClick (num, item) {
       if (num === 1) {
-        // const res = require('./Json/cwe_info.json')
-        // console.log(res, 'res')
-        // this.cweInfoData = res.Data
         this.cweVisible = true
-        // ----------------------------------
-        CweData(item.CVE_ID).then(res => {
-          if (res.data.Code === 0) {
-            this.cweInfoData = res.data.Data
-            this.cweVisible = true
-          }
-        })
+        const res = require('./Json/cwe_info.json')
+        this.cweInfoData = res.Data
+        // console.log(this.cweInfoData)
+        // ------------------------------------------------------------------------
+        // CweData(item.CVE_ID).then(res => {
+        //   if (res.data.Code === 0) {
+        //     this.cweInfoData = res.data.Data
+        //     this.cweVisible = true
+        //   }
+        // })
 
       } else if (num === 2) {
         this.attackVisible = true
 
-        // const res = require('./Json/capec_info.json')
-        // this.data = res.Data
-        // --------------------------------
-        capecData(item.CWE_ID).then(res => {
-          this.data = res.data.Data
-        })
+        const res = require('./Json/capec_info.json')
+        this.data = res.Data
+        console.log(this.data, 'data')
+        // --------------------------------------------------------------------------------
+        // capecData(item.CWE_ID).then(res => {
+        //   this.data = res.data.Data
+        // })
       }
     },
     initECharts () {
@@ -506,106 +596,226 @@ export default {
       this.echartsVisible = true
       const than = this
       setTimeout(() => {
-        const main = document.getElementById('main')
-
-        var myChart = this.echartsDom.init(main)
-        // console.log(this.cveInfoData, 'cveInfoData')
+        var myChart = echarts.init(document.getElementById('main'))
         const eData = []
+        console.log(this.tags)
         eData.push({ name: this.tags[2], Vendors: this.tags[1], versions: this.tags[3], itemStyle: { normal: { color: '#e33a59' } } })
-
-        this.cveInfoData.forEach(v => {
+        // ----------------------------------------------------------------------------------------------
+        // this.cveInfoData.forEach(v => {
+        //   eData.push({
+        //     parentID: eData[0].name,
+        //     name: v.CVE_ID,
+        //     itemStyle: {
+        //       normal: {
+        //         color: '#44aeae'
+        //       }
+        //     },
+        //     Description: v.Description,
+        //     CVE_ID: v.CVE_ID
+        //   }) // cve
+        //   CweData(v.CVE_ID).then(res => {
+        //     if (res.data.Code === 0) {
+        //       res.data.Data.forEach(item => {
+        //         eData.push({
+        //           parentID: v.CVE_ID,
+        //           name: item.Name,
+        //           itemStyle: {
+        //             normal: {
+        //               color: '#fdc72a'
+        //             }
+        //           },
+        //           Description: item.Description,
+        //           CWE_ID: item.CWE_ID
+        //         })
+        //         capecData(item.CWE_ID).then(res => {
+        //           res.data.Data.forEach(val => {
+        //             // capec
+        //             eData.push({
+        //               parentID: item.Name,
+        //               name: val.Name,
+        //               itemStyle: {
+        //                 normal: {
+        //                   color: '#3e7b91'
+        //                 }
+        //               },
+        //               CAPEC_ID: val.CAPEC_ID,
+        //               Description: val.Description
+        //             })
+        //           })
+        //         })
+        //       })
+        //     }
+        //   })
+        //   cceData(v.CPE_ID).then(res => {
+        //     res.data.Data.forEach(ev => {
+        //       eData.push({
+        //         parentID: eData[0].name,
+        //         name: ev.CCE_ID,
+        //         itemStyle: {
+        //           normal: {
+        //             color: '#874c9c'
+        //           }
+        //         },
+        //         Description: ev.CCE_Description
+        //       })
+        //     })          
+        //   })
+        // })
+        // -------------------------------------------------------以下是虚拟数据json----------------------------------------------------------
+        const cve = require('./Json/cve_info.json').Data
+        cve.forEach((v, index) => {
+          // cwe
           eData.push({
             parentID: eData[0].name,
             name: v.CVE_ID,
             itemStyle: {
               normal: {
-                color: '#44aeae'
+                color: '#fdc72a'
               }
             },
             Description: v.Description,
             CVE_ID: v.CVE_ID
-          }) // cve
-          CweData(v.CVE_ID).then(res => {
-            if (res.data.Code === 0) {
-              res.data.Data.forEach(item => {
-                eData.push({
-                  parentID: v.CVE_ID,
-                  name: item.Name,
-                  itemStyle: {
-                    normal: {
-                      color: '#fdc72a'
-                    }
-                  },
-                  Description: item.Description,
-                  CWE_ID: item.CWE_ID
-                })
-                capecData(item.CWE_ID).then(res => {
-                  res.data.Data.forEach(val => {
-                    // capec
-                    eData.push({
-                      parentID: item.Name,
-                      name: val.Name,
-                      itemStyle: {
-                        normal: {
-                          color: '#3e7b91'
-                        }
-                      },
-                      CAPEC_ID: val.CAPEC_ID,
-                      Description: val.Description
-                    })
-                  })
-                })
-              })
-            }
           })
-          cceData(v.CPE_ID).then(res => {
-            res.data.Data.forEach(ev => {
-              eData.push({
-                parentID: eData[0].name,
-                name: ev.CCE_ID,
-                itemStyle: {
-                  normal: {
-                    color: '#874c9c'
-                  }
-                },
-                Description: ev.CCE_Description
-              })
-            })          
+        })      
+
+        const cwe = require('./Json/cwe_info.json').Data
+        cwe.forEach((v, index) => {
+          // cwe
+          eData.push({
+            parentID: eData[1].name,
+            name: v.Name,
+            itemStyle: {
+              normal: {
+                color: '#874c9c'
+              }
+            },
+            Description: v.Description,
+            CWE_ID: v.CWE_ID
+          })
+        })
+        const capec = require('./Json/capec_info.json').Data
+        capec.forEach(v => {
+          // capec
+          eData.push({
+            parentID: 'J2EE Misconfiguration: Data Transmission Without Encryption',
+            name: v.Name,
+            itemStyle: {
+              normal: {
+                color: '#3e7b91'
+              }
+            },
+            CAPEC_ID: v.CAPEC_ID,
+            Description: v.Description
+          })
+        })
+        const techniques = require('./Json/techniques.json').Data
+        techniques.forEach(v => {
+          let name = v.external_references[0].external_id
+          if (v.external_references.length > 1) {
+            v.external_references.forEach(item => {
+              if (item.external_id.indexOf('T') === 0) {
+                name = item.external_id
+              }
+            })
+          }
+          eData.push({
+            parentID: 'Using Malicious Files',
+            name: name,
+            itemStyle: {
+              normal: {
+                color: '#E8E22F'
+              }
+            },
+            // CAPEC_ID: v.CAPEC_ID,
+            Description: v.description
           })
         })
 
+        const tactics = require('./Json/tactics.json').Data
+        tactics.forEach(v => {
+          let name = v.external_references[0].external_id
+          if (v.external_references.length > 1) {
+            v.external_references.forEach(item => {
+              if (item.external_id.indexOf('T') === 0) {
+                name = item.external_id
+              }
+            })
+          }
+          eData.push({
+            parentID: 'T1089',
+            name: name,
+            itemStyle: {
+              normal: {
+                color: '#31C9E8'
+              }
+            },
+            Description: v.description
+          })
+        })        
 
-        // const cwe = require('./Json/cwe_info.json').Data
-        // cwe.forEach((v, index) => {
-        //   // cwe
-        //   eData.push({
-        //     parentID: eData[1].name,
-        //     name: v.Name,
-        //     itemStyle: {
-        //       normal: {
-        //         color: '#fdc72a'
-        //       }
-        //     },
-        //     Description: v.Description,
-        //     CWE_ID: v.CWE_ID
-        //   })
-        // })
+        const cce = require('./Json/cce_info.json').Data
+        cce.forEach(ev => {
+          eData.push({
+            parentID: eData[0].name,
+            name: ev.CCE_ID,
+            itemStyle: {
+              normal: {
+                color: '#874c9c'
+              }
+            },
+            Description: ev.CCE_Description
+          })
+        })
 
-        // const capec = require('./Json/capec_info.json').Data
-        // capec.forEach(v => {
-        //   // capec
-        //   eData.push({
-        //     parentID: 'J2EE Misconfiguration: Data Transmission Without Encryption',
-        //     name: v.Name,
-        //     itemStyle: {
-        //       normal: {
-        //         color: '#3e7b91'
-        //       }
-        //     },
-        //     CAPEC_ID: v.CAPEC_ID,
-        //     Description: v.Description
-        //   })
-        // })
+        const g_s = require('./Json/groups_softwares.json').Data
+
+        g_s.group.forEach(v => {
+          v.external_references.forEach(item => {
+            if (item.external_id) {
+              if (item.external_id.indexOf('G') === 0) {
+                v.tName = item.external_id
+                v.numId = v.id
+              }
+              delete v.id
+              eData.push({
+                ...v,
+                parentID: 'T1089',
+                name: v.tName,
+                itemStyle: {
+                  normal: {
+                    color: '#2DE8BD'
+                  }
+                },
+                description: v.description
+              })
+            }
+          })
+        })
+
+        g_s.software.forEach(v => {
+          v.external_references.forEach(item => {
+            if (item.external_id) {
+              if (item.external_id.indexOf('S') === 0) {
+                v.tName = item.external_id
+                v.numId = v.id
+              }
+              delete v.id
+              eData.push({
+                ...v,
+                parentID: 'T1089',
+                name: v.tName,
+                itemStyle: {
+                  normal: {
+                    color: '#4030E8'
+                  }
+                },
+                description: v.description
+              })
+            }
+          })
+        })
+//Disabling Security Tools
+        // ---------------------------------------------以上-----------------------------------------------------
 
         const eLinks = []
         eData.forEach(v => {
@@ -624,91 +834,68 @@ export default {
           }
         })
 
-        // console.log(eData)
-        // console.log(eLinks)
-        var option = {
-          title: {
-            text: ''
-          },
-          tooltip: {
-            formatter: function (callback) {
-              if (callback.data.parentID) {
-                return `parent: ${callback.data.parentID} <br /> name: ${callback.data.name} <br /> Description: ${callback.data.Description.slice(0, 40)}...`
-              } else {
-                return `Vendors: ${callback.data.Vendors} <br /> 
-                Name: ${callback.data.name} <br />
-                Versions: ${callback.data.versions}
-                `
-              }
-            }
-          },
-          animationDurationUpdate: 1500,
-          animationEasingUpdate: 'quinticInOut',
-          series: [
-            {
-              type: 'graph',
-              layout: 'force',
-              symbolSize: 30,
-              roam: true,
-              label: {
-                show: true,
-                formatter: function (params) {
-                  if (params.data.parentID) {
-                    if (params.data.CVE_ID) {
-                      return `CVE_ID: ${params.data.CVE_ID}`
-                    } else if (params.data.CWE_ID) {
-                      return `CWE_ID: ${params.data.CWE_ID}`
-                    } else if (params.data.CAPEC_ID) {
-                      return `CAPEC_ID: ${params.data.CAPEC_ID}`
-                    } else {
-                      return params.name
-                    }
-                  } else {
-                    return params.name
-                  }
-                }
 
-              },
-              edgeSymbol: ['circle', 'arrow'],
-              edgeSymbolSize: [8, 14],
-              edgeLabel: { // line上的文字
-                fontSize: 0
-              },
-              data: eData,
-              links: eLinks,
-              lineStyle: {
-                opacity: 0.9,
-                width: 2,
-                curveness: 0
-              }
-            }
-          ]
-        }
+        // var option = {
+        //   title: {
+        //     text: ''
+        //   },
+        //   tooltip: {
+        //     formatter: function (callback) {
+        //       if (callback.data.parentID) {
+        //         return `parent: ${callback.data.parentID} <br /> name: ${callback.data.name} <br /> Description: ${callback.data.Description.slice(0, 40)}...`
+        //       } else {
+        //         return `Vendors: ${callback.data.Vendors} <br /> 
+        //         Name: ${callback.data.name} <br />
+        //         Versions: ${callback.data.versions}
+        //         `
+        //       }
+        //     }
+        //   },
+        //   animationDurationUpdate: 1500,
+        //   animationEasingUpdate: 'quinticInOut',
+        //   series: [
+        //     {
+        //       type: 'graph',
+        //       layout: 'force',
+        //       symbolSize: 30,
+        //       roam: true,
+        //       label: {
+        //         show: true,
+        //         formatter: function (params) {
+        //           if (params.data.parentID) {
+        //             if (params.data.CVE_ID) {
+        //               return `CVE_ID: ${params.data.CVE_ID}`
+        //             } else if (params.data.CWE_ID) {
+        //               return `CWE_ID: ${params.data.CWE_ID}`
+        //             } else if (params.data.CAPEC_ID) {
+        //               return `CAPEC_ID: ${params.data.CAPEC_ID}`
+        //             } else {
+        //               return params.name
+        //             }
+        //           } else {
+        //             return params.name
+        //           }
+        //         }
 
-        myChart.setOption(option)
-        myChart.on('click', function (param) {
+        //       },
+        //       edgeSymbol: ['circle', 'arrow'],
+        //       edgeSymbolSize: [8, 14],
+        //       edgeLabel: { // line上的文字
+        //         fontSize: 0
+        //       },
+        //       data: eData,
+        //       links: eLinks,
+        //       lineStyle: {
+        //         opacity: 0.9,
+        //         width: 2,
+        //         curveness: 0
+        //       }
+        //     }
+        //   ]
+        // }
 
-          // const h = than.$createElement
-          // than.$info({
-          //   name: '',
-          //   content: h('div', {}, [
-          //     h('h2', `${param.data.name}`),
-          //     h('p', `${param.data.Description}`)
-          //   ])
-          // })
-
-          const h = this.$createElement;
-          this.$msgbox({
-            title: '信息',
-            message: h('div', null, [
-              h('h2', `${param.data.name}`),
-              h('p', `${param.data.Description}`)
-            ]),
-            showCancelButton: true,
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-          })
-        })
+        myChart.setOption(this.eChartsData(eData, eLinks))
+        myChart.on('click', this.makeData)
       }, 500)
     },
     letterMouseenter (item) {
@@ -729,7 +916,6 @@ export default {
     },
     load () {
       if (this.searchData == '') {
-        // console.log('我进来了')
         this.vendorPage += 1
         this.getVendorsData(this.vendorPage)
       } else {
@@ -745,7 +931,7 @@ export default {
     vendorSearch () {
       if(this.searchData == '') return;
       // searchData
-      vendorSearch(this.searchData, this.vendorSearchPage).then(res => {
+      vendorSearchApi(this.searchData, this.vendorSearchPage).then(res => {
         if (res.status === 200) {
           const temp = {}
           const arr = []
@@ -787,7 +973,513 @@ export default {
           this.VendorsObject = VendorsObject
         }
       })
-    }
+    },
+    handleClick (tab, event) {
+      this.echartsVisible = false
+      if (this.activeName === 'second') {
+        this.selectTacticsObj = null
+        // allTactics().then(res => {
+        //   if (res.data.Code === 0) {
+        //     res.data.Data.forEach(v => {
+        //     v['tId'] = v.external_references[0].external_id
+        //       if (v.external_references.length > 1) {
+        //         v.external_references.forEach(item => {
+        //           if (item.external_id.indexOf('T') === 0) {
+        //             v['tId'] = item.external_id
+        //           }
+        //         })
+        //       }
+        //     })
+        //     this.selectTactics = true
+        //   }
+        // })
+        // ------------------
+        const res = require('./Json/all_tactics.json').Data
+        res.forEach(v => {
+        v['tId'] = v.external_references[0].external_id
+          if (v.external_references.length > 1) {
+            v.external_references.forEach(item => {
+              if (item.external_id.indexOf('T') === 0) {
+                v['tId'] = item.external_id
+              }
+            })
+          }
+        })
+        this.selectTacticsList = res
+        this.selectTactics = true
+      }
+    },
+    handleClose () {
+      return
+    },
+    nextPageInitECharts (data) {
+      // echarts弹出层;
+      this.echartsVisible = true
+      const than = this
+      // ----------------------------------以下----------------------------------------------
+      // const eData = []
+      // delete data.id
+      // eData.push({ ...data, name: data.tId, description: data.description, itemStyle: { normal: { color: '#e33a59' } } })
+      // // 技术接口;
+      // techniquesNext(data.name).then(res => {
+      //   if (res.data.Code === 0) {
+      //     res.data.Data.forEach(v => {
+      //       v.external_references.forEach(item => {
+      //         if (item.external_id) {
+      //           if (item.external_id.indexOf('T') === 0) {
+      //             v.tName = item.external_id
+      //           }
+      //           if (item.external_id.indexOf('CAPEC') === 0) {
+      //             v.capecId = item.external_id
+      //             // 技术
+      //             eData.push({parentID: eData[0].name, name: v.tName,itemStyle: {normal: {color: '#E8E22F'}}, capecId: v.capecId,Description: v.description})
+                  
+      //             capec_info(item.external_id).then(res => {
+      //               res.data.Data.forEach(ev => {
+      //                 // capec
+      //                 delete ev.id
+      //                 eData.push({ ...ev, parentID: v.tName, name: ev.Name, itemStyle: {normal: {color: '#3e7b91'}}, description: ev.Description})
+      //                 cwe_info(ev.CAPEC_ID).then(res => {
+      //                   res.data.Data.forEach((val, index) => {
+      //                     // cwe
+      //                     delete val.id
+      //                     eData.push({...val, parentID: ev.Name,name: val.Name,itemStyle: {normal: {color: '#874c9c'}},description: val.Description,})
+      //                     cve_info(ev.CWE_ID).then(res => {
+
+      //                       res.data.Data.forEach((value, index) => {
+      //                         // cwe
+      //                         delete value.id
+      //                         eData.push({
+      //                           ...value,
+      //                           parentID: val.Name,
+      //                           name: value.CVE_ID,
+      //                           itemStyle: {
+      //                             normal: {
+      //                               color: '#fdc72a'
+      //                             }
+      //                           },
+      //                           description: value.Description,
+      //                         })
+      //                       })
+      //                       cpe_info(value.CVE_ID).then(res => {
+      //                         res.data.Data.forEach(v => {
+      //                           vendor_detail(vendorData).then(res => {
+      //                             // vendor_detail
+      //                             res.data.Data.forEach(v => {
+      //                               delete v.id
+      //                               eData.push({
+      //                                 ...v,
+      //                                 parentID: value.CVE_ID,
+      //                                 name: v.vendor,
+      //                                 itemStyle: {
+      //                                   normal: {
+      //                                     color: '#31C9E8'
+      //                                   }
+      //                                 },
+      //                                 description: v.Description,
+      //                                 // CVE_ID: v.CVE_ID
+      //                               })                                    
+      //                             })
+      //                           })
+      //                         })
+
+      //                       })
+
+
+      //                     })
+      //                   })                        
+      //                 })
+      //               })
+      //             })
+      //           }
+      //         }
+      //       })
+      //     })
+
+      //   }
+      // })
+      // --------------------------------以上--------------------------------------------
+
+      setTimeout(() => {
+        var myChart = echarts.init(document.getElementById('main'))
+        const eData = []
+        delete data.id
+        eData.push({ ...data, name: data.tId, description: data.description, itemStyle: { normal: { color: '#e33a59' } } })
+
+        const techniques = require('./Json/techniques(phase_name).json').Data
+        techniques.forEach(v => {
+          v.external_references.forEach(item => {
+            if (item.external_id) {
+              if (item.external_id.indexOf('T') === 0) {
+                v.tName = item.external_id
+                v.numId = v.id
+              }
+              if (item.external_id.indexOf('CAPEC') === 0) {
+                v.capecId = item.external_id
+                delete v.id
+                eData.push({ ...v, parentID: eData[0].name, name: v.tName, itemStyle: {normal: {color: '#E8E22F'}}, description: v.description})
+              }
+            }
+          })
+        })
+
+        const g_s = require('./Json/groups_softwares.json').Data
+        g_s.group.forEach(v => {
+          v.external_references.forEach(item => {
+            if (item.external_id) {
+              if (item.external_id.indexOf('G') === 0) {
+                v.tName = item.external_id
+                v.numId = v.id
+              }
+              delete v.id
+              eData.push({
+                ...v,
+                parentID: 'T1056',
+                name: v.tName,
+                itemStyle: {
+                  normal: {
+                    color: '#2DE8BD'
+                  }
+                },
+                description: v.description
+              })
+            }
+          })
+        })
+
+        g_s.software.forEach(v => {
+          v.external_references.forEach(item => {
+            if (item.external_id) {
+              if (item.external_id.indexOf('S') === 0) {
+                v.tName = item.external_id
+                v.numId = v.id
+              }
+              delete v.id
+              eData.push({
+                ...v,
+                parentID: 'T1056',
+                name: v.tName,
+                itemStyle: {
+                  normal: {
+                    color: '#4030E8'
+                  }
+                },
+                description: v.description
+              })
+            }
+          })
+        })
+
+
+        const capec = require('./Json/capec_info(capec_id).json').Data
+        capec.forEach(v => {
+          // capec
+          delete v.id
+          eData.push({
+            ...v,
+            parentID: 'T1141',
+            name: v.Name,
+            itemStyle: {
+              normal: {
+                color: '#3e7b91'
+              }
+            },
+            description: v.Description
+          })
+        })
+
+        const cwe = require('./Json/cwe_info(capec_id).json').Data
+        cwe.forEach((v, index) => {
+          console.log(v, 'vvvvv')
+          // cwe
+          delete v.id
+          eData.push({
+            ...v,
+            parentID: 'Sniffing Network Traffic',
+            name: v.Name,
+            itemStyle: {
+              normal: {
+                color: '#874c9c'
+              }
+            },
+            description: v.Description,
+          })
+        })
+
+        const cve = require('./Json/cve_info(cwe_id).json').Data
+        // console.log(cve)
+        cve.forEach((v, index) => {
+          // cwe
+          delete v.id
+          eData.push({
+            ...v,
+            parentID: 'Missing Encryption of Sensitive Data',
+            name: v.CVE_ID,
+            itemStyle: {
+              normal: {
+                color: '#fdc72a'
+              }
+            },
+            description: v.Description,
+          })
+        })
+
+        const vendor = require('./Json/cpe_info(cve_id).json').Data
+
+        vendor.forEach((v, index) => {
+          // cwe
+          delete v.id
+          eData.push({
+            ...v,
+            parentID: 'CVE-2019-9420',
+            name: v.vendor,
+            itemStyle: {
+              normal: {
+                color: '#31C9E8'
+              }
+            },
+            description: v.Description,
+            // CVE_ID: v.CVE_ID
+          })
+        })
+
+
+        const cce = require('./Json/cce_info(cpe_id).json').Data
+        cce.forEach(ev => {
+          // cce
+          delete ev.id
+          eData.push({
+            ...ev,
+            parentID: 'Exiv2',
+            name: ev.CCE_ID,
+            itemStyle: {
+              normal: {
+                color: 'pink'
+              }
+            },
+            description: ev.CCE_Description
+          })
+        })  
+
+        // const techniques = require('./Json/techniques.json').Data
+        // techniques.forEach(v => {
+        //   let name = v.external_references[0].external_id
+        //   if (v.external_references.length > 1) {
+        //     v.external_references.forEach(item => {
+        //       if (item.external_id.indexOf('T') === 0) {
+        //         name = item.external_id
+        //       }
+        //     })
+        //   }
+        //   eData.push({
+        //     parentID: 'Using Malicious Files',
+        //     name: name,
+        //     itemStyle: {
+        //       normal: {
+        //         color: '#E8E22F'
+        //       }
+        //     },
+        //     // CAPEC_ID: v.CAPEC_ID,
+        //     Description: v.description
+        //   })
+        // })
+
+        // const tactics = require('./Json/tactics.json').Data
+        // tactics.forEach(v => {
+        //   let name = v.external_references[0].external_id
+        //   if (v.external_references.length > 1) {
+        //     v.external_references.forEach(item => {
+        //       if (item.external_id.indexOf('T') === 0) {
+        //         name = item.external_id
+        //       }
+        //     })
+        //   }
+        //   eData.push({
+        //     parentID: 'T1089',
+        //     name: name,
+        //     itemStyle: {
+        //       normal: {
+        //         color: '#31C9E8'
+        //       }
+        //     },
+        //     Description: v.description
+        //   })
+        // })        
+//Disabling Security Tools
+        // ---------------------------------------------以上-----------------------------------------------------
+        const eLinks = []
+        eData.forEach(v => {
+          if (v.parentID) {
+            if (v.parentID.indexOf('CVE') === 0) {
+              const obj = {}
+              obj.source = v.parentID
+              obj.target = v.name
+              eLinks.push(obj)
+            } else {
+              const obj = {}
+              obj.source = v.parentID
+              obj.target = v.name
+              eLinks.push(obj)
+            }
+          }
+        })
+
+        // var option = {
+        //   title: {
+        //     text: ''
+        //   },
+        //   tooltip: {
+        //     // formatter: function (callback) {
+        //     //   if (callback.data.parentID) {
+        //     //     return `parent: ${callback.data.parentID} <br />
+        //     //      name: ${callback.data.name} <br />
+        //     //       Description: ${callback.data.Description.slice(0, 40)}...`
+        //     //   } else {
+        //     //     return `Vendors: ${callback.data.Vendors} <br /> 
+        //     //     Name: ${callback.data.name} <br />
+        //     //     Versions: ${callback.data.versions}
+        //     //     `
+        //     //   }
+        //     // }
+        //   },
+        //   animationDurationUpdate: 1500,
+        //   animationEasingUpdate: 'quinticInOut',
+        //   series: [
+        //     {
+        //       type: 'graph',
+        //       layout: 'force',
+        //       symbolSize: 30,
+        //       roam: true,
+        //       label: {
+        //         show: true,
+        //         formatter: function (params) {
+        //           if (params.data.parentID) {
+        //             if (params.data.CVE_ID) {
+        //               return `CVE_ID: ${params.data.CVE_ID}`
+        //             } else if (params.data.CWE_ID) {
+        //               return `CWE_ID: ${params.data.CWE_ID}`
+        //             } else if (params.data.CAPEC_ID) {
+        //               return `CAPEC_ID: ${params.data.CAPEC_ID}`
+        //             } else {
+        //               return params.name
+        //             }
+        //           } else {
+        //             return params.name
+        //           }
+        //         }
+
+        //       },
+        //       edgeSymbol: ['circle', 'arrow'],
+        //       edgeSymbolSize: [8, 14],
+        //       edgeLabel: { // line上的文字
+        //         fontSize: 12
+        //       },
+        //       data: eData,
+        //       links: eLinks,
+        //       lineStyle: {
+        //         opacity: 0.9,
+        //         width: 1,
+        //         curveness: 0
+        //       },
+        //       circleStyle: {
+        //         width: 10
+        //       }
+        //     }
+        //   ]
+        // }
+
+        myChart.setOption(this.eChartsData(eData, eLinks))
+        myChart.on('click', this.makeData)
+      }, 500)
+    },
+    // 传入 所有节点的data, 和连线逻辑link
+    eChartsData (eData = [], eLinks = []) {
+      var option = {
+        title: {
+          text: ''
+        },
+        tooltip: {
+          // formatter: function (callback) {
+          //   if (callback.data.parentID) {
+          //     return `parent: ${callback.data.parentID} <br />
+          //      name: ${callback.data.name} <br />
+          //       Description: ${callback.data.Description.slice(0, 40)}...`
+          //   } else {
+          //     return `Vendors: ${callback.data.Vendors} <br /> 
+          //     Name: ${callback.data.name} <br />
+          //     Versions: ${callback.data.versions}
+          //     `
+          //   }
+          // }
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+          {
+            type: 'graph',
+            layout: 'force',
+            symbolSize: 30,
+            roam: true,
+            label: {
+              show: true,
+              formatter: function (params) {
+                if (params.data.parentID) {
+                  if (params.data.CVE_ID) {
+                    return `CVE_ID: ${params.data.CVE_ID}`
+                  } else if (params.data.CWE_ID) {
+                    return `CWE_ID: ${params.data.CWE_ID}`
+                  } else if (params.data.CAPEC_ID) {
+                    return `CAPEC_ID: ${params.data.CAPEC_ID}`
+                  } else {
+                    return params.name
+                  }
+                } else {
+                  return params.name
+                }
+              }
+
+            },
+            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbolSize: [8, 14],
+            edgeLabel: { // line上的文字
+              fontSize: 12
+            },
+            data: eData,
+            links: eLinks,
+            lineStyle: {
+              opacity: 0.9,
+              width: 1,
+              curveness: 0
+            },
+            circleStyle: {
+              width: 10
+            }
+          }
+        ]
+      }
+      return option
+    },
+    // 自动生成element ui table 列;
+    makeData ({data = {}}) {
+      let arr = {}
+      for(let v in data) {
+        if (v !== 'description' && v !== 'tId' && v !== 'itemStyle') {
+          if (!Array.isArray(data[v])) {
+            arr[v] = data[v]
+          }
+        }
+      }
+      if (this.activeName === 'first') {
+        this.gridData = arr
+      } else {
+        if (data.vendor) {
+          this.gridData = require('./Json/vendor_detail(vendor_version).json').Data[0]
+        } else {
+          this.gridData = arr
+        }
+      }
+      this.dialogTableVisible = true
+    },
   },
   computed: {
     vendorsNoMore () {
@@ -806,11 +1498,10 @@ export default {
 </script>
 
 <style lang="less">
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+.big-box {
+  min-width: 1410px;
+  
+}
 .line-style { // 厂商
   padding: 5px 0;
   border-bottom: 1px solid #eee;
@@ -854,15 +1545,15 @@ export default {
   margin: 5px 10px !important;
 }
 .box {
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 999;
-  max-width: 1100px;
-  min-width: 520px;
+  max-width: 1300px;
+  min-width: 1300px;
   width: 100%;
-  height: 600px;
+  height: 666px;
   border: 1px solid #ccc;
   box-shadow: 5px 5px 5px #888888;
   padding: 20px;
@@ -889,9 +1580,37 @@ header {
     color: #000;
     font-weight: 700;
 }
-</style>
-<style lang="less">
-  body {
-    min-width: 1324px;
-  }
+.tabStyle {
+  padding: 10px;
+}
+.configuration-ul {
+  width: 100%;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.configuration-ul > li {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+.configuration-ul > li div {
+  border: 1px solid #000;
+  font-weight: 700;
+}
+.configuration-ul > li div:nth-child(1) {
+  width: 25%;
+  padding: 10px;
+  text-align: center;
+  background-color: #fdc72a;
+}
+.configuration-ul > li div:nth-child(2) {
+  width: 75%;
+  padding: 10px;
+  background-color: #31C9E8;
+}
+.cweList {
+  max-height: 400px;
+  overflow: auto;
+}
 </style>

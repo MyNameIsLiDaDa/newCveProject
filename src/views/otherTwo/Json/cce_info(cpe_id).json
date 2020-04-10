@@ -1,0 +1,95 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "id": 1,
+            "CCE_ID": "CCE-5847-9",
+            "CCE_Description": "/export/home should be configured on an appropriate filesystem logical volume",
+            "CCE_Parameters": "logical volume",
+            "CCE_Technical_Mechanisms": "via fstab",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 12,
+            "CCE_ID": "CCE-5424-7",
+            "CCE_Description": "/var should be configured on an appropriate filesystem logical volume",
+            "CCE_Parameters": "logical volume",
+            "CCE_Technical_Mechanisms": "via fstab",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 23,
+            "CCE_ID": "CCE-5710-9",
+            "CCE_Description": "/opt should be configured on an appropriate filesystem logical volume",
+            "CCE_Parameters": "logical volume",
+            "CCE_Technical_Mechanisms": "via fstab",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 34,
+            "CCE_ID": "CCE-5662-2",
+            "CCE_Description": "The shell for the root account should be located on the appropriate filesystem",
+            "CCE_Parameters": "filesystem",
+            "CCE_Technical_Mechanisms": "via /etc/passwd ",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 45,
+            "CCE_ID": "CCE-5317-3",
+            "CCE_Description": "Core dump size limits should be set appropriately",
+            "CCE_Parameters": "Size (0 to disable core dumps)",
+            "CCE_Technical_Mechanisms": "via /etc/security/limits\nvia ulimit",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 56,
+            "CCE_ID": "CCE-5384-3",
+            "CCE_Description": "The read-only SNMP community string should be set appropriately.",
+            "CCE_Parameters": "string",
+            "CCE_Technical_Mechanisms": "via /etc/snmp.conf",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 67,
+            "CCE_ID": "CCE-5723-2",
+            "CCE_Description": "The read/write SNMP community string should be set appropriately.",
+            "CCE_Parameters": "string",
+            "CCE_Technical_Mechanisms": "via /etc/snmp.conf",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 78,
+            "CCE_ID": "CCE-5634-1",
+            "CCE_Description": "Password policy should ban or allow usernames or UIDs in passwords as appropriate",
+            "CCE_Parameters": "ban/allow",
+            "CCE_Technical_Mechanisms": "via /etc/security/user",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 89,
+            "CCE_ID": "CCE-5352-0",
+            "CCE_Description": "Password policy should ban or allow words found in a dictionary as appropriate.",
+            "CCE_Parameters": "ban/allow",
+            "CCE_Technical_Mechanisms": "via /etc/security/user",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 100,
+            "CCE_ID": "CCE-5848-7",
+            "CCE_Description": "Password policy should enforce the correct amount of special characters",
+            "CCE_Parameters": "number of special characters",
+            "CCE_Technical_Mechanisms": "via /etc/security/user",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        }
+    ]
+}
