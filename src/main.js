@@ -15,7 +15,6 @@ import axios from 'axios'
 import './styles/index.css'
 
 Vue.prototype.$http = axios
-
 Vue.config.productionTip = false
 
 Vue.use(ElementUI);

@@ -6,48 +6,73 @@
           <!-- 选中表格start -->
           <div class="line-style">
             <!-- <label class="line-label-3">已选择:</label> -->
-            <template v-for="(tag, index) in tags">
-              <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
+            <template v-for="(item, index) in tags">
+              <a-tooltip v-if="item.length > 20" :key="item">
                 <!-- <a-tag :key="tag" :closable="index !== 0" :afterClose="() => handleClose(tag)"> -->
                 <a-tag
-                  :key="tag"
+                  :key="item"
                   :closable="index !== 0"
-                  :afterClose="() => handleClose(tag)"
-                >{{ `${tags.slice(0, 20)}...` }}</a-tag>
+                  :afterClose="() => handleClose(item)"
+                  :title="tags"
+                >{{ `${item.slice(0, 100)}...` }}</a-tag>
               </a-tooltip>
               <a-tag
                 v-else
-                :key="tag"
+                :title="item"
+                :key="item"
                 :closable="index !== 0"
-                :afterClose="() => handleClose(tag)"
-              >{{ tag }}</a-tag>
+                :afterClose="() => handleClose(item)"
+              >{{ item }}</a-tag>
             </template>
           </div>
           <!-- 选中表格end -->
 
           <!-- 厂商盒子start -->
           <div style="width: 100%; height: 230px; border-top: 1px solid #eee;overflow: hidden">
-            <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
+            <div
+              style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%"
+            >
               <!-- <label class="line-label-1">供应商:</label> -->
               供应商:
             </div>
             <!-- <a href="javascript:;" style="float: right;"> more > </a> -->
             <div style="height: 60px; width: 100%; box-sizing: border-box">
               <div class="vendor-search">
-                <i class="el-icon-search" style="height: 30px;line-height: 30px;text-align: center;padding: 0 10px;"></i>
-                <el-input size="mini" v-model="searchData" placeholder="请输入内容..." style="width: 45%"></el-input>
+                <i
+                  class="el-icon-search"
+                  style="height: 30px;line-height: 30px;text-align: center;padding: 0 10px;"
+                ></i>
+                <el-input
+                  size="mini"
+                  :clearable="true"
+                  v-model="searchData"
+                  placeholder="请输入内容..."
+                  style="width: 45%"
+                ></el-input>
                 <el-button size="mini" @click="vendorSearch">查 询</el-button>
               </div>
               <ul class="letter-style">
                 <li style="height: 30px; widht: 3%">
                   <i class="el-icon-menu"></i>
                 </li>
-                <li v-for="item in letter" :class="[letterIndex === item.id ? 'letter-line' : '']" :key="item.id" @mouseenter="letterMouseenter(item)">{{ item.name }}</li>
+                <li
+                  v-for="item in letter"
+                  :class="[letterIndex === item.id ? 'letter-line' : '']"
+                  :key="item.id"
+                  @mouseenter="letterMouseenter(item)"
+                >{{ item.name }}</li>
               </ul>
             </div>
             <div class="line-style" style="width: 90%; float: right; height: 170px;">
-              <el-radio-group size="small" v-model="vendorsObj" @change="radioButtonEvent(1, $event)" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
-                  <!-- @click="radioButtonEvent(1, item)" -->
+              <el-radio-group
+                size="small"
+                v-model="vendorsObj"
+                @change="radioButtonEvent(1, $event)"
+                v-infinite-scroll="load"
+                infinite-scroll-disabled="disabled"
+              >
+                <!-- v-infinite-scroll="load" infinite-scroll-disabled="disabled" -->
+                <!-- @click="radioButtonEvent(1, item)" -->
                 <el-radio-button
                   class="line-radio"
                   :value="item.vendor"
@@ -66,11 +91,15 @@
           <!-- 其他数据start -->
           <div v-show="isTrue1" style="margin-top: 10px; border-top: 1px solid #eee;">
             <div style="width: 100%; height: 50px; overflow: hidden">
-              <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
-                商品:
-              </div>
+              <div
+                style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%"
+              >商品:</div>
               <div class="box-style-productsData">
-                <el-radio-group size="small" v-model="productsObj" @change="radioButtonEvent(2, $event)">
+                <el-radio-group
+                  size="small"
+                  v-model="productsObj"
+                  @change="radioButtonEvent(2, $event)"
+                >
                   <el-radio-button
                     class="line-radio"
                     :value="item"
@@ -85,12 +114,16 @@
 
           <div v-show="isTrue2" style="margin-top: 10px; border-top: 1px solid #eee;">
             <div style="width: 100%; height: 50px; overflow: hidden">
-              <div style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%">
-                版本:
-              </div>
+              <div
+                style="display: block; width: 10%; float: left; padding: 10px 10px; background-color: #f3f3f3; height: 100%"
+              >版本:</div>
               <!-- <label class="line-label-2">版本:</label> -->
               <div class="box-style-productsData">
-                <el-radio-group size="small" v-model="versionsObj" @change="radioButtonEvent(3, $event)">
+                <el-radio-group
+                  size="small"
+                  v-model="versionsObj"
+                  @change="radioButtonEvent(3, $event)"
+                >
                   <el-radio-button
                     class="line-radio"
                     :value="item.version"
@@ -106,6 +139,7 @@
           <!-- 其他数据end -->
           <div style="margin-top: 10px;">
             <a-button v-show="tags.length === 4" @click="initECharts">查看可视图</a-button>
+            <!-- <a-button @click="initECharts">查看可视图</a-button> -->
           </div>
         </a-card>
         <div style="height: 10px; width: 100%; background-color: rgb(243, 243, 243);"></div>
@@ -122,16 +156,28 @@
               </p>
               <div style="width: 100%; height: 1px; background-color: #eee;"></div>
             </a-list-item>
-          </a-list> -->
+          </a-list>-->
           <el-collapse v-model="cveListNum" accordion>
             <template v-for="item in cveInfoData">
               <el-collapse-item :key="item.id" :title="item.CVE_ID" :name="item.id">
                 <a slot="title" href="javascript:;" @click="cveClick(1, item)">{{ item.CVE_ID }}</a>
                 <div>
-                  <div><strong>CVE_ID:</strong> {{ item.CVE_ID }}</div>
-                  <div><strong>Publish_Date:</strong> {{ item.Publish_Date || null }}</div>
-                  <div><strong>Update_Date:</strong> {{ item.Update_Date || null }}</div>
-                  <div><strong>Description:</strong> {{ item.Description || null }}</div>
+                  <div>
+                    <strong>CVE_ID:</strong>
+                    {{ item.CVE_ID }}
+                  </div>
+                  <div>
+                    <strong>Publish_Date:</strong>
+                    {{ item.Publish_Date || null }}
+                  </div>
+                  <div>
+                    <strong>Update_Date:</strong>
+                    {{ item.Update_Date || null }}
+                  </div>
+                  <div>
+                    <strong>Description:</strong>
+                    {{ item.Description || null }}
+                  </div>
                 </div>
               </el-collapse-item>
             </template>
@@ -149,16 +195,19 @@
                 {{ item.Description }}
               </p>
             </li>
-          </div> -->
+          </div>-->
           <div class="cweList">
             <el-collapse v-model="cweListNum" accordion>
               <template v-for="item in cweInfoData">
                 <el-collapse-item :key="item.id" :title="item.Name" :name="item.id">
                   <a slot="title" href="javascript:;" @click="cveClick(2, item)">{{ item.Name }}</a>
                   <!-- <template slot-scope="item"> -->
-                    <div v-for="(value, name, index) in item" :key="index">
-                      <div><strong>{{ name }}:</strong>  {{ value === null? 'null' : value }} </div>
+                  <div v-for="(value, name, index) in item" :key="index">
+                    <div>
+                      <strong>{{ name }}:</strong>
+                      {{ value === null? 'null' : value }}
                     </div>
+                  </div>
                   <!-- </template> -->
                 </el-collapse-item>
               </template>
@@ -177,16 +226,19 @@
                 {{ item.Description }}
               </p>
             </li>
-          </div> -->
+          </div>-->
           <div class="cweList">
             <el-collapse v-model="capecListNum" accordion>
               <template v-for="item in data">
                 <el-collapse-item :key="item.id" :title="item.Name" :name="item.id">
                   <a slot="title" href="javascript:;" @click="cveClick(2, item)">{{ item.Name }}</a>
                   <!-- <template slot-scope="item"> -->
-                    <div v-for="(value, name, index) in item" :key="index">
-                      <div><strong>{{ name }}:</strong>  {{ value === null? 'null' : value }} </div>
+                  <div v-for="(value, name, index) in item" :key="index">
+                    <div>
+                      <strong>{{ name }}:</strong>
+                      {{ value === null? 'null' : value }}
                     </div>
+                  </div>
                   <!-- </template> -->
                 </el-collapse-item>
               </template>
@@ -198,33 +250,67 @@
         <!-- ECharts 弹出层start -->
         <!-- <a-modal title="网络空间知识图谱" v-model="echartsVisible">
           <div style="widht: 800px; height: 450px" id="main"></div>
-        </a-modal> -->
+        </a-modal>-->
         <!-- ECharts 弹出层end -->
         <!-- new ECharts 弹出层 -->
       </el-tab-pane>
-
-      <div class="box" v-if="echartsVisible">
-        <header>
-          <div class="title">网络空间知识图谱</div>
-          <div class="close" @click="echartsVisible = false">
-            <a-icon type="close" />
-          </div>
-        </header>
-        <div style="widht: 100%; height: 100%" id="main"></div>
-      </div>
-
+      <transition name="el-fade-in-linear">
+        <div class="box" v-show="echartsVisible">
+          <header>
+            <h3 class="title">网络空间知识图谱</h3>
+            <div class="close" @click="echartsVisible = false">
+              <a-icon type="close" />
+            </div>
+          </header>
+          <!-- <div style="widht: 100%; height: 100%" id="main"></div> -->
+          <div style="widht: 600px; height: 500px" id="main"></div>
+          <!-- <div> -->
+          <!-- <svg width="960" height="600"></svg> -->
+          <!-- </div> -->
+          <!-- <footer style="z-index: 99999;position: absolute;bottom: 0px;right: 0;">
+            <el-button
+              size="mini"
+              v-show="activeName === 'second'"
+              @click="reSetEcharts"
+              type="primary"
+            >ReSet</el-button>
+          </footer>-->
+        </div>
+      </transition>
       <!-- next page start -->
       <el-tab-pane label="倒序" name="second">
         <!-- 提示选择框 -->
-        <el-dialog title="战术选择" :visible.sync="selectTactics" width="74%" :before-close="handleClose">
+        <el-dialog
+          title="战术选择"
+          :visible.sync="selectTactics"
+          width="74%"
+          :before-close="handleClose"
+        >
           <el-radio-group v-model="selectTacticsObj" @change="radioButtonEvent(4, $event)">
-            <el-radio-button style="margin: 10px" size="small" v-for="item in selectTacticsList" :key="item.tId" :label="item">{{ item.tId }}</el-radio-button>
+            <el-radio-button
+              class="line-radio"
+              style="margin: 10px"
+              size="small"
+              v-for="item in selectTacticsList"
+              :key="item.tId"
+              :label="item"
+            >{{ item.tId }}</el-radio-button>
           </el-radio-group>
           <span slot="footer" class="dialog-footer">
             <!-- <el-button type="primary" @click="selectTactics = false">确 定</el-button> -->
           </span>
         </el-dialog>
-
+        <div class="d3-box">
+          <div id="last-echarts" style="min-width: 1324px; width:100%; min-height: 640px"></div>
+          <footer style="z-index: 99999;position: absolute;bottom: 0px;right: 0;">
+            <el-button
+              size="mini"
+              v-show="activeName === 'second'"
+              @click="reSetEcharts"
+              type="primary"
+            >ReSet</el-button>
+          </footer>
+        </div>
       </el-tab-pane>
       <!-- next page end -->
     </el-tabs>
@@ -244,7 +330,7 @@
           >
           </el-table-column>
         </template>
-      </el-table> -->
+      </el-table>-->
       <ul class="configuration-ul">
         <li v-for="(value, name, index) in gridData" :key="index">
           <div>{{ name }}</div>
@@ -252,51 +338,78 @@
         </li>
       </ul>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-import 'ant-design-vue/lib/date-picker/style/css';
-import { Card, Tag, Radio, Button, List, Modal, Icon, Tooltip } from "ant-design-vue";
-import { vendorsData, productsData, versionsData, CveData, CweData,
-         capecData, cceData, vendorSearchApi, allTactics, techniquesNext,
-          capec_info, cwe_info, cve_info, cpe_info, vendor_detail } from "@/api"
+import "ant-design-vue/lib/date-picker/style/css";
+import { test } from "@/api";
+import {
+  Card,
+  Tag,
+  Radio,
+  Button,
+  List,
+  Modal,
+  Icon,
+  Tooltip
+} from "ant-design-vue";
+import {
+  vendorsData,
+  productsData,
+  versionsData,
+  CveData,
+  CweData,
+  capecData,
+  cceData,
+  vendorSearchApi,
+  allTactics,
+  techniquesNext,
+  capec_info,
+  cwe_info,
+  cve_info,
+  cpe_info,
+  vendor_detail,
+  techniquesData,
+  tacticsData,
+  groups,
+  softwares
+} from "@/api";
 // import * as d3 from 'd3'
 // const main = document.getElementById('main')
-const echarts = require('echarts')
+const echarts = require("echarts");
 const letter = [
-  { id: 0, name: 'all' },
-  { id: 1, name: 'A' },
-  { id: 2, name: 'B' },
-  { id: 3, name: 'C' },
-  { id: 4, name: 'D' },
-  { id: 5, name: 'E' },
-  { id: 6, name: 'F' },
-  { id: 7, name: 'G' },
-  { id: 8, name: 'H' },
-  { id: 9, name: 'I' },
-  { id: 10, name: 'J' },
-  { id: 11, name: 'K' },
-  { id: 12, name: 'L' },
-  { id: 13, name: 'M' },
-  { id: 14, name: 'N' },
-  { id: 15, name: 'O' },
-  { id: 16, name: 'P' },
-  { id: 17, name: 'Q' },
-  { id: 18, name: 'R' },
-  { id: 19, name: 'S' },
-  { id: 20, name: 'T' },
-  { id: 21, name: 'U' },
-  { id: 22, name: 'V' },
-  { id: 23, name: 'W' },
-  { id: 24, name: 'X' },
-  { id: 25, name: 'Y' },
-  { id: 26, name: 'Z' },
-  { id: 27, name: '应用程序', letter: 'a' },
-  { id: 28, name: '硬件平台', letter: 'h' },
-  { id: 29, name: '操作系统', letter: 'o' }
-]
+  { id: 0, name: "all" },
+  { id: 1, name: "A" },
+  { id: 2, name: "B" },
+  { id: 3, name: "C" },
+  { id: 4, name: "D" },
+  { id: 5, name: "E" },
+  { id: 6, name: "F" },
+  { id: 7, name: "G" },
+  { id: 8, name: "H" },
+  { id: 9, name: "I" },
+  { id: 10, name: "J" },
+  { id: 11, name: "K" },
+  { id: 12, name: "L" },
+  { id: 13, name: "M" },
+  { id: 14, name: "N" },
+  { id: 15, name: "O" },
+  { id: 16, name: "P" },
+  { id: 17, name: "Q" },
+  { id: 18, name: "R" },
+  { id: 19, name: "S" },
+  { id: 20, name: "T" },
+  { id: 21, name: "U" },
+  { id: 22, name: "V" },
+  { id: 23, name: "W" },
+  { id: 24, name: "X" },
+  { id: 25, name: "Y" },
+  { id: 26, name: "Z" },
+  { id: 27, name: "应用程序", letter: "a" },
+  { id: 28, name: "硬件平台", letter: "h" },
+  { id: 29, name: "操作系统", letter: "o" }
+];
 export default {
   components: {
     ACard: Card,
@@ -306,11 +419,11 @@ export default {
     AModal: Modal,
     AIcon: Icon,
     ATooltip: Tooltip,
-    AListItem: List,
+    AListItem: List
   },
-  data () {
+  data() {
     return {
-      searchData: '', // 搜索框数据
+      searchData: "", // 搜索框数据
       VendorsData: [], // 厂商数据
       vendorsObj: null, // v-model
       vendorsLoading: false, // 刷新元素
@@ -325,10 +438,11 @@ export default {
       versionsData: [], // 产品型号数据
       cveInfoData: [],
       cweInfoData: [],
-      tags: ['已选择:'],
-      tagsObj: {},
-      loadingMore: false,
-      optionTitle: '',
+      tags: ["已选择:"],
+      cpe_id: "",
+      // tagsObj: {},
+      // loadingMore: false,
+      // optionTitle: "",
       isTrue1: false,
       isTrue2: false,
       // isTrue3: false,
@@ -340,1063 +454,682 @@ export default {
       letter: letter,
       letterIndex: 0,
       // next page data ---------------------
-      activeName: 'first', // tab栏属性
+      activeName: "first", // tab栏属性
       selectTactics: false, // 选择所有任务;
       selectTacticsObj: null, // 选中的任务;
-      selectTacticsList: [],  // 所有任务数据;
+      selectTacticsList: [], // 所有任务数据;
       dialogTableVisible: false,
       gridData: {},
       dialogTableData: [],
-      cveListNum: '',
-      cweListNum: '',
-      capecListNum: ''
-    }
+      cveListNum: "",
+      cweListNum: "",
+      capecListNum: ""
+    };
   },
-  created () {
-    this.getVendorsData(this.vendorPage)
-
+  created() {
+    this.getVendorsData(this.vendorPage);
+    this.getAllTactics();
   },
   methods: {
-    getVendorsData (page) {
-      // vendorsData(page).then(res => {
-      //   if (res.status === 200) {
-      //     const temp = {}
-      //     const arr = []
-      //     const VendorsObject = {} // a o h 专用;
-
-      //     if (page === 1) {
-      //       this.vendors = res.data.Data
-      //       res.data.Data.forEach((v, index) => {
-      //         if (VendorsObject[v.pattern]) {
-      //           VendorsObject[v.pattern].push(v)
-      //         } else {
-      //           VendorsObject[v.pattern] = []
-      //           VendorsObject[v.pattern].push(v)
-      //         }
-      //         if (!temp[v.vendor]) {
-      //           temp[v.vendor] = true
-      //           arr.push(v)
-      //         }
-      //       })
-      //     } else {
-
-      //       this.vendors.push(...res.data.Data)
-
-      //       this.vendors.forEach((v, index) => {
-      //         if (VendorsObject[v.pattern]) {
-      //           VendorsObject[v.pattern].push(v)
-      //         } else {
-      //           VendorsObject[v.pattern] = []
-      //           VendorsObject[v.pattern].push(v)
-      //         }
-      //         if (!temp[v.vendor]) {
-      //           temp[v.vendor] = true
-      //           arr.push(v)
-      //         }
-      //       })
-      //     }
-      //     this.VendorsData = arr // 一次性渲染数据;
-      //     this.VendorsDataClone = arr // 克隆数据.
-      //     this.VendorsObject = VendorsObject
-
-      //   }
-      // })
-      // ---------------------------------------------------------------
-        const res = require('./Json/vendors.json')
-        const temp = {}
-        const arr = []
-        const VendorsObject = {} // a o h 专用;
-
-        if (page === 1) {
-          this.vendors = res.Data
-          res.Data.forEach((v, index) => {
-            if (VendorsObject[v.pattern]) {
-              VendorsObject[v.pattern].push(v)
-            } else {
-              VendorsObject[v.pattern] = []
-              VendorsObject[v.pattern].push(v)
-            }
-            if (!temp[v.vendor]) {
-              temp[v.vendor] = true
-              arr.push(v)
-            }
-          })
-        } else {
-          let qqq = { data: { Data: [
-            {
-              "vendor": "苹果",
-              "pattern": "o"
-            },
-            {
-                "vendor": "华为",
-                "pattern": "h"
-            },
-            {
-                "vendor": "oppo",
-                "pattern": "a"
-            },
-            {
-                "vendor": "vivo",
-                "pattern": "a"
-            },
-            {
-                "vendor": "小米",
-                "pattern": "a"
-            },
-            {
-                "vendor": "黑莓",
-                "pattern": "a"
-            },
-            {
-                "vendor": "魅族",
-                "pattern": "a"
-            },
-            {
-                "vendor": "三星",
-                "pattern": "a"
-            },
-          ]}}
-
-          this.vendors.push(...qqq.data.Data)
-          this.vendors.forEach((v, index) => {
-            if (VendorsObject[v.pattern]) {
-              VendorsObject[v.pattern].push(v)
-            } else {
-              VendorsObject[v.pattern] = []
-              VendorsObject[v.pattern].push(v)
-            }
-            if (!temp[v.vendor]) {
-              temp[v.vendor] = true
-              arr.push(v)
-            }
-          })
-        }
-        this.VendorsData = arr // 一次性渲染数据;
-        this.VendorsDataClone = arr // 克隆数据.
-        this.VendorsObject = VendorsObject
-    },
-    // getList () {
-    //   this.$http.get('/list/article').then(res => {
-    //     this.data = res.result
-    //   })
-    //   // const res = require('./Json/cve_info.json')
-    //   // this.data = res.Data
-    // },
-    // loadMore () {
-    //   this.loadingMore = true
-    //   this.$http
-    //     .get('/list/article')
-    //     .then(res => {
-    //       this.data = this.data.concat(res.result)
-    //     })
-    //     .finally(() => {
-    //       this.loadingMore = false
-    //     })
-    // },
-    // radioChanged (num, e) {
-    //   if (num === 1) {
-    //     this.optionTitle = e.target.value
-    //   } else if (num === 2) {
-    //     // const inputValue = e.target.value
-    //     // const tag = this.tags
-    //     // if (inputValue && tag.indexOf(inputValue) === -1) {
-    //     //   this.tags = [...tag, inputValue]
-    //     // }
-    //   }
-
-    //   // Object.assign(this, {
-    //   //   tags,
-    //   //   inputVisible: false,
-    //    //   inputValue: '',
-    //   // });
-    // },
-    radioButtonEvent (num, item) {
-      this.isTrue1 = false
-      this.isTrue2 = false
-      // this.isTrue3 = false
-      // 插入 tags 数组 并且显示在页面上面;
-      // this.$http ...
-      if (num === 1) {
-        this.tags = ['已选择:', item.vendor]
-        this.cweInfoData = []
-        this.versionsData = []
-        this.cveInfoData = []
-        // productsData(item).then(res => {
-        //   this.productsData = res.data.Data || []
-        //   this.isTrue1 = true
-        // })
-        // ------------------------------------------------------------
-        if (item.vendor === 'google') {
-          const res = require('./Json/products.json')
-          this.productsData = res.Data
-          this.isTrue1 = true
-        }
-      } else if (num === 2) {
-        // versionsData(this.vendorsObj.vendor, item).then(res => {
-        //   this.versionsData = res.data.Data
-        //   this.isTrue1 = true
-        //   this.isTrue2 = true
-        //   this.tags[2] = item         
-        // })
-        // ---------------------------------------------------------------
-        const res = require('./Json/versions.json')
-        this.versionsData = res.Data
-        this.isTrue1 = true
-        this.isTrue2 = true
-        this.tags[2] = item
-      } else if (num === 3) {
-
-        // CveData(item.cpe_id).then(res => {
-        //   this.isTrue1 = true
-        //   this.isTrue2 = true
-        //   this.tags[3] = item.version
-        //   this.cveInfoData = res.data.Data
-        // })
-        // ------------------------------------------------------------------
-        const res = require('./Json/cve_info.json')
-        this.isTrue1 = true
-        this.isTrue2 = true
-        this.tags[3] = item.version
-        this.cveInfoData = res.Data
-        console.log(this.cveInfoData, 'this.cveInfoData')
-      } else if (num === 4) {
-        this.selectTactics = false
-        this.nextPageInitECharts(item)
-        this.echartsVisible = true
-      }
-    },
-    cveClick (num, item) {
-      if (num === 1) {
-        this.cweVisible = true
-        const res = require('./Json/cwe_info.json')
-        this.cweInfoData = res.Data
-        // console.log(this.cweInfoData)
-        // ------------------------------------------------------------------------
-        // CweData(item.CVE_ID).then(res => {
-        //   if (res.data.Code === 0) {
-        //     this.cweInfoData = res.data.Data
-        //     this.cweVisible = true
-        //   }
-        // })
-
-      } else if (num === 2) {
-        this.attackVisible = true
-
-        const res = require('./Json/capec_info.json')
-        this.data = res.Data
-        console.log(this.data, 'data')
-        // --------------------------------------------------------------------------------
-        // capecData(item.CWE_ID).then(res => {
-        //   this.data = res.data.Data
-        // })
-      }
-    },
-    initECharts () {
-      // echarts弹出层;
-      this.echartsVisible = true
-      const than = this
-      setTimeout(() => {
-        var myChart = echarts.init(document.getElementById('main'))
-        const eData = []
-        console.log(this.tags)
-        eData.push({ name: this.tags[2], Vendors: this.tags[1], versions: this.tags[3], itemStyle: { normal: { color: '#e33a59' } } })
-        // ----------------------------------------------------------------------------------------------
-        // this.cveInfoData.forEach(v => {
-        //   eData.push({
-        //     parentID: eData[0].name,
-        //     name: v.CVE_ID,
-        //     itemStyle: {
-        //       normal: {
-        //         color: '#44aeae'
-        //       }
-        //     },
-        //     Description: v.Description,
-        //     CVE_ID: v.CVE_ID
-        //   }) // cve
-        //   CweData(v.CVE_ID).then(res => {
-        //     if (res.data.Code === 0) {
-        //       res.data.Data.forEach(item => {
-        //         eData.push({
-        //           parentID: v.CVE_ID,
-        //           name: item.Name,
-        //           itemStyle: {
-        //             normal: {
-        //               color: '#fdc72a'
-        //             }
-        //           },
-        //           Description: item.Description,
-        //           CWE_ID: item.CWE_ID
-        //         })
-        //         capecData(item.CWE_ID).then(res => {
-        //           res.data.Data.forEach(val => {
-        //             // capec
-        //             eData.push({
-        //               parentID: item.Name,
-        //               name: val.Name,
-        //               itemStyle: {
-        //                 normal: {
-        //                   color: '#3e7b91'
-        //                 }
-        //               },
-        //               CAPEC_ID: val.CAPEC_ID,
-        //               Description: val.Description
-        //             })
-        //           })
-        //         })
-        //       })
-        //     }
-        //   })
-        //   cceData(v.CPE_ID).then(res => {
-        //     res.data.Data.forEach(ev => {
-        //       eData.push({
-        //         parentID: eData[0].name,
-        //         name: ev.CCE_ID,
-        //         itemStyle: {
-        //           normal: {
-        //             color: '#874c9c'
-        //           }
-        //         },
-        //         Description: ev.CCE_Description
-        //       })
-        //     })          
-        //   })
-        // })
-        // -------------------------------------------------------以下是虚拟数据json----------------------------------------------------------
-        const cve = require('./Json/cve_info.json').Data
-        cve.forEach((v, index) => {
-          // cwe
-          eData.push({
-            parentID: eData[0].name,
-            name: v.CVE_ID,
-            itemStyle: {
-              normal: {
-                color: '#fdc72a'
-              }
-            },
-            Description: v.Description,
-            CVE_ID: v.CVE_ID
-          })
-        })      
-
-        const cwe = require('./Json/cwe_info.json').Data
-        cwe.forEach((v, index) => {
-          // cwe
-          eData.push({
-            parentID: eData[1].name,
-            name: v.Name,
-            itemStyle: {
-              normal: {
-                color: '#874c9c'
-              }
-            },
-            Description: v.Description,
-            CWE_ID: v.CWE_ID
-          })
-        })
-        const capec = require('./Json/capec_info.json').Data
-        capec.forEach(v => {
-          // capec
-          eData.push({
-            parentID: 'J2EE Misconfiguration: Data Transmission Without Encryption',
-            name: v.Name,
-            itemStyle: {
-              normal: {
-                color: '#3e7b91'
-              }
-            },
-            CAPEC_ID: v.CAPEC_ID,
-            Description: v.Description
-          })
-        })
-        const techniques = require('./Json/techniques.json').Data
-        techniques.forEach(v => {
-          let name = v.external_references[0].external_id
-          if (v.external_references.length > 1) {
-            v.external_references.forEach(item => {
-              if (item.external_id.indexOf('T') === 0) {
-                name = item.external_id
-              }
-            })
-          }
-          eData.push({
-            parentID: 'Using Malicious Files',
-            name: name,
-            itemStyle: {
-              normal: {
-                color: '#E8E22F'
-              }
-            },
-            // CAPEC_ID: v.CAPEC_ID,
-            Description: v.description
-          })
-        })
-
-        const tactics = require('./Json/tactics.json').Data
-        tactics.forEach(v => {
-          let name = v.external_references[0].external_id
-          if (v.external_references.length > 1) {
-            v.external_references.forEach(item => {
-              if (item.external_id.indexOf('T') === 0) {
-                name = item.external_id
-              }
-            })
-          }
-          eData.push({
-            parentID: 'T1089',
-            name: name,
-            itemStyle: {
-              normal: {
-                color: '#31C9E8'
-              }
-            },
-            Description: v.description
-          })
-        })        
-
-        const cce = require('./Json/cce_info.json').Data
-        cce.forEach(ev => {
-          eData.push({
-            parentID: eData[0].name,
-            name: ev.CCE_ID,
-            itemStyle: {
-              normal: {
-                color: '#874c9c'
-              }
-            },
-            Description: ev.CCE_Description
-          })
-        })
-
-        const g_s = require('./Json/groups_softwares.json').Data
-
-        g_s.group.forEach(v => {
-          v.external_references.forEach(item => {
-            if (item.external_id) {
-              if (item.external_id.indexOf('G') === 0) {
-                v.tName = item.external_id
-                v.numId = v.id
-              }
-              delete v.id
-              eData.push({
-                ...v,
-                parentID: 'T1089',
-                name: v.tName,
-                itemStyle: {
-                  normal: {
-                    color: '#2DE8BD'
-                  }
-                },
-                description: v.description
-              })
-            }
-          })
-        })
-
-        g_s.software.forEach(v => {
-          v.external_references.forEach(item => {
-            if (item.external_id) {
-              if (item.external_id.indexOf('S') === 0) {
-                v.tName = item.external_id
-                v.numId = v.id
-              }
-              delete v.id
-              eData.push({
-                ...v,
-                parentID: 'T1089',
-                name: v.tName,
-                itemStyle: {
-                  normal: {
-                    color: '#4030E8'
-                  }
-                },
-                description: v.description
-              })
-            }
-          })
-        })
-//Disabling Security Tools
-        // ---------------------------------------------以上-----------------------------------------------------
-
-        const eLinks = []
-        eData.forEach(v => {
-          if (v.parentID) {
-            if (v.parentID.indexOf('CVE') === 0) {
-              const obj = {}
-              obj.source = v.parentID
-              obj.target = v.name
-              eLinks.push(obj)
-            } else {
-              const obj = {}
-              obj.source = v.parentID
-              obj.target = v.name
-              eLinks.push(obj)
-            }
-          }
-        })
-
-
-        // var option = {
-        //   title: {
-        //     text: ''
-        //   },
-        //   tooltip: {
-        //     formatter: function (callback) {
-        //       if (callback.data.parentID) {
-        //         return `parent: ${callback.data.parentID} <br /> name: ${callback.data.name} <br /> Description: ${callback.data.Description.slice(0, 40)}...`
-        //       } else {
-        //         return `Vendors: ${callback.data.Vendors} <br /> 
-        //         Name: ${callback.data.name} <br />
-        //         Versions: ${callback.data.versions}
-        //         `
-        //       }
-        //     }
-        //   },
-        //   animationDurationUpdate: 1500,
-        //   animationEasingUpdate: 'quinticInOut',
-        //   series: [
-        //     {
-        //       type: 'graph',
-        //       layout: 'force',
-        //       symbolSize: 30,
-        //       roam: true,
-        //       label: {
-        //         show: true,
-        //         formatter: function (params) {
-        //           if (params.data.parentID) {
-        //             if (params.data.CVE_ID) {
-        //               return `CVE_ID: ${params.data.CVE_ID}`
-        //             } else if (params.data.CWE_ID) {
-        //               return `CWE_ID: ${params.data.CWE_ID}`
-        //             } else if (params.data.CAPEC_ID) {
-        //               return `CAPEC_ID: ${params.data.CAPEC_ID}`
-        //             } else {
-        //               return params.name
-        //             }
-        //           } else {
-        //             return params.name
-        //           }
-        //         }
-
-        //       },
-        //       edgeSymbol: ['circle', 'arrow'],
-        //       edgeSymbolSize: [8, 14],
-        //       edgeLabel: { // line上的文字
-        //         fontSize: 0
-        //       },
-        //       data: eData,
-        //       links: eLinks,
-        //       lineStyle: {
-        //         opacity: 0.9,
-        //         width: 2,
-        //         curveness: 0
-        //       }
-        //     }
-        //   ]
-        // }
-
-        myChart.setOption(this.eChartsData(eData, eLinks))
-        myChart.on('click', this.makeData)
-      }, 500)
-    },
-    letterMouseenter (item) {
-      this.letterIndex = item.id
-      if (item.name === 'all') {
-        this.VendorsData = this.VendorsDataClone
-      } else if (item.letter) {
-        this.VendorsData = this.VendorsObject[item.letter]
-      } else {
-        const arr = []
-        this.VendorsDataClone.map(v => {
-          if (v.vendor.toUpperCase().indexOf(item.name, 0) === 0) {
-            arr.push(v)
-          }
-        })
-        this.VendorsData = arr
-      }
-    },
-    load () {
-      if (this.searchData == '') {
-        this.vendorPage += 1
-        this.getVendorsData(this.vendorPage)
-      } else {
-        this.vendorSearchPage += 1
-        this.vendorSearch()
-      }
-
-      this.vendorsLoading = true
-      setTimeout(() => {
-        this.vendorsLoading = false
-      }, 2000)
-    },
-    vendorSearch () {
-      if(this.searchData == '') return;
-      // searchData
-      vendorSearchApi(this.searchData, this.vendorSearchPage).then(res => {
-        if (res.status === 200) {
-          const temp = {}
-          const arr = []
-          const VendorsObject = {} // a o h 专用;
+    getVendorsData(page) {
+      vendorsData(page).then(res => {
+        if (res.data.Code === 0) {
+          const temp = {};
+          const arr = [];
+          const VendorsObject = {}; // a o h 专用;
 
           if (page === 1) {
-            this.vendors = res.data.Data
+            this.vendors = res.data.Data;
             res.data.Data.forEach((v, index) => {
               if (VendorsObject[v.pattern]) {
-                VendorsObject[v.pattern].push(v)
+                VendorsObject[v.pattern].push(v);
               } else {
-                VendorsObject[v.pattern] = []
-                VendorsObject[v.pattern].push(v)
+                VendorsObject[v.pattern] = [];
+                VendorsObject[v.pattern].push(v);
               }
               if (!temp[v.vendor]) {
-                temp[v.vendor] = true
-                arr.push(v)
+                temp[v.vendor] = true;
+                arr.push(v);
               }
-            })
+            });
           } else {
-
-            this.vendors.push(...res.data.Data)
+            this.vendors.push(...res.data.Data);
 
             this.vendors.forEach((v, index) => {
               if (VendorsObject[v.pattern]) {
-                VendorsObject[v.pattern].push(v)
+                VendorsObject[v.pattern].push(v);
               } else {
-                VendorsObject[v.pattern] = []
-                VendorsObject[v.pattern].push(v)
+                VendorsObject[v.pattern] = [];
+                VendorsObject[v.pattern].push(v);
               }
               if (!temp[v.vendor]) {
-                temp[v.vendor] = true
-                arr.push(v)
+                temp[v.vendor] = true;
+                arr.push(v);
               }
-            })
+            });
           }
-          this.VendorsData = arr // 一次性渲染数据;
-          this.VendorsDataClone = arr // 克隆数据.
-          this.VendorsObject = VendorsObject
+          this.VendorsData = arr; // 一次性渲染数据;
+          this.VendorsDataClone = arr; // 克隆数据.
+          this.VendorsObject = VendorsObject;
         }
-      })
+      });
     },
-    handleClick (tab, event) {
-      this.echartsVisible = false
-      if (this.activeName === 'second') {
-        this.selectTacticsObj = null
-        // allTactics().then(res => {
-        //   if (res.data.Code === 0) {
-        //     res.data.Data.forEach(v => {
-        //     v['tId'] = v.external_references[0].external_id
-        //       if (v.external_references.length > 1) {
-        //         v.external_references.forEach(item => {
-        //           if (item.external_id.indexOf('T') === 0) {
-        //             v['tId'] = item.external_id
-        //           }
-        //         })
-        //       }
-        //     })
-        //     this.selectTactics = true
-        //   }
-        // })
-        // ------------------
-        const res = require('./Json/all_tactics.json').Data
-        res.forEach(v => {
-        v['tId'] = v.external_references[0].external_id
-          if (v.external_references.length > 1) {
-            v.external_references.forEach(item => {
-              if (item.external_id.indexOf('T') === 0) {
-                v['tId'] = item.external_id
-              }
-            })
-          }
-        })
-        this.selectTacticsList = res
-        this.selectTactics = true
+    getAllTactics() {
+      allTactics().then(res => {
+        if (res.data.Code === 0) {
+          res.data.Data.forEach(v => {
+            v["tId"] = v.external_references[0].external_id;
+            if (v.external_references.length > 1) {
+              v.external_references.forEach(item => {
+                if (item.external_id.indexOf("T") === 0) {
+                  v["tId"] = item.external_id;
+                }
+              });
+            }
+          });
+          this.selectTacticsList = res.data.Data;
+        }
+      });
+      // const res = require("./Json/all_tactics.json").Data;
+      // res.forEach(v => {
+      //   v["tId"] = v.external_references[0].external_id;
+      //   if (v.external_references.length > 1) {
+      //     v.external_references.forEach(item => {
+      //       if (item.external_id.indexOf("T") === 0) {
+      //         v["tId"] = item.external_id;
+      //       }
+      //     });
+      //   }
+      // });
+      // this.selectTacticsList = res;
+    },
+    radioButtonEvent(num, item) {
+      // 插入 tags 数组 并且显示在页面上面;
+      if (num === 1) {
+        this.tags = ["已选择:", item.vendor];
+        this.cweInfoData = [];
+        this.versionsData = [];
+        this.cveInfoData = [];
+        this.isTrue2 = false;
+        productsData(item).then(res => {
+          this.productsData = res.data.Data || [];
+          this.isTrue1 = true;
+        });
+      } else if (num === 2) {
+        this.tags[2] = item;
+        versionsData(this.vendorsObj.vendor, item).then(res => {
+          this.versionsData = res.data.Data;
+          this.isTrue1 = true;
+          this.isTrue2 = true;
+        });
+      } else if (num === 3) {
+        /**
+         * 随时删除;
+         */
+        // item.cpe_id = 426113
+        this.cpe_id = item.cpe_id;
+        CveData(item.cpe_id).then(res => {
+          this.isTrue1 = true;
+          this.isTrue2 = true;
+          this.tags[3] = item.version;
+          this.cveInfoData = res.data.Data;
+        });
+      } else if (num === 4) {
+        this.selectTactics = false;
+        // this.echartsVisible = true
+        this.nextPageInitECharts(item);
       }
     },
-    handleClose () {
-      return
+    cveClick(num, item) {
+      if (num === 1) {
+        CweData(item.CVE_ID).then(res => {
+          if (res.data.Code === 0) {
+            this.cweInfoData = res.data.Data;
+            this.cweVisible = true;
+          }
+        });
+      } else if (num === 2) {
+        this.attackVisible = true;
+        /**
+         * 随时删除
+         */
+        // item.CWE_ID = 285
+        capecData(item.CWE_ID).then(res => {
+          this.data = res.data.Data;
+        });
+      }
     },
-    nextPageInitECharts (data) {
+    initECharts() {
       // echarts弹出层;
-      this.echartsVisible = true
-      const than = this
-      // ----------------------------------以下----------------------------------------------
-      // const eData = []
-      // delete data.id
-      // eData.push({ ...data, name: data.tId, description: data.description, itemStyle: { normal: { color: '#e33a59' } } })
-      // // 技术接口;
-      // techniquesNext(data.name).then(res => {
-      //   if (res.data.Code === 0) {
-      //     res.data.Data.forEach(v => {
-      //       v.external_references.forEach(item => {
-      //         if (item.external_id) {
-      //           if (item.external_id.indexOf('T') === 0) {
-      //             v.tName = item.external_id
-      //           }
-      //           if (item.external_id.indexOf('CAPEC') === 0) {
-      //             v.capecId = item.external_id
-      //             // 技术
-      //             eData.push({parentID: eData[0].name, name: v.tName,itemStyle: {normal: {color: '#E8E22F'}}, capecId: v.capecId,Description: v.description})
-                  
-      //             capec_info(item.external_id).then(res => {
-      //               res.data.Data.forEach(ev => {
-      //                 // capec
-      //                 delete ev.id
-      //                 eData.push({ ...ev, parentID: v.tName, name: ev.Name, itemStyle: {normal: {color: '#3e7b91'}}, description: ev.Description})
-      //                 cwe_info(ev.CAPEC_ID).then(res => {
-      //                   res.data.Data.forEach((val, index) => {
-      //                     // cwe
-      //                     delete val.id
-      //                     eData.push({...val, parentID: ev.Name,name: val.Name,itemStyle: {normal: {color: '#874c9c'}},description: val.Description,})
-      //                     cve_info(ev.CWE_ID).then(res => {
-
-      //                       res.data.Data.forEach((value, index) => {
-      //                         // cwe
-      //                         delete value.id
-      //                         eData.push({
-      //                           ...value,
-      //                           parentID: val.Name,
-      //                           name: value.CVE_ID,
-      //                           itemStyle: {
-      //                             normal: {
-      //                               color: '#fdc72a'
-      //                             }
-      //                           },
-      //                           description: value.Description,
-      //                         })
-      //                       })
-      //                       cpe_info(value.CVE_ID).then(res => {
-      //                         res.data.Data.forEach(v => {
-      //                           vendor_detail(vendorData).then(res => {
-      //                             // vendor_detail
-      //                             res.data.Data.forEach(v => {
-      //                               delete v.id
-      //                               eData.push({
-      //                                 ...v,
-      //                                 parentID: value.CVE_ID,
-      //                                 name: v.vendor,
-      //                                 itemStyle: {
-      //                                   normal: {
-      //                                     color: '#31C9E8'
-      //                                   }
-      //                                 },
-      //                                 description: v.Description,
-      //                                 // CVE_ID: v.CVE_ID
-      //                               })                                    
-      //                             })
-      //                           })
-      //                         })
-
-      //                       })
-
-
-      //                     })
-      //                   })                        
-      //                 })
-      //               })
-      //             })
-      //           }
-      //         }
-      //       })
-      //     })
-
-      //   }
-      // })
-      // --------------------------------以上--------------------------------------------
-
-      setTimeout(() => {
-        var myChart = echarts.init(document.getElementById('main'))
-        const eData = []
-        delete data.id
-        eData.push({ ...data, name: data.tId, description: data.description, itemStyle: { normal: { color: '#e33a59' } } })
-
-        const techniques = require('./Json/techniques(phase_name).json').Data
-        techniques.forEach(v => {
-          v.external_references.forEach(item => {
-            if (item.external_id) {
-              if (item.external_id.indexOf('T') === 0) {
-                v.tName = item.external_id
-                v.numId = v.id
-              }
-              if (item.external_id.indexOf('CAPEC') === 0) {
-                v.capecId = item.external_id
-                delete v.id
-                eData.push({ ...v, parentID: eData[0].name, name: v.tName, itemStyle: {normal: {color: '#E8E22F'}}, description: v.description})
-              }
-            }
-          })
-        })
-
-        const g_s = require('./Json/groups_softwares.json').Data
-        g_s.group.forEach(v => {
-          v.external_references.forEach(item => {
-            if (item.external_id) {
-              if (item.external_id.indexOf('G') === 0) {
-                v.tName = item.external_id
-                v.numId = v.id
-              }
-              delete v.id
-              eData.push({
-                ...v,
-                parentID: 'T1056',
-                name: v.tName,
-                itemStyle: {
-                  normal: {
-                    color: '#2DE8BD'
-                  }
-                },
-                description: v.description
-              })
-            }
-          })
-        })
-
-        g_s.software.forEach(v => {
-          v.external_references.forEach(item => {
-            if (item.external_id) {
-              if (item.external_id.indexOf('S') === 0) {
-                v.tName = item.external_id
-                v.numId = v.id
-              }
-              delete v.id
-              eData.push({
-                ...v,
-                parentID: 'T1056',
-                name: v.tName,
-                itemStyle: {
-                  normal: {
-                    color: '#4030E8'
-                  }
-                },
-                description: v.description
-              })
-            }
-          })
-        })
-
-
-        const capec = require('./Json/capec_info(capec_id).json').Data
-        capec.forEach(v => {
-          // capec
-          delete v.id
-          eData.push({
-            ...v,
-            parentID: 'T1141',
-            name: v.Name,
-            itemStyle: {
-              normal: {
-                color: '#3e7b91'
-              }
-            },
-            description: v.Description
-          })
-        })
-
-        const cwe = require('./Json/cwe_info(capec_id).json').Data
-        cwe.forEach((v, index) => {
-          console.log(v, 'vvvvv')
-          // cwe
-          delete v.id
-          eData.push({
-            ...v,
-            parentID: 'Sniffing Network Traffic',
-            name: v.Name,
-            itemStyle: {
-              normal: {
-                color: '#874c9c'
-              }
-            },
-            description: v.Description,
-          })
-        })
-
-        const cve = require('./Json/cve_info(cwe_id).json').Data
-        // console.log(cve)
-        cve.forEach((v, index) => {
-          // cwe
-          delete v.id
-          eData.push({
-            ...v,
-            parentID: 'Missing Encryption of Sensitive Data',
-            name: v.CVE_ID,
-            itemStyle: {
-              normal: {
-                color: '#fdc72a'
-              }
-            },
-            description: v.Description,
-          })
-        })
-
-        const vendor = require('./Json/cpe_info(cve_id).json').Data
-
-        vendor.forEach((v, index) => {
-          // cwe
-          delete v.id
-          eData.push({
-            ...v,
-            parentID: 'CVE-2019-9420',
-            name: v.vendor,
-            itemStyle: {
-              normal: {
-                color: '#31C9E8'
-              }
-            },
-            description: v.Description,
-            // CVE_ID: v.CVE_ID
-          })
-        })
-
-
-        const cce = require('./Json/cce_info(cpe_id).json').Data
-        cce.forEach(ev => {
-          // cce
-          delete ev.id
+      this.echartsVisible = true;
+      const than = this;
+      const eData = [];
+      const eLinks = [];
+      eData.push({
+        id: this.cpe_id,
+        name: this.tags[2],
+        Vendors: this.tags[1],
+        versions: this.tags[3],
+        itemStyle: { normal: { color: "#e33a59" } }
+      });
+      // vendor_detail({vendor: this.tags[1], versions: this.tags[3]}).then(({ data }) => {
+      //   let temp = data.Data[0];
+      //   let obj = {
+      //     ...temp,
+      //     name: `CPE${v.CPE_ID}`,
+      //     id: v.CPE_ID,
+      //     parentID: value.id
+      //   };
+      //   nodes.push(obj);
+      // });
+      cceData(this.cpe_id).then(res => {
+        res.data.Data.forEach(ev => {
           eData.push({
             ...ev,
-            parentID: 'Exiv2',
+            id: ev.CCE_ID,
+            parentID: eData[0].id,
             name: ev.CCE_ID,
             itemStyle: {
               normal: {
-                color: 'pink'
+                color: "#874c9c"
               }
-            },
-            description: ev.CCE_Description
-          })
-        })  
+            }
+          });
+        });
+      });
+      // cve数据...
+      this.cveInfoData.forEach((v, index) => {
+        v["name"] = v.CVE_ID;
+        v["id"] = v.CVE_ID;
+        eData.push({
+          ...v,
+          parentID: eData[0].id,
+          itemStyle: { normal: { color: "#44aeae" } },
+          description: v.Description
+        }); // cve
+        CweData(v.CVE_ID).then(res => {
+          if (res.data.Code === 0) {
+            res.data.Data.forEach(item => {
+              item["id"] = `CWE_ID${item.CWE_ID}`;
+              item["showName"] = item.Name;
+              eData.push({
+                ...item,
+                parentID: v.CVE_ID,
+                name: `CWE_Id:${item.CWE_ID}`,
+                itemStyle: {
+                  normal: {
+                    color: "#fdc72a"
+                  }
+                },
+                description: item.Description
+              });
+              capecData(item.CWE_ID).then(res => {
+                res.data.Data.forEach(val => {
+                  // capec
+                  val["id"] = `CAPEC_ID${val.CAPEC_ID}`;
+                  val["showName"] = val.Name;
+                  eData.push({
+                    ...val,
+                    parentID: item.id,
+                    name: `CAPEC_ID${val.CAPEC_ID}`,
+                    itemStyle: {
+                      normal: {
+                        color: "#3e7b91"
+                      }
+                    },
+                    description: val.Description
+                  });
 
-        // const techniques = require('./Json/techniques.json').Data
-        // techniques.forEach(v => {
-        //   let name = v.external_references[0].external_id
-        //   if (v.external_references.length > 1) {
-        //     v.external_references.forEach(item => {
-        //       if (item.external_id.indexOf('T') === 0) {
-        //         name = item.external_id
-        //       }
-        //     })
-        //   }
-        //   eData.push({
-        //     parentID: 'Using Malicious Files',
-        //     name: name,
-        //     itemStyle: {
-        //       normal: {
-        //         color: '#E8E22F'
-        //       }
-        //     },
-        //     // CAPEC_ID: v.CAPEC_ID,
-        //     Description: v.description
-        //   })
-        // })
-
-        // const tactics = require('./Json/tactics.json').Data
-        // tactics.forEach(v => {
-        //   let name = v.external_references[0].external_id
-        //   if (v.external_references.length > 1) {
-        //     v.external_references.forEach(item => {
-        //       if (item.external_id.indexOf('T') === 0) {
-        //         name = item.external_id
-        //       }
-        //     })
-        //   }
-        //   eData.push({
-        //     parentID: 'T1089',
-        //     name: name,
-        //     itemStyle: {
-        //       normal: {
-        //         color: '#31C9E8'
-        //       }
-        //     },
-        //     Description: v.description
-        //   })
-        // })        
-//Disabling Security Tools
-        // ---------------------------------------------以上-----------------------------------------------------
-        const eLinks = []
+                  techniquesData(val.CAPEC_ID).then(({ data }) => {
+                    if (data.Code === 0) {
+                      data.Data.forEach(v => {
+                        v["groups_softwares_id"] = v.id;
+                        v.kill_chain_phases.forEach(item1 => {
+                          if (item1.phase_name) {
+                            v["phase_name"] = item1.phase_name;
+                          }
+                        });
+                        v.external_references.forEach(item => {
+                          if (item.external_id) {
+                            if (item.external_id.indexOf("T") === 0) {
+                              v.tId = item.external_id;
+                              v["showName"] = v.name;
+                              v["id"] = v.tId;
+                              eData.push({
+                                ...v,
+                                parentID: val.id,
+                                name: v.tId,
+                                description: v.description,
+                                itemStyle: { normal: { color: "#E8E22F" } }
+                              });
+                            }
+                          }
+                        });
+                        // groups_softwares(v.groups_softwares_id).then(
+                        //   ({ data }) => {
+                        //     data.Data.group.forEach(val1 => {
+                        //       val1.external_references.forEach(value => {
+                        //         if (value.external_id) {
+                        //           val1.tId = value.external_id;
+                        //         }
+                        //       });
+                        //       val1["showName"] = v.name;
+                        //       eData.push({
+                        //         ...val1,
+                        //         parentID: v.id,
+                        //         name: val1.tId,
+                        //         description: v.description,
+                        //         itemStyle: { normal: { color: "#31C9E8" } }
+                        //       });
+                        //     });
+                        //     data.Data.software.forEach(val2 => {
+                        //       val2.external_references.forEach(value => {
+                        //         if (value.external_id) {
+                        //           val2.tId = value.external_id;
+                        //         }
+                        //       });
+                        //       val2["showName"] = v.name;
+                        //       eData.push({
+                        //         ...val2,
+                        //         parentID: v.id,
+                        //         name: val2.tId,
+                        //         description: v.description,
+                        //         itemStyle: { normal: { color: "#874c9c" } }
+                        //       });
+                        //     });
+                        //   }
+                        // );
+                        tacticsData(v.phase_name).then(({ data }) => {
+                          data.Data.forEach(value => {
+                            value["showName"] = value.id;
+                            value.external_references.forEach(e => {
+                              if (e.external_id) {
+                                value["tId"] = e.external_id;
+                                value["name"] = e.external_id;
+                                eData.push({
+                                  ...value,
+                                  parentID: v.id,
+                                  name: value.tId,
+                                  description: value.description,
+                                  itemStyle: { normal: { color: "#874c2c" } }
+                                });
+                              }
+                            });
+                          });
+                        });
+                      });
+                    }
+                  });
+                });
+              });
+            });
+          }
+        });
+      });
+      var createEcharts = () => {
         eData.forEach(v => {
           if (v.parentID) {
-            if (v.parentID.indexOf('CVE') === 0) {
-              const obj = {}
-              obj.source = v.parentID
-              obj.target = v.name
-              eLinks.push(obj)
+            // if (v.parentID.indexOf("CVE") === 0) {
+            //   const obj = {};
+            //   obj.source = v.parentID;
+            //   obj.target = v.id;
+            //   eLinks.push(obj);
+            // } else {
+            const obj = {};
+            obj.source = v.parentID;
+            obj.target = v.id;
+            eLinks.push(obj);
+            // }
+          }
+        });
+        var myChart = echarts.init(document.getElementById("last-echarts"));
+        myChart.setOption(this.eChartsData(eData, eLinks));
+        myChart.on("click", this.makeData);
+      };
+      function screenData(arr, node) {
+        // 对数组进行查重处理, 有的情况下clone;
+        if (arr.length === 0) return [];
+        arr.forEach(v => {
+          if (node.id === v.id) {
+            if (node.id.indexOf("(") === 0 && node.name.indexOf("(") === 0) {
+              let newId = node[Number(node.id.indexOf("(") + 1)];
+              let newName = node[Number(node.name.indexOf("(") + 1)];
+              node["id"] = `${node.id}${Number(newId + 1)}`;
+              node["name"] = `${node.name}${Number(newName + 1)}`;
             } else {
-              const obj = {}
-              obj.source = v.parentID
-              obj.target = v.name
-              eLinks.push(obj)
+              node["id"] = `${node.id}(0)`;
+              node["name"] = `${node.name}(0)`;
+            }
+            return node;
+          }
+        });
+        return node;
+      }
+      setTimeout(() => {
+        createEcharts();
+      }, 50000);
+    },
+    letterMouseenter(item) {
+      this.letterIndex = item.id;
+      if (item.name === "all") {
+        this.VendorsData = this.VendorsDataClone;
+      } else if (item.letter) {
+        this.VendorsData = this.VendorsObject[item.letter];
+      } else {
+        const arr = [];
+        this.VendorsDataClone.map(v => {
+          if (v.vendor.toUpperCase().indexOf(item.name, 0) === 0) {
+            arr.push(v);
+          }
+        });
+        this.VendorsData = arr;
+      }
+    },
+    load() {
+      if (this.searchData == "") {
+        this.vendorPage += 1;
+        this.getVendorsData(this.vendorPage);
+      } else {
+        this.vendorSearchPage += 1;
+        this.vendorSearch();
+      }
+
+      this.vendorsLoading = true;
+      setTimeout(() => {
+        this.vendorsLoading = false;
+      }, 2000);
+    },
+    vendorSearch() {
+      this.letterMouseenter({ id: 0, name: "all" }); // 拼音选择为all
+      if (this.searchData == "") {
+        this.vendorPage = 1;
+        this.getVendorsData(this.vendorPage);
+      }
+      // searchData
+      vendorSearchApi(this.searchData, this.vendorSearchPage).then(res => {
+        if (res.status === 200) {
+          if (res.data.Data.length === 0) {
+            this.$message({ message: "暂无此数据", type: "warning" });
+            return;
+          }
+          const temp = {};
+          const arr = [];
+          const VendorsObject = {}; // a o h 专用;
+
+          if (this.vendorSearchPage === 1) {
+            this.vendors = res.data.Data;
+            res.data.Data.forEach((v, index) => {
+              if (VendorsObject[v.pattern]) {
+                VendorsObject[v.pattern].push(v);
+              } else {
+                VendorsObject[v.pattern] = [];
+                VendorsObject[v.pattern].push(v);
+              }
+              if (!temp[v.vendor]) {
+                temp[v.vendor] = true;
+                arr.push(v);
+              }
+            });
+          } else {
+            this.vendors.push(...res.data.Data);
+
+            this.vendors.forEach((v, index) => {
+              if (VendorsObject[v.pattern]) {
+                VendorsObject[v.pattern].push(v);
+              } else {
+                VendorsObject[v.pattern] = [];
+                VendorsObject[v.pattern].push(v);
+              }
+              if (!temp[v.vendor]) {
+                temp[v.vendor] = true;
+                arr.push(v);
+              }
+            });
+          }
+          this.VendorsData = arr; // 一次性渲染数据;
+          this.VendorsDataClone = arr; // 克隆数据.
+          this.VendorsObject = VendorsObject;
+        }
+      });
+    },
+    handleClick(tab, event) {
+      this.echartsVisible = false;
+      if (this.activeName === "second") {
+        // this.selectTacticsObj = null
+        this.selectTactics = true;
+      }
+    },
+    handleClose() {
+      if (this.selectTacticsObj === null) {
+        this.$message({ message: "请选择战术", type: "warning" });
+        return;
+      }
+    },
+    nextPageInitECharts(config) {
+      // this.echartsVisible = true;
+      // 显示的名称用name,
+      // 给原本的id另外一个统一的字段保存;
+      // id指定给对应的spe- sve - cwe - capec - cce 等... 描述统一description;
+      // 颜色需要提前交代好;
+      var nodes = [];
+      var edges = [];
+      config["showName"] = config.name;
+      config["id"] = config.tId;
+      nodes.push({
+        ...config,
+        name: config.tId,
+        description: config.description,
+        itemStyle: { normal: { color: "#e33a59" } }
+      });
+      techniquesNext(config.showName).then(({ data }) => {
+        if (data.Code === 0) {
+          data.Data.forEach(v => {
+            v["groups_softwares_id"] = v.id;
+            v.external_references.forEach(item => {
+              if (item.external_id) {
+                if (item.external_id.indexOf("T") === 0) {
+                  v.tId = item.external_id;
+                  v["showName"] = v.name;
+                  v["id"] = v.tId;
+                  nodes.push({
+                    ...v,
+                    parentID: nodes[0].id,
+                    name: v.tId,
+                    description: v.description,
+                    itemStyle: { normal: { color: "#E8E22F" } }
+                  });
+                }
+                if (item.external_id.indexOf("CAPEC") === 0) {
+                  v.capecId = item.external_id;
+                  // 技术
+                }
+              }
+            });
+            groups(v.groups_softwares_id).then(({ data }) => {
+              data.Data.forEach(val1 => {
+                val1.external_references.forEach(value => {
+                  if (value.external_id) {
+                    val1.tId = value.external_id;
+                  }
+                });
+                val1["showName"] = v.name;
+                val1["name"] = val1.tId;
+                val1["id"] = `groups${val1.tId}`;
+                nodes.push({
+                  ...screenData(nodes, val1),
+                  parentID: v.id,
+                  description: v.description,
+                  itemStyle: { normal: { color: "#31C9E8" } }
+                });
+              });
+            });
+            softwares(v.groups_softwares_id).then(({ data }) => {
+              data.Data.forEach(val2 => {
+                val2.external_references.forEach(value => {
+                  if (value.external_id) {
+                    val2.tId = value.external_id;
+                  }
+                });
+                val2["showName"] = v.name;
+                val2["name"] = val2.tId;
+                val2["id"] = `softwares${val2.tId}`;
+                nodes.push({
+                  ...screenData(nodes, val2),
+                  parentID: v.id,
+                  description: v.description,
+                  itemStyle: { normal: { color: "#874c9c" } }
+                });
+              });
+            });
+
+            // 没有capecId筛选掉;
+            if (v.capecId) {
+              // capec
+              capec_info(v.capecId).then(({ data }) => {
+                data.Data.forEach(ev => {
+                  ev["id"] = `CAPEC${ev.CAPEC_ID}`;
+                  ev["showName"] = ev.Name;
+                  ev["name"] = `CAPEC${ev.CAPEC_ID}`;
+                  screenData(nodes, ev);
+                  nodes.push({
+                    ...screenData(nodes, ev),
+                    parentID: v.id,
+                    description: ev.Description,
+                    itemStyle: { normal: { color: "#2DE8BD" } }
+                  });
+                  // cwe;
+                  cwe_info(ev.CAPEC_ID).then(({ data }) => {
+                    data.Data.forEach((val, index) => {
+                      val["id"] = `CWE${val.CWE_ID}`;
+                      val["showName"] = val.Name;
+                      val["name"] = `CWE${val.CWE_ID}`;
+                      nodes.push({
+                        ...screenData(nodes, val),
+                        parentID: ev.id,
+                        description: val.Description,
+                        itemStyle: { normal: { color: "#4030E8" } }
+                      });
+                      // cve;
+                      cve_info(val.CWE_ID).then(({ data }) => {
+                        data.Data.forEach((value, index) => {
+                          value["id"] = value.CVE_ID;
+                          value["name"] = val.CVE_ID;
+                          nodes.push({
+                            ...screenData(nodes, value),
+                            parentID: val.id,
+                            description: value.Description,
+                            itemStyle: { normal: { color: "#3e7b91" } }
+                          });
+                          // cpe_info;
+                          cpe_info(value.CVE_ID).then(res => {
+                            res.data.Data.forEach(v => {
+                              vendor_detail(v).then(({ data }) => {
+                                let temp = data.Data[0];
+                                temp["id"] = v.CPE_ID;
+                                temp["name"] = `CPE${v.CPE_ID}`;
+                                let obj = {
+                                  ...screenData(nodes, temp),
+                                  vendor: v.vendor,
+                                  product: v.product,
+                                  version: v.version,
+                                  parentID: value.id
+                                };
+                                nodes.push(obj);
+                              });
+                              cceData(v.CPE_ID).then(({ data }) => {
+                                data.Data.forEach(ev => {
+                                  ev["name"] = ev.CCE_ID;
+                                  nodes.push({
+                                    ...screenData(nodes, ev),
+                                    parentID: v.CPE_ID,
+                                    description: ev.Description,
+                                    itemStyle: { normal: { color: "#874c9c" } }
+                                  });
+                                });
+                              });
+                            });
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            }
+          });
+        } else {
+          this.$message.error("数据库请求失败");
+        }
+      });
+
+      var createEcharts = () => {
+        nodes.forEach(v => {
+          if (v.parentID) {
+            if (v.parentID.indexOf("CVE") === 0) {
+              const obj = {};
+              obj.source = v.parentID;
+              obj.target = v.id;
+              edges.push(obj);
+            } else {
+              const obj = {};
+              obj.source = v.parentID;
+              obj.target = v.id;
+              edges.push(obj);
             }
           }
-        })
-
-        // var option = {
-        //   title: {
-        //     text: ''
-        //   },
-        //   tooltip: {
-        //     // formatter: function (callback) {
-        //     //   if (callback.data.parentID) {
-        //     //     return `parent: ${callback.data.parentID} <br />
-        //     //      name: ${callback.data.name} <br />
-        //     //       Description: ${callback.data.Description.slice(0, 40)}...`
-        //     //   } else {
-        //     //     return `Vendors: ${callback.data.Vendors} <br /> 
-        //     //     Name: ${callback.data.name} <br />
-        //     //     Versions: ${callback.data.versions}
-        //     //     `
-        //     //   }
-        //     // }
-        //   },
-        //   animationDurationUpdate: 1500,
-        //   animationEasingUpdate: 'quinticInOut',
-        //   series: [
-        //     {
-        //       type: 'graph',
-        //       layout: 'force',
-        //       symbolSize: 30,
-        //       roam: true,
-        //       label: {
-        //         show: true,
-        //         formatter: function (params) {
-        //           if (params.data.parentID) {
-        //             if (params.data.CVE_ID) {
-        //               return `CVE_ID: ${params.data.CVE_ID}`
-        //             } else if (params.data.CWE_ID) {
-        //               return `CWE_ID: ${params.data.CWE_ID}`
-        //             } else if (params.data.CAPEC_ID) {
-        //               return `CAPEC_ID: ${params.data.CAPEC_ID}`
-        //             } else {
-        //               return params.name
-        //             }
-        //           } else {
-        //             return params.name
-        //           }
-        //         }
-
-        //       },
-        //       edgeSymbol: ['circle', 'arrow'],
-        //       edgeSymbolSize: [8, 14],
-        //       edgeLabel: { // line上的文字
-        //         fontSize: 12
-        //       },
-        //       data: eData,
-        //       links: eLinks,
-        //       lineStyle: {
-        //         opacity: 0.9,
-        //         width: 1,
-        //         curveness: 0
-        //       },
-        //       circleStyle: {
-        //         width: 10
-        //       }
+        });
+        var myChart = echarts.init(document.getElementById("last-echarts"));
+        myChart.setOption(this.eChartsData(nodes, edges));
+        myChart.on("click", this.makeData);
+        // function chartssize (container, charts) {
+        //   function getStyle(el, name) {
+        //     if (window.getComputedStyle) {
+        //       return window.getComputedStyle(el, null);
+        //     } else {
+        //       return el.currentStyle;
         //     }
-        //   ]
+        //   }
+        //   var wi = getStyle(container, 'width').width;
+        //   var hi = getStyle(container, 'height').height;
+        //   charts.style.width = wi
+        //   charts.style.height = hi
         // }
 
-        myChart.setOption(this.eChartsData(eData, eLinks))
-        myChart.on('click', this.makeData)
-      }, 500)
+        // window.onresize = function() {
+        //   chartssize(chartBox, myChartsize)
+        //   myChart.resize();
+        // };
+      };
+      function screenData(arr, node) {
+        // 对数组进行查重处理, 有的情况下clone;
+        if (arr.length === 0) return [];
+        arr.forEach(v => {
+          if (node.id === v.id) {
+            if (node.id.indexOf("(") === 0 && node.name.indexOf("(") === 0) {
+              let newId = node[Number(node.id.indexOf("(") + 1)];
+              let newName = node[Number(node.name.indexOf("(") + 1)];
+              node["id"] = `${node.id}${Number(newId + 1)}`;
+              node["name"] = `${node.name}${Number(newName + 1)}`;
+            } else {
+              node["id"] = `${node.id}(0)`;
+              node["name"] = `${node.name}(0)`;
+            }
+            return node;
+          }
+        });
+        return node;
+      }
+      setTimeout(() => {
+        createEcharts();
+      }, 5000);
     },
-    // 传入 所有节点的data, 和连线逻辑link
-    eChartsData (eData = [], eLinks = []) {
+
+    // 传入 所有节点的 data, 和连线逻辑link
+    eChartsData(eData = [], eLinks = []) {
+      console.log(eData, eLinks);
       var option = {
         title: {
-          text: ''
+          text: ""
         },
         tooltip: {
           // formatter: function (callback) {
@@ -1405,7 +1138,7 @@ export default {
           //      name: ${callback.data.name} <br />
           //       Description: ${callback.data.Description.slice(0, 40)}...`
           //   } else {
-          //     return `Vendors: ${callback.data.Vendors} <br /> 
+          //     return `Vendors: ${callback.data.Vendors} <br />
           //     Name: ${callback.data.name} <br />
           //     Versions: ${callback.data.versions}
           //     `
@@ -1413,35 +1146,49 @@ export default {
           // }
         },
         animationDurationUpdate: 1500,
-        animationEasingUpdate: 'quinticInOut',
+        animationEasingUpdate: "quinticInOut",
         series: [
           {
-            type: 'graph',
-            layout: 'force',
+            type: "graph",
+            layout: "force",
+            legendHoverLink: true, //是否启用图例 hover(悬停) 时的联动高亮。
+            hoverAnimation: true, //是否开启鼠标悬停节点的显示动画
+            coordinateSystem: null, //坐标系可选
+            xAxisIndex: 0, //x轴坐标 有多种坐标系轴坐标选项
+            yAxisIndex: 0, //y轴坐标
+            force: {
+              repulsion: 200, //相距距离
+              edgeLength: [100, 150],
+              layoutAnimation: true
+            },
+            roam: true, //是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+            nodeScaleRatio: 0.6, //鼠标漫游缩放时节点的相应缩放比例，当设为0时节点不随着鼠标的缩放而缩放
+            draggable: true, //节点是否可拖拽，只在使用力引导布局的时候有用。
+            focusNodeAdjacency: true,
             symbolSize: 30,
             roam: true,
             label: {
               show: true,
-              formatter: function (params) {
+              formatter: function(params) {
                 if (params.data.parentID) {
                   if (params.data.CVE_ID) {
-                    return `CVE_ID: ${params.data.CVE_ID}`
+                    return `CVE_ID: ${params.data.CVE_ID}`;
                   } else if (params.data.CWE_ID) {
-                    return `CWE_ID: ${params.data.CWE_ID}`
+                    return `CWE_ID: ${params.data.CWE_ID}`;
                   } else if (params.data.CAPEC_ID) {
-                    return `CAPEC_ID: ${params.data.CAPEC_ID}`
+                    return `CAPEC_ID: ${params.data.CAPEC_ID}`;
                   } else {
-                    return params.name
+                    return params.name;
                   }
                 } else {
-                  return params.name
+                  return params.name;
                 }
               }
-
             },
-            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbol: ["circle", "arrow"],
             edgeSymbolSize: [8, 14],
-            edgeLabel: { // line上的文字
+            edgeLabel: {
+              // line上的文字
               fontSize: 12
             },
             data: eData,
@@ -1456,53 +1203,56 @@ export default {
             }
           }
         ]
-      }
-      return option
+      };
+      return option;
     },
     // 自动生成element ui table 列;
-    makeData ({data = {}}) {
-      let arr = {}
-      for(let v in data) {
-        if (v !== 'description' && v !== 'tId' && v !== 'itemStyle') {
+    makeData({ data = {} }) {
+      let arr = {};
+      for (let v in data) {
+        if (v !== "description" && v !== "tId" && v !== "itemStyle") {
           if (!Array.isArray(data[v])) {
-            arr[v] = data[v]
+            arr[v] = data[v];
           }
         }
       }
-      if (this.activeName === 'first') {
-        this.gridData = arr
+      if (this.activeName === "first") {
+        this.gridData = arr;
       } else {
         if (data.vendor) {
-          this.gridData = require('./Json/vendor_detail(vendor_version).json').Data[0]
+          this.gridData = require("./Json/vendor_detail(vendor_version).json").Data[0];
         } else {
-          this.gridData = arr
+          this.gridData = arr;
         }
       }
-      this.dialogTableVisible = true
+      this.dialogTableVisible = true;
     },
+    reSetEcharts() {
+      this.selectTactics = true;
+    }
   },
   computed: {
-    vendorsNoMore () {
-      return this.count >=10000
+    vendorsNoMore() {
+      return this.count >= 10000;
     },
-    disabled () {
-      return this.vendorsLoading || this.vendorsNoMore
+    disabled() {
+      return this.vendorsLoading || this.vendorsNoMore;
     }
   },
   watch: {
     searchData(value) {
-      this.vendorSearchPage = 1
+      this.vendorSearchPage = 1;
     }
   }
-}
+};
 </script>
 
 <style lang="less">
 .big-box {
   min-width: 1410px;
-  
 }
-.line-style { // 厂商
+.line-style {
+  // 厂商
   padding: 5px 0;
   border-bottom: 1px solid #eee;
   max-height: 200px;
@@ -1517,7 +1267,7 @@ export default {
   height: 30px;
   width: 90%;
 }
-.letter-style > li{
+.letter-style > li {
   float: left;
   height: 30px;
   padding: 0 10px;
@@ -1543,6 +1293,8 @@ export default {
 }
 .line-radio {
   margin: 5px 10px !important;
+  border-left: 1px solid #ccc;
+  border-radius: 0px !important;
 }
 .box {
   position: fixed;
@@ -1552,33 +1304,34 @@ export default {
   z-index: 999;
   max-width: 1300px;
   min-width: 1300px;
-  width: 100%;
   height: 666px;
-  border: 1px solid #ccc;
+  border: 1px solid #000;
+  border-radius: 3px;
   box-shadow: 5px 5px 5px #888888;
-  padding: 20px;
+  padding: 10px;
   background-color: #fff;
   overflow: hidden;
 }
 header {
-  height: 40px;
+  height: 30px;
   border-bottom: 1px solid #ccc;
   background-color: #fff;
   width: 100%;
-.title {
-  float: left;
-  font-size: 18px;
-  color: #000;
-}
-.close {
-  float: right;
-  cursor: pointer;
-}
+  line-height: 30px;
+  .title {
+    float: left;
+    font-size: 18px;
+    color: #000;
+  }
+  .close {
+    float: right;
+    cursor: pointer;
+  }
 }
 .loadP {
-    text-align: center;
-    color: #000;
-    font-weight: 700;
+  text-align: center;
+  color: #000;
+  font-weight: 700;
 }
 .tabStyle {
   padding: 10px;
@@ -1607,10 +1360,18 @@ header {
 .configuration-ul > li div:nth-child(2) {
   width: 75%;
   padding: 10px;
-  background-color: #31C9E8;
+  background-color: #31c9e8;
 }
 .cweList {
   max-height: 400px;
   overflow: auto;
+}
+.d3-box {
+  position: relative;
+  padding: 10px;
+  min-width: 1324px;
+  width: 100%;
+  min-height: 640px;
+  border: 1px solid #aaa;
 }
 </style>

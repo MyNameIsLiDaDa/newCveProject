@@ -11,11 +11,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
-        target:'http://localhost:3000',    //设置你调用的接口域名和端口号 
-        changeOrigin:true,    //是否跨域
-        pathRewrite:{
-            '^/api':''    //这里理解成用‘/api'代替target里面的地址，后面组件中我们调接口时直接用api代替 比如我要调用'http://codetpx.lncwkj.com/xxx/duty?age=30'，可在axios的url中直接写‘api/xxx/duty?age=30'即可
+      '/api': {
+        target: 'http://172.20.10.11:8007', //设置你调用的接口域名和端口号 
+        changeOrigin: true, //是否跨域
+        pathRewrite: {
+          '^/api': '' //这里理解成用‘/api'代替target里面的地址，后面组件中我们调接口时直接用api代替 比如我要调用'http://codetpx.lncwkj.com/xxx/duty?age=30'，可在axios的url中直接写‘api/xxx/duty?age=30'即可
         }
       }
     },
@@ -28,7 +28,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

@@ -10,11 +10,11 @@ export default new Router({
       path: '/',
       name: 'Index',
       component: Index
+    },
+    {
+      path: '/qqq',
+      name: 'test',
+      component: () => import('@/views/test/')
     }
-    // {
-    //   path: '/index',
-    //   name: 'test',
-    //   component: () => import('@/views/test/')
-    // }
   ]
 })

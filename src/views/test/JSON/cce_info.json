@@ -1,0 +1,50 @@
+{
+    "Code": 0,
+    "Data": [
+        {
+            "id": 1,
+            "CCE_ID": "CCE-5847-9",
+            "CCE_Description": "/export/home should be configured on an appropriate filesystem logical volume",
+            "CCE_Parameters": "logical volume",
+            "CCE_Technical_Mechanisms": "via fstab",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 12,
+            "CCE_ID": "CCE-5424-7",
+            "CCE_Description": "/var should be configured on an appropriate filesystem logical volume",
+            "CCE_Parameters": "logical volume",
+            "CCE_Technical_Mechanisms": "via fstab",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 23,
+            "CCE_ID": "CCE-5710-9",
+            "CCE_Description": "/opt should be configured on an appropriate filesystem logical volume",
+            "CCE_Parameters": "logical volume",
+            "CCE_Technical_Mechanisms": "via fstab",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 34,
+            "CCE_ID": "CCE-5662-2",
+            "CCE_Description": "The shell for the root account should be located on the appropriate filesystem",
+            "CCE_Parameters": "filesystem",
+            "CCE_Technical_Mechanisms": "via /etc/passwd ",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        },
+        {
+            "id": 45,
+            "CCE_ID": "CCE-5317-3",
+            "CCE_Description": "Core dump size limits should be set appropriately",
+            "CCE_Parameters": "Size (0 to disable core dumps)",
+            "CCE_Technical_Mechanisms": "via /etc/security/limits\nvia ulimit",
+            "product": "aix5.3",
+            "CPE_ID": 175828
+        }
+    ]
+}

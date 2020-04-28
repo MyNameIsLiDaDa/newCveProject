@@ -1,8 +1,18 @@
 body {
-    min-width: 1324px;
-  }
+  min-width: 1324px;
+}
+
 ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
 }
