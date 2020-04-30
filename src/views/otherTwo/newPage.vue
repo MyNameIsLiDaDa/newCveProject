@@ -258,12 +258,12 @@
         <div class="box" v-show="echartsVisible">
           <header>
             <h3 class="title">网络空间知识图谱</h3>
-            <div class="close" @click="echartsVisible = false">
+            <div class="close" @click="closeEcharts">
               <a-icon type="close" />
             </div>
           </header>
           <!-- <div style="widht: 100%; height: 100%" id="main"></div> -->
-          <div style="widht: 600px; height: 500px" id="main"></div>
+          <div style="widht: 600px; min-height: 640px;" id="main"></div>
           <!-- <div> -->
           <!-- <svg width="960" height="600"></svg> -->
           <!-- </div> -->
@@ -463,7 +463,8 @@ export default {
       dialogTableData: [],
       cveListNum: "",
       cweListNum: "",
-      capecListNum: ""
+      capecListNum: "",
+      eCharts: null
     };
   },
   created() {
@@ -602,11 +603,13 @@ export default {
     initECharts() {
       // echarts弹出层;
       this.echartsVisible = true;
+      // this.eCharts.showLoading();
       const than = this;
       const eData = [];
       const eLinks = [];
+      let searchData = {};
       eData.push({
-        id: this.cpe_id,
+        id: `CPE_ID${this.cpe_id}`,
         name: this.tags[2],
         Vendors: this.tags[1],
         versions: this.tags[3],
@@ -640,22 +643,26 @@ export default {
       // cve数据...
       this.cveInfoData.forEach((v, index) => {
         v["name"] = v.CVE_ID;
-        v["id"] = v.CVE_ID;
+        v["id"] = screenData(eData, v.CVE_ID);
         eData.push({
           ...v,
           parentID: eData[0].id,
           itemStyle: { normal: { color: "#44aeae" } },
           description: v.Description
         }); // cve
+
         CweData(v.CVE_ID).then(res => {
           if (res.data.Code === 0) {
             res.data.Data.forEach(item => {
-              item["id"] = `CWE_ID${item.CWE_ID}`;
+              item["name"] = `CWE_Id:${item.CWE_ID}`;
+              item["id"] = `CWE_ID:${item.CWE_ID}`;
+              item["id"] = screenData(eData, item).id;
+              // id 是自定义的所以 如果想标记出现次数就必须在还没有push进数组中的时候就进行数据格式;
+              // 这样往下面传递的parentID也是修改好的;
               item["showName"] = item.Name;
               eData.push({
                 ...item,
                 parentID: v.CVE_ID,
-                name: `CWE_Id:${item.CWE_ID}`,
                 itemStyle: {
                   normal: {
                     color: "#fdc72a"
@@ -663,15 +670,17 @@ export default {
                 },
                 description: item.Description
               });
+
               capecData(item.CWE_ID).then(res => {
                 res.data.Data.forEach(val => {
                   // capec
-                  val["id"] = `CAPEC_ID${val.CAPEC_ID}`;
+                  val["name"] = `CAPEC_ID:${val.CAPEC_ID}`;
+                  val["id"] = `CAPEC_ID:${val.CAPEC_ID}`;
+                  val["id"] = screenData(eData, val).id;
                   val["showName"] = val.Name;
                   eData.push({
                     ...val,
                     parentID: item.id,
-                    name: `CAPEC_ID${val.CAPEC_ID}`,
                     itemStyle: {
                       normal: {
                         color: "#3e7b91"
@@ -694,51 +703,57 @@ export default {
                             if (item.external_id.indexOf("T") === 0) {
                               v.tId = item.external_id;
                               v["showName"] = v.name;
+                              v["name"] = v.tId;
                               v["id"] = v.tId;
+                              v["id"] = screenData(eData, v).id;
                               eData.push({
                                 ...v,
                                 parentID: val.id,
-                                name: v.tId,
                                 description: v.description,
                                 itemStyle: { normal: { color: "#E8E22F" } }
                               });
                             }
                           }
                         });
-                        // groups_softwares(v.groups_softwares_id).then(
-                        //   ({ data }) => {
-                        //     data.Data.group.forEach(val1 => {
-                        //       val1.external_references.forEach(value => {
-                        //         if (value.external_id) {
-                        //           val1.tId = value.external_id;
-                        //         }
-                        //       });
-                        //       val1["showName"] = v.name;
-                        //       eData.push({
-                        //         ...val1,
-                        //         parentID: v.id,
-                        //         name: val1.tId,
-                        //         description: v.description,
-                        //         itemStyle: { normal: { color: "#31C9E8" } }
-                        //       });
-                        //     });
-                        //     data.Data.software.forEach(val2 => {
-                        //       val2.external_references.forEach(value => {
-                        //         if (value.external_id) {
-                        //           val2.tId = value.external_id;
-                        //         }
-                        //       });
-                        //       val2["showName"] = v.name;
-                        //       eData.push({
-                        //         ...val2,
-                        //         parentID: v.id,
-                        //         name: val2.tId,
-                        //         description: v.description,
-                        //         itemStyle: { normal: { color: "#874c9c" } }
-                        //       });
-                        //     });
-                        //   }
-                        // );
+                        groups(v.groups_softwares_id).then(({ data }) => {
+                          data.Data.forEach(val1 => {
+                            val1.external_references.forEach(value => {
+                              if (value.external_id) {
+                                val1.tId = value.external_id;
+                              }
+                            });
+                            val1["showName"] = v.name;
+                            val1["name"] = val1.tId;
+                            val1["id"] = `groups${val1.tId}`;
+                            val1["id"] = screenData(eData, val1).id;
+
+                            nodes.push({
+                              ...val1,
+                              parentID: v.id,
+                              description: v.description,
+                              itemStyle: { normal: { color: "#31C9E8" } }
+                            });
+                          });
+                        });
+                        softwares(v.groups_softwares_id).then(({ data }) => {
+                          data.Data.forEach(val2 => {
+                            val2.external_references.forEach(value => {
+                              if (value.external_id) {
+                                val2.tId = value.external_id;
+                              }
+                            });
+                            val2["showName"] = v.name;
+                            val2["name"] = val2.tId;
+                            val2["id"] = `softwares${val2.tId}`;
+                            val2["id"] = screenData(eData, val2).id;
+                            nodes.push({
+                              ...val2,
+                              parentID: v.id,
+                              description: v.description,
+                              itemStyle: { normal: { color: "#874c9c" } }
+                            });
+                          });
+                        });
                         tacticsData(v.phase_name).then(({ data }) => {
                           data.Data.forEach(value => {
                             value["showName"] = value.id;
@@ -746,10 +761,11 @@ export default {
                               if (e.external_id) {
                                 value["tId"] = e.external_id;
                                 value["name"] = e.external_id;
+                                value["id"] = e.external_id;
+                                value["id"] = screenData(eData, value).id;
                                 eData.push({
                                   ...value,
-                                  parentID: v.id,
-                                  name: value.tId,
+                                  parentID: v.tId,
                                   description: value.description,
                                   itemStyle: { normal: { color: "#874c2c" } }
                                 });
@@ -782,32 +798,35 @@ export default {
             // }
           }
         });
-        var myChart = echarts.init(document.getElementById("last-echarts"));
-        myChart.setOption(this.eChartsData(eData, eLinks));
-        myChart.on("click", this.makeData);
+        // console.log(eData, eLinks);
+        // var myChart = echarts.init(document.getElementById("main"));
+        // console.log(eData, eLinks);
+        if (!this.eCharts)
+          this.eCharts = echarts.init(document.getElementById("main"));
+        this.eCharts.setOption(this.eChartsData(eData, eLinks));
+        this.eCharts.on("click", this.makeData);
       };
       function screenData(arr, node) {
-        // 对数组进行查重处理, 有的情况下clone;
-        if (arr.length === 0) return [];
-        arr.forEach(v => {
-          if (node.id === v.id) {
-            if (node.id.indexOf("(") === 0 && node.name.indexOf("(") === 0) {
-              let newId = node[Number(node.id.indexOf("(") + 1)];
-              let newName = node[Number(node.name.indexOf("(") + 1)];
-              node["id"] = `${node.id}${Number(newId + 1)}`;
-              node["name"] = `${node.name}${Number(newName + 1)}`;
+        if (arr.length === 0) return node;
+        for (let i = 0; i < arr.length; i++) {
+          if (node.name === arr[i].name) {
+            if (searchData[`${node.name}`]) {
+              let num = (searchData[`${node.name}`] += 1);
+              node["id"] = `${node.id}(${num})`;
             } else {
-              node["id"] = `${node.id}(0)`;
-              node["name"] = `${node.name}(0)`;
+              searchData[`${node.name}`] = 1;
+              node["id"] = `${node.id}(1)`;
             }
             return node;
           }
-        });
+        }
         return node;
       }
       setTimeout(() => {
         createEcharts();
-      }, 50000);
+        console.log(123);
+        // this.eCharts.hideLoading();
+      }, 15000);
     },
     letterMouseenter(item) {
       this.letterIndex = item.id;
@@ -897,6 +916,11 @@ export default {
       if (this.activeName === "second") {
         // this.selectTacticsObj = null
         this.selectTactics = true;
+        if (!this.eCharts)
+          this.eCharts = echarts.init(document.getElementById("last-echarts"));
+      } else {
+        if (!this.eCharts)
+          this.eCharts = echarts.init(document.getElementById("main"));
       }
     },
     handleClose() {
@@ -1078,9 +1102,9 @@ export default {
             }
           }
         });
-        var myChart = echarts.init(document.getElementById("last-echarts"));
-        myChart.setOption(this.eChartsData(nodes, edges));
-        myChart.on("click", this.makeData);
+        // var myChart = echarts.init(document.getElementById("last-echarts"));
+        this.eCharts.setOption(this.eChartsData(nodes, edges));
+        this.eCharts.on("click", this.makeData);
         // function chartssize (container, charts) {
         //   function getStyle(el, name) {
         //     if (window.getComputedStyle) {
@@ -1121,12 +1145,11 @@ export default {
       }
       setTimeout(() => {
         createEcharts();
-      }, 5000);
+      }, 15000);
     },
 
     // 传入 所有节点的 data, 和连线逻辑link
     eChartsData(eData = [], eLinks = []) {
-      console.log(eData, eLinks);
       var option = {
         title: {
           text: ""
@@ -1170,19 +1193,19 @@ export default {
             label: {
               show: true,
               formatter: function(params) {
-                if (params.data.parentID) {
-                  if (params.data.CVE_ID) {
-                    return `CVE_ID: ${params.data.CVE_ID}`;
-                  } else if (params.data.CWE_ID) {
-                    return `CWE_ID: ${params.data.CWE_ID}`;
-                  } else if (params.data.CAPEC_ID) {
-                    return `CAPEC_ID: ${params.data.CAPEC_ID}`;
-                  } else {
-                    return params.name;
-                  }
-                } else {
-                  return params.name;
-                }
+                // if (params.data.parentID) {
+                //   if (params.data.CVE_ID) {
+                //     return `CVE_ID: ${params.data.CVE_ID}`;
+                //   } else if (params.data.CWE_ID) {
+                //     return `CWE_ID: ${params.data.CWE_ID}`;
+                //   } else if (params.data.CAPEC_ID) {
+                //     return `CAPEC_ID: ${params.data.CAPEC_ID}`;
+                //   } else {
+                //     return params.name;
+                //   }
+                // } else {
+                return params.name;
+                // }
               }
             },
             edgeSymbol: ["circle", "arrow"],
@@ -1229,6 +1252,10 @@ export default {
     },
     reSetEcharts() {
       this.selectTactics = true;
+    },
+    closeEcharts() {
+      this.echartsVisible = false;
+      this.eCharts.clear();
     }
   },
   computed: {

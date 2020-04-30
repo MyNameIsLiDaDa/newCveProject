@@ -5,8 +5,7 @@ import Index from '@/views/otherTwo/newPage'
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'Index',
       component: Index
