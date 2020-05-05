@@ -301,7 +301,10 @@
           </span>
         </el-dialog>
         <div class="d3-box">
-          <div id="last-echarts" style="min-width: 1324px; width:100%; min-height: 640px"></div>
+          <div
+            id="last-echarts"
+            style="min-width: 1324px; width: 1324px; min-height: 640px; height: 640px"
+          ></div>
           <footer style="z-index: 99999;position: absolute;bottom: 0px;right: 0;">
             <el-button
               size="mini"
@@ -912,6 +915,7 @@ export default {
       });
     },
     handleClick(tab, event) {
+      this.eCharts = null;
       this.echartsVisible = false;
       if (this.activeName === "second") {
         // this.selectTacticsObj = null
@@ -937,6 +941,7 @@ export default {
       // 颜色需要提前交代好;
       var nodes = [];
       var edges = [];
+      let searchData = {};
       config["showName"] = config.name;
       config["id"] = config.tId;
       nodes.push({
@@ -979,6 +984,7 @@ export default {
                 val1["showName"] = v.name;
                 val1["name"] = val1.tId;
                 val1["id"] = `groups${val1.tId}`;
+                val1["id"] = screenData(nodes, val1).id;
                 nodes.push({
                   ...screenData(nodes, val1),
                   parentID: v.id,
@@ -997,8 +1003,9 @@ export default {
                 val2["showName"] = v.name;
                 val2["name"] = val2.tId;
                 val2["id"] = `softwares${val2.tId}`;
+                val2["id"] = screenData(nodes, val2).id;
                 nodes.push({
-                  ...screenData(nodes, val2),
+                  ...val2,
                   parentID: v.id,
                   description: v.description,
                   itemStyle: { normal: { color: "#874c9c" } }
@@ -1011,12 +1018,13 @@ export default {
               // capec
               capec_info(v.capecId).then(({ data }) => {
                 data.Data.forEach(ev => {
-                  ev["id"] = `CAPEC${ev.CAPEC_ID}`;
                   ev["showName"] = ev.Name;
                   ev["name"] = `CAPEC${ev.CAPEC_ID}`;
-                  screenData(nodes, ev);
+                  ev["id"] = `CAPEC${ev.CAPEC_ID}`;
+                  ev["id"] = screenData(nodes, ev).id;
+
                   nodes.push({
-                    ...screenData(nodes, ev),
+                    ...ev,
                     parentID: v.id,
                     description: ev.Description,
                     itemStyle: { normal: { color: "#2DE8BD" } }
@@ -1024,11 +1032,13 @@ export default {
                   // cwe;
                   cwe_info(ev.CAPEC_ID).then(({ data }) => {
                     data.Data.forEach((val, index) => {
-                      val["id"] = `CWE${val.CWE_ID}`;
                       val["showName"] = val.Name;
                       val["name"] = `CWE${val.CWE_ID}`;
+                      val["id"] = `CWE${val.CWE_ID}`;
+                      val["id"] = screenData(nodes, val).id;
+
                       nodes.push({
-                        ...screenData(nodes, val),
+                        ...val,
                         parentID: ev.id,
                         description: val.Description,
                         itemStyle: { normal: { color: "#4030E8" } }
@@ -1036,43 +1046,47 @@ export default {
                       // cve;
                       cve_info(val.CWE_ID).then(({ data }) => {
                         data.Data.forEach((value, index) => {
+                          value["name"] = value.CVE_ID;
                           value["id"] = value.CVE_ID;
-                          value["name"] = val.CVE_ID;
+                          value["id"] = screenData(nodes, value).id;
+
                           nodes.push({
-                            ...screenData(nodes, value),
+                            ...value,
                             parentID: val.id,
                             description: value.Description,
                             itemStyle: { normal: { color: "#3e7b91" } }
                           });
                           // cpe_info;
-                          cpe_info(value.CVE_ID).then(res => {
-                            res.data.Data.forEach(v => {
-                              vendor_detail(v).then(({ data }) => {
-                                let temp = data.Data[0];
-                                temp["id"] = v.CPE_ID;
-                                temp["name"] = `CPE${v.CPE_ID}`;
-                                let obj = {
-                                  ...screenData(nodes, temp),
-                                  vendor: v.vendor,
-                                  product: v.product,
-                                  version: v.version,
-                                  parentID: value.id
-                                };
-                                nodes.push(obj);
-                              });
-                              cceData(v.CPE_ID).then(({ data }) => {
-                                data.Data.forEach(ev => {
-                                  ev["name"] = ev.CCE_ID;
-                                  nodes.push({
-                                    ...screenData(nodes, ev),
-                                    parentID: v.CPE_ID,
-                                    description: ev.Description,
-                                    itemStyle: { normal: { color: "#874c9c" } }
-                                  });
-                                });
-                              });
-                            });
-                          });
+                          // cpe_info(value.CVE_ID).then(res => {
+                          //   res.data.Data.forEach(v => {
+                          //     vendor_detail(v).then(({ data }) => {
+                          //       let temp = data.Data[0];
+                          //       temp["name"] = `CPE${v.CPE_ID}`;
+                          //       temp["id"] = v.CPE_ID;
+                          //       temp["id"] = screenData(nodes, v).id;
+
+                          //       let obj = {
+                          //         ...screenData(nodes, temp),
+                          //         vendor: v.vendor,
+                          //         product: v.product,
+                          //         version: v.version,
+                          //         parentID: value.id
+                          //       };
+                          //       nodes.push(obj);
+                          //     });
+                          //     cceData(v.CPE_ID).then(({ data }) => {
+                          //       data.Data.forEach(ev => {
+                          //         ev["name"] = ev.CCE_ID;
+                          //         nodes.push({
+                          //           ...screenData(nodes, ev),
+                          //           parentID: v.CPE_ID,
+                          //           description: ev.Description,
+                          //           itemStyle: { normal: { color: "#874c9c" } }
+                          //         });
+                          //       });
+                          //     });
+                          //   });
+                          // });
                         });
                       });
                     });
@@ -1088,21 +1102,23 @@ export default {
 
       var createEcharts = () => {
         nodes.forEach(v => {
-          if (v.parentID) {
-            if (v.parentID.indexOf("CVE") === 0) {
-              const obj = {};
-              obj.source = v.parentID;
-              obj.target = v.id;
-              edges.push(obj);
-            } else {
-              const obj = {};
-              obj.source = v.parentID;
-              obj.target = v.id;
-              edges.push(obj);
-            }
-          }
+          // if (v.parentID) {
+          //   if (v.parentID.indexOf("CVE") === 0) {
+          //     const obj = {};
+          //     obj.source = v.parentID;
+          //     obj.target = v.id;
+          //     edges.push(obj);
+          //   } else {
+          const obj = {};
+          obj.source = v.parentID;
+          obj.target = v.id;
+          edges.push(obj);
+          // }
+          // }
         });
         // var myChart = echarts.init(document.getElementById("last-echarts"));
+        this.eCharts = echarts.init(document.getElementById("last-echarts"));
+        console.log(nodes, edges, "nodes, edges");
         this.eCharts.setOption(this.eChartsData(nodes, edges));
         this.eCharts.on("click", this.makeData);
         // function chartssize (container, charts) {
@@ -1125,27 +1141,25 @@ export default {
         // };
       };
       function screenData(arr, node) {
-        // 对数组进行查重处理, 有的情况下clone;
-        if (arr.length === 0) return [];
-        arr.forEach(v => {
-          if (node.id === v.id) {
-            if (node.id.indexOf("(") === 0 && node.name.indexOf("(") === 0) {
-              let newId = node[Number(node.id.indexOf("(") + 1)];
-              let newName = node[Number(node.name.indexOf("(") + 1)];
-              node["id"] = `${node.id}${Number(newId + 1)}`;
-              node["name"] = `${node.name}${Number(newName + 1)}`;
+        if (arr.length === 0) return node;
+        for (let i = 0; i < arr.length; i++) {
+          if (node.name === arr[i].name) {
+            if (searchData[`${node.name}`]) {
+              let num = (searchData[`${node.name}`] += 1);
+              node["id"] = `${node.id}(${num})`;
             } else {
-              node["id"] = `${node.id}(0)`;
-              node["name"] = `${node.name}(0)`;
+              searchData[`${node.name}`] = 1;
+              node["id"] = `${node.id}(1)`;
             }
             return node;
           }
-        });
+        }
         return node;
       }
       setTimeout(() => {
         createEcharts();
-      }, 15000);
+        console.log(12345);
+      }, 10000);
     },
 
     // 传入 所有节点的 data, 和连线逻辑link
