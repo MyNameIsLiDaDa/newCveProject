@@ -1,5 +1,5 @@
 <template>
-  <div class="box"></div>
+  <div class="box">123</div>
 </template>
 <script>
 import Tabs from "./components/Tabs";
@@ -18,9 +18,14 @@ export default {
   created() {
     this.jsonData = require("./JSON/cce_info.json");
     // this.init();
-    this.test();
+    // this.test();
+    this.allNode()
   },
   methods: {
+    allNode () {
+      const data = require('./JSON/cve_to_capec(cpe_id)')
+      console.log(data)
+    },
     init() {
       this.contNum = 0;
       const pro = new Promise((resolve, reject) => {
